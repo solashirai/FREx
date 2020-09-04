@@ -1,0 +1,7 @@
+@prefix ns1: <erf.com/examples/ramenOnto/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<erf.com/examples/USR01> a ns1:ramenEater ;
+    ns1:likesRamenFrom "Taiwan" ;
+    ns1:likesRamenStyle "Pack" .
