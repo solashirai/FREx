@@ -1,12 +1,12 @@
 from typing import Tuple
-from src.pipeline.pipeline_stage import PipelineStage
+from src.services.pipeline_service import PipelineService
 from src.models.candidate import Candidate
 from src.models.context import Context
 
 
-class Pipeline:
+class PipelineExecutorService(PipelineService):
 
-    def __init__(self, *, stages: Tuple[PipelineStage, ...]):
+    def __init__(self, *, stages: Tuple[PipelineService, ...]):
         self.stages = stages
 
     def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> Tuple[Context, Tuple[Candidate, ...]]:

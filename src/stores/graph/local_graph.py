@@ -17,7 +17,7 @@ class LocalGraph(SparqlQueryable):
 
     def __parse_ttl_file(self, *, file_path: Path) -> None:
 
-        return self.graph.parse(file_path, format='ttl')
+        return self.graph.parse(str(file_path), format='ttl')
 
     def query(self, *, sparql: str) -> Result:
         return self.graph.query(sparql)
