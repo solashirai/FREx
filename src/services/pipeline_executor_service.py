@@ -9,7 +9,8 @@ class PipelineExecutorService(PipelineService):
     def __init__(self, *, stages: Tuple[PipelineService, ...]):
         self.stages = stages
 
-    def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> Tuple[Context, Tuple[Candidate, ...]]:
+    def execute(self, *, context: Context = None, candidates: Tuple[Candidate, ...] = ()) -> \
+            Tuple[Context, Tuple[Candidate, ...]]:
         for stage in self.stages:
             context, candidates = stage.execute(context=context, candidates=candidates)
         return context, candidates

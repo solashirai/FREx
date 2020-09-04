@@ -15,8 +15,10 @@ def run_example():
     ramen_graph = LocalGraph(file_paths=data_files)
 
     ramen_rec_pipe = PipelineExecutorService(stages=(
-        RamenCandidateGeneratorService()
+        RamenCandidateGeneratorService(),
     ))
+
+    output_context, output_candidates = ramen_rec_pipe.execute()
 
 if __name__ == '__main__':
     run_example()

@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Tuple, Callable
+from typing import Tuple, Callable, Optional
 from src.models.explanation import Explanation
 from src.models.candidate import Candidate
 from src.models.context import Context
@@ -15,7 +15,8 @@ class ScoringService(PipelineService):
     def score(self, *, candidate: Candidate, context: Context) -> float:
         return self.scoring_function(candidate, context)
 
-    def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> Tuple[Context, Tuple[Candidate, ...]]:
+    def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> \
+            Tuple[Context, Tuple[Candidate, ...]]:
         for candidate in candidates:
             candidate.applied_explanations.append(self.scoring_explanation)
             candidate.applied_scores.append(self.score(context=context, candidate=candidate))
