@@ -1,0 +1,42 @@
+from FREx.services.candidate_generator_service import CandidateGeneratorService
+from typing import Tuple, FrozenSet, Dict
+from rdflib import URIRef
+from FREx.models import Explanation, Candidate
+from examples.ramen_rec.app.models.ramen_context import RamenContext
+from examples.ramen_rec.app.services.ramen_query_service import RamenQueryService
+import pickle
+
+
+class SimilarRamenCandidateGeneratorService(CandidateGeneratorService):
+
+    def __init__(self, *, ramen_vector_file: str,
+                 ramen_query_service: RamenQueryService):
+        with open(ramen_vector_file, 'rb') as f:
+            self.ramen_vector_dict: Dict[URIRef, FrozenSet] = pickle.load(f)
+        self.ramen_query_service = ramen_query_service
+
+    def get_candidates(self, *, context: RamenContext) -> Tuple[Candidate, ...]:
+        ramen_sim_scores = dict()
+        this_ramen_uri = context.target_ramen.uri
+        this_ramen_content = self.ramen_vector_dict[this_ramen_uri]
+        for other_ramen_uri in self.ramen_vector_dict.keys():
+            if other_ramen_uri == this_ramen_uri:
+                continue
+            other_ramen_content = self.ramen_vector_dict[other_ramen_uri]
+            # get jaccard index
+            score = len(this_ramen_content.intersection(other_ramen_content)) / \
+                    len(this_ramen_content.union(other_ramen_content))
+            ramen_sim_scores[other_ramen_uri] = score
+
+        sorted_uris = sorted(ramen_sim_scores.items(), key=lambda item: item[1], reverse=True)
+        sorted_uris = [tup[0] for tup in sorted_uris]
+
+        # for this system, we'll just say we return the top 50 ramens as candidates
+        return tuple(
+            Candidate(
+                domain_object=self.ramen_query_service.get_ramen_by_uri(ramen_uri=ramen_uri),
+                applied_explanations=[
+                    Explanation(explanation_string=f'This ramen is identified as being similar to the target ramen.')
+                ],
+                applied_scores=[0])
+            for ramen_uri in sorted_uris[:50])

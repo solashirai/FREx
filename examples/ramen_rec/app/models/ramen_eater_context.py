@@ -1,4 +1,4 @@
-from src.models.context import Context
+from FREx.models import Context
 from examples.ramen_rec.app.models.ramen_eater import RamenEater
 from typing import NamedTuple
 
