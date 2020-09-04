@@ -1,9 +1,9 @@
 from typing import NamedTuple, List
-from src.models.explanation import Explanation
+from FREx.models import Explanation, DomainObject
 
 
 class Candidate(NamedTuple):
-    domain_object: NamedTuple
+    domain_object: DomainObject
     applied_explanations: List[Explanation]
     applied_scores: List[float]
 

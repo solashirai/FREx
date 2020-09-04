@@ -1,21 +1,19 @@
 from typing import Tuple, Callable
-from src.models.explanation import Explanation
-from src.models.candidate import Candidate
-from src.models.context import Context
-from src.services.pipeline_service import PipelineService
+from FREx.models import Explanation, Candidate, Context
+from FREx.services import PipelineService
 
 
 class FilterService(PipelineService):
 
-    def __init__(self, *, filter_function: Callable[[Candidate, Context], bool],
+    def __init__(self, *, filter_function: Callable[[Context, Candidate], bool],
                  filter_explanation: Explanation,
                  filter_score: float = 0):
         self.filter_function = filter_function
         self.filter_explanation = filter_explanation
         self.filter_score = filter_score
 
-    def filter(self, *, candidate: Candidate, context: Context) -> bool:
-        return self.filter_function(candidate, context)
+    def filter(self, *, context: Context, candidate: Candidate) -> bool:
+        return self.filter_function(context, candidate)
 
     def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> Tuple[Context, Tuple[Candidate, ...]]:
         output_candidates = []

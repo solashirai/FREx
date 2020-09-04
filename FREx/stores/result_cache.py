@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from src.stores.graph.sparql_queryable import SparqlQueryable
+from FREx.stores import SparqlQueryable
 from rdflib import Graph
 
 
-class ResultCache(ABC, SparqlQueryable):
+class ResultCache(SparqlQueryable, ABC):
 
     @abstractmethod
     def get_graph(self) -> Graph:

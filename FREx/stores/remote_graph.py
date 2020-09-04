@@ -1,7 +1,7 @@
 from rdflib import Graph
 from rdflib.plugins.stores.sparqlstore import SPARQLStore
 from rdflib.query import Result, ResultException
-from src.stores.graph.sparql_queryable import SparqlQueryable
+from FREx.stores import SparqlQueryable
 
 
 class RemoteGraph(SparqlQueryable):

@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
-from src.models.context import Context
-from src.stores.graph.sparql_queryable import SparqlQueryable
-from typing import Tuple, Optional
-from src.models.candidate import Candidate
-from src.services.pipeline_service import PipelineService
+from abc import abstractmethod
+from FREx.models.context import Context
+from typing import Tuple
+from FREx.models import Candidate
+from FREx.services import PipelineService
 
 
 class CandidateGeneratorService(PipelineService):

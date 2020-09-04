@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import Tuple
-from src.models.candidate import Candidate
-from src.models.context import Context
+from FREx.models import Candidate, Context
 from abc import ABC, abstractmethod
 
 

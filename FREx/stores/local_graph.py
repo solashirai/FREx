@@ -2,7 +2,7 @@ from rdflib import Graph
 from rdflib.query import Result
 from pathlib import Path
 from typing import List
-from src.stores.graph.sparql_queryable import SparqlQueryable
+from FREx.stores import SparqlQueryable
 
 
 class LocalGraph(SparqlQueryable):
@@ -21,3 +21,6 @@ class LocalGraph(SparqlQueryable):
 
     def query(self, *, sparql: str) -> Result:
         return self.graph.query(sparql)
+
+    def get_graph(self) -> Graph:
+        return self.graph

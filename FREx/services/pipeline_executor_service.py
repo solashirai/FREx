@@ -1,7 +1,6 @@
 from typing import Tuple
-from src.services.pipeline_service import PipelineService
-from src.models.candidate import Candidate
-from src.models.context import Context
+from FREx.services import PipelineService
+from FREx.models import Context, Candidate
 
 
 class PipelineExecutorService(PipelineService):

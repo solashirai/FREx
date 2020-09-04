@@ -1,4 +1,4 @@
-from src.stores.graph.sparql_queryable import SparqlQueryable
+from FREx.stores import SparqlQueryable
 
 
 class DomainModelService:
