@@ -1,5 +1,7 @@
 from pathlib import Path
 from src.stores.graph.local_graph import LocalGraph
+from src.services.pipeline_executor_service import PipelineExecutorService
+from examples.ramen_rec.app.services.ramen_candidate_generator_service import RamenCandidateGeneratorService
 
 
 def run_example():
@@ -12,7 +14,9 @@ def run_example():
 
     ramen_graph = LocalGraph(file_paths=data_files)
 
-
+    ramen_rec_pipe = PipelineExecutorService(stages=(
+        RamenCandidateGeneratorService()
+    ))
 
 if __name__ == '__main__':
     run_example()

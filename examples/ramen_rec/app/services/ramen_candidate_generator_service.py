@@ -7,5 +7,8 @@ from src.models.candidate import Candidate
 
 class RamenCandidateGeneratorService(CandidateGeneratorService):
 
+    def __init__(self):
+        pass
+
     def get_candidates(self, *, context: RamenEaterContext) -> Tuple[Candidate, ...]:
         return []

@@ -6,7 +6,7 @@ from src.models.candidate import Candidate
 from src.services.pipeline_service import PipelineService
 
 
-class CandidateGeneratorService(ABC, PipelineService):
+class CandidateGeneratorService(PipelineService):
 
     @abstractmethod
     def get_candidates(self, *, context: Context) -> Tuple[Candidate, ...]:
