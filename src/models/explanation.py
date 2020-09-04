@@ -1,8 +1,5 @@
-from abc import ABC, abstractmethod
+from typing import NamedTuple
 
 
-class Explanation(ABC):
-
-    @abstractmethod
-    def get_explanation_string(self) -> str:
-        pass
+class Explanation(NamedTuple):
+    explanation_string: str
