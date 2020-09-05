@@ -13,4 +13,4 @@ class RequestResultCache(ResultCache):
         return self.cache_graph
 
     def query(self, *, sparql: str) -> Result:
-        return self.graph.query(sparql)
+        return self.cache_graph.query(sparql)

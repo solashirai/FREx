@@ -3,6 +3,7 @@ from typing import Tuple, FrozenSet, Dict
 from rdflib import URIRef
 from FREx.models import Explanation, Candidate
 from examples.ramen_rec.app.models.ramen_context import RamenContext
+from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
 from examples.ramen_rec.app.services.ramen_query_service import RamenQueryService
 import pickle
 
@@ -29,14 +30,15 @@ class SimilarRamenCandidateGeneratorService(CandidateGeneratorService):
             ramen_sim_scores[other_ramen_uri] = score
 
         sorted_uris = sorted(ramen_sim_scores.items(), key=lambda item: item[1], reverse=True)
-        sorted_uris = [tup[0] for tup in sorted_uris]
-
         # for this system, we'll just say we return the top 50 ramens as candidates
+        sorted_uris = [tup[0] for tup in sorted_uris[:50]]
+
+        ramens = self.ramen_query_service.get_all_ramens_by_uri(ramen_uris=sorted_uris)
         return tuple(
-            Candidate(
-                domain_object=self.ramen_query_service.get_ramen_by_uri(ramen_uri=ramen_uri),
+            RamenCandidate(
+                domain_object=ramen,
                 applied_explanations=[
                     Explanation(explanation_string=f'This ramen is identified as being similar to the target ramen.')
                 ],
                 applied_scores=[0])
-            for ramen_uri in sorted_uris[:50])
+            for ramen in ramens)

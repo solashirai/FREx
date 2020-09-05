@@ -3,5 +3,5 @@ from examples.ramen_rec.app.models.ramen import Ramen
 from typing import NamedTuple
 
 
-class RamenContext(NamedTuple, Context):
+class RamenContext(Context, NamedTuple):
     target_ramen: Ramen

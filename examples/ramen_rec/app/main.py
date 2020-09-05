@@ -1,25 +1,32 @@
 from pathlib import Path
-from FREx.models import Explanation, Candidate
+from FREx.models import Explanation, Candidate, Context
 from FREx.stores import LocalGraph
 from FREx.services import PipelineExecutorService, ScoringService, FilterService
 from examples.ramen_rec.app.services.similar_ramen_candidate_generator_service import SimilarRamenCandidateGeneratorService
 from examples.ramen_rec.app.models.ramen_context import RamenContext
+from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
 from examples.ramen_rec.app.services.ramen_query_service import RamenQueryService
 from rdflib import URIRef
 
 
-def score_ramen_rating(context: RamenContext, candidate: Candidate) -> float:
+def score_ramen_rating(context: Context, candidate: Candidate) -> float:
+    if not isinstance(candidate, RamenCandidate):
+        raise TypeError
     return candidate.domain_object.rating / 5.0
 
 
-def score_similar_style(context: RamenContext, candidate: Candidate) -> float:
+def score_similar_style(context: Context, candidate: Candidate) -> float:
+    if not isinstance(context, RamenContext) or not isinstance(candidate, RamenCandidate):
+        raise TypeError
     if context.target_ramen.style == candidate.domain_object.style:
         return 1
     else:
         return 0
 
 
-def filter_same_brand(context: RamenContext, candidate: Candidate) -> bool:
+def filter_same_brand(context: Context, candidate: Candidate) -> bool:
+    if not isinstance(context, RamenContext) or not isinstance(candidate, RamenCandidate):
+        raise TypeError
     return context.target_ramen.brand == candidate.domain_object.brand
 
 
@@ -32,7 +39,7 @@ def run_example():
     ]
 
     ramen_graph = LocalGraph(file_paths=data_files)
-    ramen_q = RamenQueryService(ramen_graph=ramen_graph.get_graph())
+    ramen_q = RamenQueryService(queryable=ramen_graph)
 
     ramen_rec_pipe = PipelineExecutorService(stages=(
         SimilarRamenCandidateGeneratorService(ramen_vector_file=(DATA_DIR / 'ramen-vectors.pkl').resolve(),
@@ -62,6 +69,7 @@ def run_example():
     print("top 5 candidates")
     for c in best_candidates:
         print(c)
+
 
 if __name__ == '__main__':
     run_example()
