@@ -13,7 +13,7 @@ class RamenQueryService(QueryService):
 
     def get_all_ramens_by_uri(self, *, ramen_uris: List[URIRef], graph_cache: Graph = None) -> List[Ramen]:
         if not graph_cache:
-            if isinstance(self.queryable, LocalGraph) and False:
+            if isinstance(self.queryable, LocalGraph):
                 graph_cache = self.queryable.get_graph()
             else:
                 ramen_values = " ".join(ramen_uri.n3() for ramen_uri in ramen_uris)
