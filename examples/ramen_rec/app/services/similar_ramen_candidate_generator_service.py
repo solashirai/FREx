@@ -2,9 +2,8 @@ from FREx.services.candidate_generator_service import CandidateGeneratorService
 from typing import Tuple, FrozenSet, Dict
 from rdflib import URIRef
 from FREx.models import Explanation, Candidate
-from examples.ramen_rec.app.models.ramen_context import RamenContext
-from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
-from examples.ramen_rec.app.services.ramen_query_service import RamenQueryService
+from examples.ramen_rec.app.models import RamenContext, RamenCandidate
+from examples.ramen_rec.app.services import RamenQueryService
 import pickle
 
 
@@ -20,6 +19,7 @@ class SimilarRamenCandidateGeneratorService(CandidateGeneratorService):
         ramen_sim_scores = dict()
         this_ramen_uri = context.target_ramen.uri
         this_ramen_content = self.ramen_vector_dict[this_ramen_uri]
+
         for other_ramen_uri in self.ramen_vector_dict.keys():
             if other_ramen_uri == this_ramen_uri:
                 continue

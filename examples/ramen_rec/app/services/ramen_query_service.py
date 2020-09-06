@@ -4,7 +4,7 @@ from FREx.stores import LocalGraph, RemoteGraph, RequestResultCache
 from rdflib import URIRef, Namespace, Graph
 from rdflib.namespace import RDF, RDFS
 from typing import List
-from examples.ramen_rec.app.models.ramen import Ramen
+from examples.ramen_rec.app.models import Ramen
 
 
 class RamenQueryService(QueryService):

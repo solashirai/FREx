@@ -1,17 +1,16 @@
-from abc import abstractmethod
-from typing import Tuple, Callable, Optional
-from FREx.models import Explanation, Candidate, Context
+from typing import Tuple
+from FREx.models import Explanation, Candidate, Context, ScoringFunction
 from FREx.services import PipelineService
 
 
 class ScoringService(PipelineService):
 
-    def __init__(self, *, scoring_function: Callable[[Context, Candidate], float],scoring_explanation: Explanation):
+    def __init__(self, *, scoring_function: ScoringFunction,scoring_explanation: Explanation):
         self.scoring_function = scoring_function
         self.scoring_explanation = scoring_explanation
 
     def score(self, *, context: Context, candidate: Candidate) -> float:
-        return self.scoring_function(context, candidate)
+        return self.scoring_function.score_input(context=context, candidate=candidate)
 
     def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> \
             Tuple[Context, Tuple[Candidate, ...]]:
