@@ -11,45 +11,43 @@ class RamenQueryService(QueryService):
 
     ramen_ns = Namespace('http://www.erf.com/examples/ramenOnto/')
 
-    def get_all_ramens_by_uri(self, *, ramen_uris: List[URIRef], graph_cache: Graph = None) -> List[Ramen]:
-        if not graph_cache:
+    def get_all_ramens_by_uri(self, *, ramen_uris: List[URIRef], cache_graph: Graph = None) -> List[Ramen]:
+        if not cache_graph:
             if isinstance(self.queryable, LocalGraph):
-                graph_cache = self.queryable.get_graph()
+                cache_graph = self.queryable.get_graph()
             else:
                 ramen_values = " ".join(ramen_uri.n3() for ramen_uri in ramen_uris)
-                graph_cache = RequestResultCache(
-                    result=self.queryable.query(sparql=f"""
+                cache_graph = self.get_cache_graph(sparql=f"""
                     CONSTRUCT {{ ?s ?p ?o }}
                     WHERE {{
                         VALUES ?s {{ {ramen_values} }}
                         ?s ?p ?o.
                     }}
-                    """)).get_graph()
-        return [self.get_ramen_by_uri(ramen_uri=ramen_uri, graph_cache=graph_cache) for ramen_uri in ramen_uris]
+                    """)
+        return [self.get_ramen_by_uri(ramen_uri=ramen_uri, cache_graph=cache_graph) for ramen_uri in ramen_uris]
 
-    def get_ramen_by_uri(self, *, ramen_uri: URIRef, graph_cache: Graph = None) -> Ramen:
+    def get_ramen_by_uri(self, *, ramen_uri: URIRef, cache_graph: Graph = None) -> Ramen:
 
-        if not graph_cache:
+        if not cache_graph:
             if isinstance(self.queryable, LocalGraph) and False:
-                graph_cache = self.queryable.get_graph()
+                cache_graph = self.queryable.get_graph()
             else:
-                graph_cache = RequestResultCache(
-                    result=self.queryable.query(sparql=f"""
+                cache_graph = self.get_cache_graph(sparql=f"""
                     CONSTRUCT {{ ?s ?p ?o }}
                     WHERE {{
                         VALUES ?s {{ {ramen_uri.n3()} }}
                         ?s ?p ?o.
                     }}
-                    """)).get_graph()
+                    """)
 
-        if (ramen_uri, RDF['type'], RamenQueryService.ramen_ns['ramen']) not in graph_cache:
+        if (ramen_uri, RDF['type'], RamenQueryService.ramen_ns['ramen']) not in cache_graph:
             raise DomainObjectNotFoundException(uri=ramen_uri)
 
-        label = graph_cache.value(ramen_uri, RDFS['label'])
-        brand = graph_cache.value(ramen_uri, RamenQueryService.ramen_ns['brand'])
-        country = graph_cache.value(ramen_uri, RamenQueryService.ramen_ns['country'])
-        rating = graph_cache.value(ramen_uri, RamenQueryService.ramen_ns['rating'])
-        style = graph_cache.value(ramen_uri, RamenQueryService.ramen_ns['style'])
+        label = cache_graph.value(ramen_uri, RDFS['label'])
+        brand = cache_graph.value(ramen_uri, RamenQueryService.ramen_ns['brand'])
+        country = cache_graph.value(ramen_uri, RamenQueryService.ramen_ns['country'])
+        rating = cache_graph.value(ramen_uri, RamenQueryService.ramen_ns['rating'])
+        style = cache_graph.value(ramen_uri, RamenQueryService.ramen_ns['style'])
 
         if any(ramen_property is None for ramen_property in [label, brand, country, rating, style]):
             raise MalformedDomainObjectException(uri=ramen_uri)
