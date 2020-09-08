@@ -1,3 +1,6 @@
 rdflib
 SPARQLWrapper
 requests
+numpy
+scipy
+pytest

@@ -1,9 +1,10 @@
 from FREx.services.candidate_generator_service import CandidateGeneratorService
-from typing import Tuple, FrozenSet, Dict
+from typing import Tuple, FrozenSet, Dict, List
 from rdflib import URIRef
 from FREx.models import Explanation, Candidate
 from examples.ramen_rec.app.models import RamenContext, RamenCandidate
 from examples.ramen_rec.app.services import RamenQueryService
+import numpy as np
 import pickle
 
 
@@ -12,26 +13,27 @@ class SimilarRamenCandidateGeneratorService(CandidateGeneratorService):
     def __init__(self, *, ramen_vector_file: str,
                  ramen_query_service: RamenQueryService):
         with open(ramen_vector_file, 'rb') as f:
-            self.ramen_vector_dict: Dict[URIRef, FrozenSet] = pickle.load(f)
+            self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
         self.ramen_query_service = ramen_query_service
 
     def get_candidates(self, *, context: RamenContext) -> Tuple[Candidate, ...]:
         ramen_sim_scores = dict()
-        this_ramen_uri = context.target_ramen.uri
-        this_ramen_content = self.ramen_vector_dict[this_ramen_uri]
+        target_ramen_uri = context.target_ramen.uri
+        target_ramen_vector = self.ramen_vector_dict[target_ramen_uri]
 
-        for other_ramen_uri in self.ramen_vector_dict.keys():
-            if other_ramen_uri == this_ramen_uri:
-                continue
-            other_ramen_content = self.ramen_vector_dict[other_ramen_uri]
-            # get jaccard index
-            score = len(this_ramen_content.intersection(other_ramen_content)) / \
-                    len(this_ramen_content.union(other_ramen_content))
-            ramen_sim_scores[other_ramen_uri] = score
+        comp_ramen_uris, comp_ramen_vectors = [], []
+        for ram_uri, ram_vec in self.ramen_vector_dict.items():
+            if ram_uri != target_ramen_uri:
+                comp_ramen_uris.append(ram_uri)
+                comp_ramen_vectors.append(ram_vec)
 
-        sorted_uris = sorted(ramen_sim_scores.items(), key=lambda item: item[1], reverse=True)
+        ramen_sim_scores = self.get_item_vector_similarity(target_item=target_ramen_uri,
+                                                           target_vector=target_ramen_vector,
+                                                           comparison_items=comp_ramen_uris,
+                                                           comparison_contents=comp_ramen_vectors)
+
         # for this system, we'll just say we return the top 50 ramens as candidates
-        sorted_uris = [tup[0] for tup in sorted_uris[:50]]
+        sorted_uris: List[URIRef] = self.get_top_n_candidates(candidate_score_dict=ramen_sim_scores, top_n=50)
 
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=sorted_uris)
         return tuple(
