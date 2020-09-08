@@ -11,7 +11,7 @@ class RamenQueryService(QueryService):
 
     ramen_ns = Namespace('http://www.erf.com/examples/ramenOnto/')
 
-    def get_all_ramens_by_uri(self, *, ramen_uris: List[URIRef], cache_graph: Graph = None) -> List[Ramen]:
+    def get_ramens_by_uri(self, *, ramen_uris: List[URIRef], cache_graph: Graph = None) -> List[Ramen]:
         if not cache_graph:
             if isinstance(self.queryable, LocalGraph):
                 cache_graph = self.queryable.get_graph()

@@ -33,7 +33,7 @@ class SimilarRamenCandidateGeneratorService(CandidateGeneratorService):
         # for this system, we'll just say we return the top 50 ramens as candidates
         sorted_uris = [tup[0] for tup in sorted_uris[:50]]
 
-        ramens = self.ramen_query_service.get_all_ramens_by_uri(ramen_uris=sorted_uris)
+        ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=sorted_uris)
         return tuple(
             RamenCandidate(
                 domain_object=ramen,
