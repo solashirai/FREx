@@ -1,6 +1,6 @@
-from FREx.services import QueryService
-from FREx.services.exceptions import *
-from FREx.stores import LocalGraph, RemoteGraph, RequestResultCache
+from frex.pipelines import QueryService
+from frex.pipelines.exceptions import *
+from frex.stores import LocalGraph, RemoteGraph, RequestResultCache
 from rdflib import URIRef, Namespace, Graph
 from rdflib.namespace import RDF, RDFS
 from typing import List

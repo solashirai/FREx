@@ -1,5 +1,5 @@
 from typing import NamedTuple, List
-from FREx.models import Explanation, DomainObject
+from frex.models import Explanation, DomainObject
 
 
 class Candidate(NamedTuple):

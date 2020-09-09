@@ -1,4 +1,4 @@
-from FREx.stores import ResultCache
+from frex.stores import ResultCache
 from rdflib import Graph
 from rdflib.query import Result
 

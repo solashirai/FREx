@@ -1,3 +1,3 @@
 from .models import *
-from .services import *
+from .pipelines import *
 from .stores import *

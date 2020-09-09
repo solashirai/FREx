@@ -1,11 +1,11 @@
-from typing import Tuple
-from FREx.models import Explanation, Candidate, Context, FilteringFunction
-from FREx.services import PipelineService
+from typing import Generator
+from frex.models import Explanation, Candidate, Context, Filter
+from frex.pipelines import _Pipeline
 
 
-class FilterService(PipelineService):
+class CandidateFilterer(_Pipeline):
 
-    def __init__(self, *, filter_function: FilteringFunction,
+    def __init__(self, *, filter_function: Filter,
                  filter_explanation: Explanation,
                  filter_score: float = 0):
         self.filter_function = filter_function
@@ -15,13 +15,11 @@ class FilterService(PipelineService):
     def filter(self, *, context: Context, candidate: Candidate) -> bool:
         return self.filter_function.filter_input(context=context, candidate=candidate)
 
-    def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> Tuple[Context, Tuple[Candidate, ...]]:
-        output_candidates = []
+    def execute(self, *, context: Context, candidates: Generator[Candidate, None, None]) ->\
+            Generator[Candidate, None, None]:
         for candidate in candidates:
             if not self.filter(context=context, candidate=candidate):
                 candidate.applied_explanations.append(self.filter_explanation)
                 candidate.applied_scores.append(self.filter_score)
-                output_candidates.append(candidate)
-
-        return context, tuple(output_candidates)
-
+                yield candidate
+        return

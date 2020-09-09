@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from FREx.stores import SparqlQueryable
+from frex.stores import SparqlQueryable
 from rdflib import Graph
 
 

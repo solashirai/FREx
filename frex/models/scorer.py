@@ -1,8 +1,8 @@
-from FREx.models import Context, Candidate
+from frex.models import Context, Candidate
 from abc import ABC, abstractmethod
 
 
-class ScoringFunction(ABC):
+class Scorer(ABC):
 
     @abstractmethod
     def score_input(self, *, context: Context, candidate: Candidate) -> float:

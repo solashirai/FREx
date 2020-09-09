@@ -1,13 +1,13 @@
 from abc import abstractmethod
-from FREx.models.context import Context
-from typing import Tuple, Dict, Any, List, Set
-from FREx.models import Candidate, DomainObject
-from FREx.services import PipelineService
+from frex.models.context import Context
+from typing import Tuple, Any, List, Generator
+from frex.models import Candidate, DomainObject
+from frex.pipelines import _Pipeline
 import numpy as np
 from scipy.sparse.csr import csr_matrix
 
 
-class CandidateGeneratorService(PipelineService):
+class CandidateGenerator(_Pipeline):
 
     @staticmethod
     def sparse_l2_norm(mat: csr_matrix):
@@ -19,8 +19,8 @@ class CandidateGeneratorService(PipelineService):
             # sparse matrices seem to be very slow or require a ton of memory to call np.linalg.norm, so
             # compute using csr_matrix functions here.
             return comparison_vector.dot(comparison_matrix.T) / \
-                   (CandidateGeneratorService.sparse_l2_norm(comparison_vector).dot(
-                       CandidateGeneratorService.sparse_l2_norm(comparison_matrix).T))
+                   (CandidateGenerator.sparse_l2_norm(comparison_vector).dot(
+                       CandidateGenerator.sparse_l2_norm(comparison_matrix).T))
         else:
             return np.dot(comparison_vector, comparison_matrix.T) / \
                    (np.linalg.norm(comparison_vector) * np.linalg.norm(comparison_matrix, axis=1).T)
@@ -43,8 +43,8 @@ class CandidateGeneratorService(PipelineService):
             ind_to_item[item_ind] = item
             content_matrix[item_ind] = comparison_contents[item_ind]
 
-        cosine_sims: List[float] = CandidateGeneratorService.cosine_sim(comparison_vector=target_vector,
-                                                                        comparison_matrix=content_matrix).tolist()[0]
+        cosine_sims: List[float] = CandidateGenerator.cosine_sim(comparison_vector=target_vector,
+                                                                 comparison_matrix=content_matrix).tolist()[0]
 
         return list(zip(comparison_items, cosine_sims))
 
@@ -54,11 +54,9 @@ class CandidateGeneratorService(PipelineService):
         return [tup[0] for tup in sorted_uris[:top_n]]
 
     @abstractmethod
-    def get_candidates(self, *, context: Context) -> Tuple[Candidate, ...]:
+    def get_candidates(self, *, context: Context) -> Generator[Candidate, None, None]:
         pass
 
-    def execute(self, *, context: Context, candidates: Tuple[Candidate, ...]) -> \
-            Tuple[Context, Tuple[Candidate, ...]]:
-        output_candidates = self.get_candidates(context=context)
-
-        return context, output_candidates
+    def execute(self, *, context: Context, candidates: Generator[Candidate, None, None]) -> \
+            Generator[Candidate, None, None]:
+        return self.get_candidates(context=context)

@@ -1,6 +1,6 @@
 from typing import NamedTuple
 from rdflib import URIRef
-from FREx.models import DomainObject
+from frex.models import DomainObject
 
 
 class Ramen(NamedTuple, DomainObject):

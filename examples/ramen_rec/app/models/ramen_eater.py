@@ -1,5 +1,5 @@
 from typing import NamedTuple
-from FREx.models import DomainObject
+from frex.models import DomainObject
 
 
 class RamenEater(DomainObject, NamedTuple):

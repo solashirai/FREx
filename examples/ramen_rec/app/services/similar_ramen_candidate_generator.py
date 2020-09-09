@@ -1,14 +1,14 @@
-from FREx.services.candidate_generator_service import CandidateGeneratorService
+from frex.pipelines.candidate_generator import CandidateGenerator
 from typing import Tuple, FrozenSet, Dict, List
 from rdflib import URIRef
-from FREx.models import Explanation, Candidate
+from frex.models import Explanation, Candidate
 from examples.ramen_rec.app.models import RamenContext, RamenCandidate
 from examples.ramen_rec.app.services import RamenQueryService
 import numpy as np
 import pickle
 
 
-class SimilarRamenCandidateGeneratorService(CandidateGeneratorService):
+class SimilarRamenCandidateGenerator(CandidateGenerator):
 
     def __init__(self, *, ramen_vector_file: str,
                  ramen_query_service: RamenQueryService):

@@ -2,7 +2,7 @@ from rdflib import Graph
 from rdflib.query import Result
 from pathlib import Path
 from typing import List
-from FREx.stores import SparqlQueryable
+from frex.stores import SparqlQueryable
 
 
 class LocalGraph(SparqlQueryable):

@@ -1,5 +1,5 @@
 from rdflib import Graph
-from FREx.stores import SparqlQueryable, RequestResultCache
+from frex.stores import SparqlQueryable, RequestResultCache
 
 
 class QueryService:
