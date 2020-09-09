@@ -22,14 +22,15 @@ def run_example():
         SimilarRamenCandidateGenerator(ramen_vector_file=(cfg.DATA_DIR / 'ramen-vectors.pkl').resolve(),
                                        ramen_query_service=ramen_q),
 
+        CandidateFilterer(filter_function=FilterSameBrand(),
+                          filter_explanation=Explanation(
+                              explanation_string='This ramen is from a different brand than the target ramen')),
+
         CandidateScorer(scoring_function=ScoreRamenRating(),
                         scoring_explanation=Explanation(explanation_string='This ramen has a high rating score.')),
 
         CandidateScorer(scoring_function=ScoreRamenStyle(),
                         scoring_explanation=Explanation(explanation_string='This ramen is the same style as the target ramen.')),
-
-        CandidateFilterer(filter_function=FilterSameBrand(),
-                          filter_explanation=Explanation(explanation_string='This ramen is from a different brand than the target ramen')),
 
         CandidateRanker()
     ))

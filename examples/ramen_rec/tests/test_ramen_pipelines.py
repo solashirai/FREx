@@ -1,12 +1,9 @@
-from examples.ramen_rec.app.pipelines import SimilarRamenCandidateGenerator
-from examples.ramen_rec.app.models import RamenContext, ScoreRamenStyle, ScoreRamenRating, FilterSameBrand, RamenCandidate
-from examples.ramen_rec.tests.conftest import TestRamens
-from frex.pipelines import CandidateFilterer, CandidateRanker, CandidateScorer
-from frex.models import Explanation
+from examples.ramen_rec.app.models import RamenContext
+from frex.pipelines import PipelineExecutor, CandidateRanker
 from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
 
 
-def test_generate_candidates(ramen_candidate_generator: SimilarRamenCandidateGenerator,
+def test_generate_candidates(ramen_candidate_generator,
                              test_ramen_101, test_ramen_202, test_ramen_103):
 
     recommend_for_context = RamenContext(target_ramen=test_ramen_101)
@@ -50,3 +47,21 @@ def test_filter_same_brand(test_ramen_101, test_ramen_202, test_ramen_103, same_
 
     assert not same_brand_filterer.filter(context=score_context, candidate=cand_202) and \
            same_brand_filterer.filter(context=score_context, candidate=cand_103)
+
+
+def test_full_pipeline(ramen_candidate_generator, same_brand_filterer, style_scorer, rating_scorer, test_ramen_101):
+    ramen_rec_pipe = PipelineExecutor(stages=(
+        ramen_candidate_generator,
+        same_brand_filterer,
+        style_scorer,
+        rating_scorer,
+        CandidateRanker()
+    ))
+    rec_context = RamenContext(target_ramen=test_ramen_101)
+    output_candidates = list(ramen_rec_pipe.execute(context=rec_context))
+
+    best_candidates = output_candidates[:10]
+
+    assert all([candidate.domain_object.style == 'Pack' for candidate in best_candidates]) and \
+        all([candidate.domain_object.rating == 5.0 for candidate in best_candidates]) and \
+        all([len(candidate.applied_scores) == len(candidate.applied_explanations) == 4 for candidate in best_candidates])
