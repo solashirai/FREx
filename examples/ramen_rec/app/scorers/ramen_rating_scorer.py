@@ -1,9 +1,9 @@
-from frex.models import Scorer
+from frex.scorers import CandidateScorer
 from examples.ramen_rec.app.models.ramen_context import RamenContext
 from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
 
 
-class ScoreRamenRating(Scorer):
+class RamenRatingScorer(CandidateScorer):
 
-    def score_input(self, *, context: RamenContext, candidate: RamenCandidate) -> float:
+    def score(self, *, context: RamenContext, candidate: RamenCandidate) -> float:
         return candidate.domain_object.rating / 5.0

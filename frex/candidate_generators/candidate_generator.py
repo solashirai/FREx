@@ -2,12 +2,12 @@ from abc import abstractmethod
 from frex.models.context import Context
 from typing import Tuple, Any, List, Generator
 from frex.models import Candidate, DomainObject
-from frex.pipeline_stages import _Pipeline
+from frex import _PipelineStage
 import numpy as np
 from scipy.sparse import csr_matrix, lil_matrix
 
 
-class CandidateGenerator(_Pipeline):
+class CandidateGenerator(_PipelineStage):
 
     @staticmethod
     def sparse_l2_norm(mat: csr_matrix):

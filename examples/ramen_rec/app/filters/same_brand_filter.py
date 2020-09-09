@@ -1,9 +1,9 @@
-from frex.models import Filter
+from frex.filters import CandidateFilterer
 from examples.ramen_rec.app.models.ramen_context import RamenContext
 from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
 
 
-class FilterSameBrand(Filter):
+class SameBrandFilter(CandidateFilterer):
 
-    def filter_input(self, *, context: RamenContext, candidate: RamenCandidate) -> bool:
+    def filter(self, *, context: RamenContext, candidate: RamenCandidate) -> bool:
         return context.target_ramen.brand == candidate.domain_object.brand

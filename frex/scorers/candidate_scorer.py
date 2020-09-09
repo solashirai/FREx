@@ -1,16 +1,17 @@
+from abc import abstractmethod
 from typing import Tuple, Generator
-from frex.models import Explanation, Candidate, Context, Scorer
-from frex.pipeline_stages import _Pipeline
+from frex.models import Explanation, Candidate, Context
+from frex import _PipelineStage
 
 
-class CandidateScorer(_Pipeline):
+class CandidateScorer(_PipelineStage):
 
-    def __init__(self, *, scoring_function: Scorer, scoring_explanation: Explanation):
-        self.scoring_function = scoring_function
+    def __init__(self, *, scoring_explanation: Explanation):
         self.scoring_explanation = scoring_explanation
 
+    @abstractmethod
     def score(self, *, context: Context, candidate: Candidate) -> float:
-        return self.scoring_function.score_input(context=context, candidate=candidate)
+        pass
 
     def execute(self, *, context: Context, candidates: Generator[Candidate, None, None]) -> \
             Generator[Candidate, None, None]:

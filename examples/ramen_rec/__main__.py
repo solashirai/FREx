@@ -1,36 +1,31 @@
-from pathlib import Path
 from frex.models import Explanation, Candidate, Context
 from frex.stores import LocalGraph
-from frex.pipeline_stages import PipelineExecutor, CandidateScorer, CandidateFilterer, CandidateRanker
-from examples.ramen_rec.app.services import GraphRamenQueryService
-from examples.ramen_rec.app.pipeline_stages import SimilarRamenCandidateGenerator
-from examples.ramen_rec.app.models import RamenContext, FilterSameBrand, ScoreRamenStyle, ScoreRamenRating
-from examples.ramen_rec.app.utils import cfg
+from frex.pipelines import PipelineExecutor
+from frex.scorers import CandidateRanker
+from examples.ramen_rec.app import *
 from rdflib import URIRef
 
 
 def run_example():
     data_files = [
-        (cfg.DATA_DIR / 'ramen-ratings.ttl').resolve(),
-        (cfg.DATA_DIR / 'ramen-users.ttl').resolve()
+        (RamenUtils.DATA_DIR / 'ramen-ratings.ttl').resolve(),
+        (RamenUtils.DATA_DIR / 'ramen-users.ttl').resolve()
     ]
 
     ramen_graph = LocalGraph(file_paths=data_files)
     ramen_q = GraphRamenQueryService(queryable=ramen_graph)
 
     ramen_rec_pipe = PipelineExecutor(stages=(
-        SimilarRamenCandidateGenerator(ramen_vector_file=(cfg.DATA_DIR / 'ramen-vectors.pkl').resolve(),
+        SimilarRamenCandidateGenerator(ramen_vector_file=(RamenUtils.DATA_DIR / 'ramen-vectors.pkl').resolve(),
                                        ramen_query_service=ramen_q),
 
-        CandidateFilterer(filter_function=FilterSameBrand(),
-                          filter_explanation=Explanation(
-                              explanation_string='This ramen is from a different brand than the target ramen')),
+        SameBrandFilter(filter_explanation=Explanation(
+            explanation_string='This ramen is from a different brand than the target ramen')),
 
-        CandidateScorer(scoring_function=ScoreRamenRating(),
-                        scoring_explanation=Explanation(explanation_string='This ramen has a high rating score.')),
+        RamenRatingScorer(scoring_explanation=Explanation(explanation_string='This ramen has a high rating score.')),
 
-        CandidateScorer(scoring_function=ScoreRamenStyle(),
-                        scoring_explanation=Explanation(explanation_string='This ramen is the same style as the target ramen.')),
+        RamenStyleScorer(
+            scoring_explanation=Explanation(explanation_string='This ramen is the same style as the target ramen.')),
 
         CandidateRanker()
     ))
