@@ -4,7 +4,7 @@ from typing import Tuple, Any, List, Generator
 from frex.models import Candidate, DomainObject
 from frex.pipelines import _Pipeline
 import numpy as np
-from scipy.sparse.csr import csr_matrix
+from scipy.sparse import csr_matrix, lil_matrix
 
 
 class CandidateGenerator(_Pipeline):
@@ -38,11 +38,12 @@ class CandidateGenerator(_Pipeline):
         """
         ind_to_item = dict()
         content_matrix = np.zeros(shape=(len(comparison_items), target_vector.shape[1]))
-        content_matrix = csr_matrix(content_matrix)
+        content_matrix = lil_matrix(content_matrix)
         for item_ind, item in enumerate(comparison_items):
             ind_to_item[item_ind] = item
             content_matrix[item_ind] = comparison_contents[item_ind]
 
+        content_matrix = content_matrix.tocsr()
         cosine_sims: List[float] = CandidateGenerator.cosine_sim(comparison_vector=target_vector,
                                                                  comparison_matrix=content_matrix).tolist()[0]
 

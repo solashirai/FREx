@@ -7,7 +7,7 @@ class CandidateRanker(_Pipeline):
 
     def execute(self, *, context: Context, candidates: Generator[Candidate, None, None]) -> \
             Generator[Candidate, None, None]:
-        all_candidates = [candidate for candidate in candidates]
+        all_candidates = list(candidates)
 
         sorted_candidates = sorted(all_candidates, key=lambda c: c.total_score, reverse=True)
         for sorted_candidate in sorted_candidates:

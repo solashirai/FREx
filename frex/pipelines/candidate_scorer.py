@@ -18,4 +18,3 @@ class CandidateScorer(_Pipeline):
             candidate.applied_explanations.append(self.scoring_explanation)
             candidate.applied_scores.append(self.score(context=context, candidate=candidate))
             yield candidate
-        return

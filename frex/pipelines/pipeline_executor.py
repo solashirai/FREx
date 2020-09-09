@@ -9,7 +9,7 @@ class PipelineExecutor(_Pipeline):
         self.stages = stages
 
     def execute(self, *, context: Context = None, candidates: Generator[Candidate, None, None] = ()) -> \
-            Tuple[Candidate, ...]:
+            Generator[Candidate, None, None]:
         for stage in self.stages:
             candidates = stage.execute(context=context, candidates=candidates)
-        return tuple(c for c in candidates)
+        return candidates

@@ -22,4 +22,3 @@ class CandidateFilterer(_Pipeline):
                 candidate.applied_explanations.append(self.filter_explanation)
                 candidate.applied_scores.append(self.filter_score)
                 yield candidate
-        return
