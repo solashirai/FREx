@@ -4,6 +4,6 @@ from rdflib import URIRef
 
 
 @dataclass_json
-@dataclass
+@dataclass(frozen=True)
 class DomainObject:
     uri: URIRef

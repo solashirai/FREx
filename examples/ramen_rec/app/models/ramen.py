@@ -4,7 +4,7 @@ from frex.models import DomainObject
 
 
 @dataclass_json
-@dataclass
+@dataclass(frozen=True)
 class Ramen(DomainObject):
     label: str
     brand: str

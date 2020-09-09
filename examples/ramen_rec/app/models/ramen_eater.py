@@ -5,7 +5,7 @@ from dataclasses_json import dataclass_json
 
 
 @dataclass_json
-@dataclass
+@dataclass(frozen=True)
 class RamenEater(DomainObject):
-    likesRamenFrom: str
-    likesRamenStyle: str
+    likes_ramen_from: str
+    likes_ramen_style: str
