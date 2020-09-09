@@ -1,10 +1,11 @@
-from typing import NamedTuple
-from rdflib import URIRef
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 from frex.models import DomainObject
 
 
-class Ramen(NamedTuple, DomainObject):
-    uri: URIRef
+@dataclass_json
+@dataclass
+class Ramen(DomainObject):
     label: str
     brand: str
     country: str

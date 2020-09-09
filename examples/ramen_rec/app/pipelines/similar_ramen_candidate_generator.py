@@ -1,9 +1,9 @@
 from frex.pipelines.candidate_generator import CandidateGenerator
-from typing import Tuple, FrozenSet, Dict, List
+from typing import Dict, List, Generator
 from rdflib import URIRef
 from frex.models import Explanation, Candidate
 from examples.ramen_rec.app.models import RamenContext, RamenCandidate
-from examples.ramen_rec.app.services import RamenQueryService
+from examples.ramen_rec.app.services import GraphRamenQueryService
 import numpy as np
 import pickle
 
@@ -11,13 +11,12 @@ import pickle
 class SimilarRamenCandidateGenerator(CandidateGenerator):
 
     def __init__(self, *, ramen_vector_file: str,
-                 ramen_query_service: RamenQueryService):
+                 ramen_query_service: GraphRamenQueryService):
         with open(ramen_vector_file, 'rb') as f:
             self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
         self.ramen_query_service = ramen_query_service
 
-    def get_candidates(self, *, context: RamenContext) -> Tuple[Candidate, ...]:
-        ramen_sim_scores = dict()
+    def get_candidates(self, *, context: RamenContext) -> Generator[Candidate, None, None]:
         target_ramen_uri = context.target_ramen.uri
         target_ramen_vector = self.ramen_vector_dict[target_ramen_uri]
 
@@ -36,11 +35,9 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
         sorted_uris: List[URIRef] = self.get_top_n_candidates(candidate_score_dict=ramen_sim_scores, top_n=50)
 
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=sorted_uris)
-        return tuple(
-            RamenCandidate(
-                domain_object=ramen,
-                applied_explanations=[
-                    Explanation(explanation_string=f'This ramen is identified as being similar to the target ramen.')
-                ],
-                applied_scores=[0])
-            for ramen in ramens)
+        for ramen in ramens:
+            yield RamenCandidate(domain_object=ramen,
+                                 applied_explanations=[
+                                     Explanation(explanation_string=f'This ramen is identified as being similar to the target ramen.')
+                                 ],
+                                 applied_scores=[0])

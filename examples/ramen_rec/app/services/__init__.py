@@ -1,2 +1,2 @@
 from .ramen_query_service import RamenQueryService
-from .similar_ramen_candidate_generator import SimilarRamenCandidateGenerator
+from .graph_ramen_query_service import GraphRamenQueryService

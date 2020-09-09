@@ -1,7 +1,10 @@
 from frex.models import Context
 from examples.ramen_rec.app.models.ramen_eater import RamenEater
-from typing import NamedTuple
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json
 
 
-class RamenEaterContext(NamedTuple, Context):
+@dataclass_json
+@dataclass
+class RamenEaterContext(Context):
     ramen_eater_profile: RamenEater
