@@ -1,7 +1,7 @@
-from frex.models import Explanation, Candidate, Context
+from frex.models import Explanation
 from frex.stores import LocalGraph
 from frex.pipelines import PipelineExecutor
-from frex.scorers import CandidateRanker
+from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app import *
 from rdflib import URIRef
 

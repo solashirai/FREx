@@ -1,4 +1,4 @@
-from frex.filters import CandidateFilterer
+from frex.pipeline_stages.filters import CandidateFilterer
 from examples.ramen_rec.app.models.ramen_context import RamenContext
 from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
 

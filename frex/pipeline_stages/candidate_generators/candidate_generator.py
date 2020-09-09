@@ -2,7 +2,7 @@ from abc import abstractmethod
 from frex.models.context import Context
 from typing import Tuple, Any, List, Generator
 from frex.models import Candidate, DomainObject
-from frex import _PipelineStage
+from frex.pipeline_stages import _PipelineStage
 import numpy as np
 from scipy.sparse import csr_matrix, lil_matrix
 

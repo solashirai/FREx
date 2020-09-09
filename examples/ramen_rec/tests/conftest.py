@@ -1,11 +1,10 @@
 import pytest
-from rdflib import Namespace, URIRef
-from examples.ramen_rec.app.utils import ramen_utils
+from rdflib import Namespace
 from examples.ramen_rec.app import *
 from frex.stores import LocalGraph
 from frex.models import Explanation
-from frex.scorers import CandidateScorer
-from frex.filters import CandidateFilterer
+from frex.pipeline_stages.scorers import CandidateScorer
+from frex.pipeline_stages.filters import CandidateFilterer
 
 ramen_onto_ns = Namespace('http://www.frex.com/examples/ramenOnto/')
 ramen_ns = Namespace('http://www.frex.com/examples/ramen/')

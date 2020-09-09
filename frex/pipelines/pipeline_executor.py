@@ -1,5 +1,6 @@
 from typing import Tuple, Generator
-from frex import _Pipeline, _PipelineStage
+from frex.pipelines import _Pipeline
+from frex.pipeline_stages import _PipelineStage
 from frex.models import Context, Candidate
 
 
