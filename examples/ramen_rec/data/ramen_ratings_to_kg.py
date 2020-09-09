@@ -9,33 +9,70 @@ def convert():
     Don't look to this KG as an example of a good KG...
     """
     ramen_data = []
-    with open('ramen-ratings.csv', 'r', encoding='utf-8') as f:
-        next(f) #skip first line, header for CSV
+    with open("ramen-ratings.csv", "r", encoding="utf-8") as f:
+        next(f)  # skip first line, header for CSV
         for line in f:
-            #Review #,Brand,Variety,Style,Country,Stars,Top Ten
+            # Review #,Brand,Variety,Style,Country,Stars,Top Ten
             ramen_content = line.strip().split(",")[:-1]
             if len(ramen_content) != 6:
                 continue
             ramen_data.append(tuple(ramen_content))
 
-    ramen_ns = rdflib.Namespace('http://www.frex.com/examples/ramen/')
-    ramen_onto_ns = rdflib.Namespace('http://www.frex.com/examples/ramenOnto/')
+    ramen_ns = rdflib.Namespace("http://www.frex.com/examples/ramen/")
+    ramen_onto_ns = rdflib.Namespace("http://www.frex.com/examples/ramenOnto/")
     output_graph = rdflib.Graph()
     for ramen_content in ramen_data:
-        output_graph.add((ramen_ns[ramen_content[0]], RDF['type'], ramen_onto_ns['ramen']))
-        output_graph.add((ramen_ns[ramen_content[0]], ramen_onto_ns['brand'], rdflib.Literal(ramen_content[1])))
-        output_graph.add((ramen_ns[ramen_content[0]], RDFS['label'], rdflib.Literal(ramen_content[2])))
-        output_graph.add((ramen_ns[ramen_content[0]], ramen_onto_ns['style'], rdflib.Literal(ramen_content[3])))
-        output_graph.add((ramen_ns[ramen_content[0]], ramen_onto_ns['country'], rdflib.Literal(ramen_content[4])))
-        if ramen_content[5] == 'Unrated':
+        output_graph.add(
+            (ramen_ns[ramen_content[0]], RDF["type"], ramen_onto_ns["ramen"])
+        )
+        output_graph.add(
+            (
+                ramen_ns[ramen_content[0]],
+                ramen_onto_ns["brand"],
+                rdflib.Literal(ramen_content[1]),
+            )
+        )
+        output_graph.add(
+            (
+                ramen_ns[ramen_content[0]],
+                RDFS["label"],
+                rdflib.Literal(ramen_content[2]),
+            )
+        )
+        output_graph.add(
+            (
+                ramen_ns[ramen_content[0]],
+                ramen_onto_ns["style"],
+                rdflib.Literal(ramen_content[3]),
+            )
+        )
+        output_graph.add(
+            (
+                ramen_ns[ramen_content[0]],
+                ramen_onto_ns["country"],
+                rdflib.Literal(ramen_content[4]),
+            )
+        )
+        if ramen_content[5] == "Unrated":
             # there's a few cases of unrated ramens, we'll just convert those to 2.5 for this toy example
-            output_graph.add((ramen_ns[ramen_content[0]], ramen_onto_ns['rating'],
-                              rdflib.Literal(2.5, datatype=XSD.float)))
+            output_graph.add(
+                (
+                    ramen_ns[ramen_content[0]],
+                    ramen_onto_ns["rating"],
+                    rdflib.Literal(2.5, datatype=XSD.float),
+                )
+            )
         else:
-            output_graph.add((ramen_ns[ramen_content[0]], ramen_onto_ns['rating'],
-                              rdflib.Literal(ramen_content[5], datatype=XSD.float)))
+            output_graph.add(
+                (
+                    ramen_ns[ramen_content[0]],
+                    ramen_onto_ns["rating"],
+                    rdflib.Literal(ramen_content[5], datatype=XSD.float),
+                )
+            )
 
-    output_graph.serialize('ramen-ratings.ttl', format='ttl')
+    output_graph.serialize("ramen-ratings.ttl", format="ttl")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     convert()

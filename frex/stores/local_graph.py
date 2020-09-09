@@ -6,7 +6,6 @@ from frex.stores import SparqlQueryable
 
 
 class LocalGraph(SparqlQueryable):
-
     def __init__(self, *, file_paths: List[Path]):
         self.graph = Graph()
         for file_path in file_paths:
@@ -17,7 +16,7 @@ class LocalGraph(SparqlQueryable):
 
     def __parse_ttl_file(self, *, file_path: Path) -> None:
 
-        return self.graph.parse(str(file_path), format='ttl')
+        return self.graph.parse(str(file_path), format="ttl")
 
     def query(self, *, sparql: str) -> Result:
         return self.graph.query(sparql)

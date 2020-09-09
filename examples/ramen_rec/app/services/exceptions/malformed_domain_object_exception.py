@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class MalformedDomainObjectException(MalformedContentException):
-
     def __init__(self, *, uri: URIRef, message: Optional[str] = None):
         if not message:
             message = f"Object content malformed for URI: {uri}"

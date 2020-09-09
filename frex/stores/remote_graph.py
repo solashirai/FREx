@@ -5,7 +5,6 @@ from frex.stores import SparqlQueryable
 
 
 class RemoteGraph(SparqlQueryable):
-
     def __init__(self, *, endpoint: str):
         self.graph = SPARQLStore(endpoint)
 

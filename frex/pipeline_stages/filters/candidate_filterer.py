@@ -5,9 +5,7 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateFilterer(_PipelineStage):
-
-    def __init__(self, *, filter_explanation: Explanation,
-                 filter_score: float = 0):
+    def __init__(self, *, filter_explanation: Explanation, filter_score: float = 0):
         self.filter_explanation = filter_explanation
         self.filter_score = filter_score
 
@@ -15,8 +13,9 @@ class CandidateFilterer(_PipelineStage):
     def filter(self, *, context: Context, candidate: Candidate) -> bool:
         pass
 
-    def execute(self, *, context: Context, candidates: Generator[Candidate, None, None]) ->\
-            Generator[Candidate, None, None]:
+    def execute(
+        self, *, context: Context, candidates: Generator[Candidate, None, None]
+    ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
             if not self.filter(context=context, candidate=candidate):
                 candidate.applied_explanations.append(self.filter_explanation)

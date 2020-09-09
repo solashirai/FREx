@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class MalformedContentException(CustomException):
-
     def __init__(self, *, uri: URIRef, message: Optional[str] = None):
         self.__uri = uri
         if not message:

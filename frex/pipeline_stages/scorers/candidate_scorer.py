@@ -5,7 +5,6 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateScorer(_PipelineStage):
-
     def __init__(self, *, scoring_explanation: Explanation):
         self.scoring_explanation = scoring_explanation
 
@@ -13,9 +12,12 @@ class CandidateScorer(_PipelineStage):
     def score(self, *, context: Context, candidate: Candidate) -> float:
         pass
 
-    def execute(self, *, context: Context, candidates: Generator[Candidate, None, None]) -> \
-            Generator[Candidate, None, None]:
+    def execute(
+        self, *, context: Context, candidates: Generator[Candidate, None, None]
+    ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
             candidate.applied_explanations.append(self.scoring_explanation)
-            candidate.applied_scores.append(self.score(context=context, candidate=candidate))
+            candidate.applied_scores.append(
+                self.score(context=context, candidate=candidate)
+            )
             yield candidate
