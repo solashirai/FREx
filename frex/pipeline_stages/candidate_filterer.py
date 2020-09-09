@@ -1,6 +1,6 @@
 from typing import Generator
 from frex.models import Explanation, Candidate, Context, Filter
-from frex.pipelines import _Pipeline
+from frex.pipeline_stages import _Pipeline
 
 
 class CandidateFilterer(_Pipeline):

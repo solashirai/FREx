@@ -1,5 +1,5 @@
 from examples.ramen_rec.app.models import RamenContext
-from frex.pipelines import PipelineExecutor, CandidateRanker
+from frex.pipeline_stages import PipelineExecutor, CandidateRanker
 from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
 
 

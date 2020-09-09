@@ -1,6 +1,6 @@
 from typing import Tuple, Generator
 from frex.models import Explanation, Candidate, Context, Scorer
-from frex.pipelines import _Pipeline
+from frex.pipeline_stages import _Pipeline
 
 
 class CandidateScorer(_Pipeline):

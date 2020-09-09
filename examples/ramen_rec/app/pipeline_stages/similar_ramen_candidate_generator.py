@@ -1,4 +1,4 @@
-from frex.pipelines.candidate_generator import CandidateGenerator
+from frex.pipeline_stages.candidate_generator import CandidateGenerator
 from typing import Dict, List, Generator
 from rdflib import URIRef
 from frex.models import Explanation, Candidate

@@ -2,11 +2,11 @@ import pytest
 from rdflib import Namespace, URIRef
 from examples.ramen_rec.app.utils import cfg
 from examples.ramen_rec.app.services import GraphRamenQueryService
-from examples.ramen_rec.app.pipelines import SimilarRamenCandidateGenerator
+from examples.ramen_rec.app.pipeline_stages import SimilarRamenCandidateGenerator
 from examples.ramen_rec.app.models import Ramen, ScoreRamenRating, ScoreRamenStyle, FilterSameBrand, RamenCandidate
 from frex.stores import LocalGraph
 from frex.models import Explanation
-from frex.pipelines import CandidateScorer, CandidateFilterer
+from frex.pipeline_stages import CandidateScorer, CandidateFilterer
 
 ramen_onto_ns = Namespace('http://www.frex.com/examples/ramenOnto/')
 ramen_ns = Namespace('http://www.frex.com/examples/ramen/')

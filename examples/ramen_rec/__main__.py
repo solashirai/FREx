@@ -1,9 +1,9 @@
 from pathlib import Path
 from frex.models import Explanation, Candidate, Context
 from frex.stores import LocalGraph
-from frex.pipelines import PipelineExecutor, CandidateScorer, CandidateFilterer, CandidateRanker
+from frex.pipeline_stages import PipelineExecutor, CandidateScorer, CandidateFilterer, CandidateRanker
 from examples.ramen_rec.app.services import GraphRamenQueryService
-from examples.ramen_rec.app.pipelines import SimilarRamenCandidateGenerator
+from examples.ramen_rec.app.pipeline_stages import SimilarRamenCandidateGenerator
 from examples.ramen_rec.app.models import RamenContext, FilterSameBrand, ScoreRamenStyle, ScoreRamenRating
 from examples.ramen_rec.app.utils import cfg
 from rdflib import URIRef
