@@ -20,7 +20,7 @@ def convert():
                 continue
             ramen_data.append(tuple(ramen_content))
 
-    ramen_ns = rdflib.Namespace('http://www.erf.com/examples/ramen/')
+    ramen_ns = rdflib.Namespace('http://www.frex.com/examples/ramen/')
     uri_to_items = dict()
 
     for ramen_content in ramen_data:

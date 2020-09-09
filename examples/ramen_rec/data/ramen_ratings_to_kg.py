@@ -18,8 +18,8 @@ def convert():
                 continue
             ramen_data.append(tuple(ramen_content))
 
-    ramen_ns = rdflib.Namespace('http://www.erf.com/examples/ramen/')
-    ramen_onto_ns = rdflib.Namespace('http://www.erf.com/examples/ramenOnto/')
+    ramen_ns = rdflib.Namespace('http://www.frex.com/examples/ramen/')
+    ramen_onto_ns = rdflib.Namespace('http://www.frex.com/examples/ramenOnto/')
     output_graph = rdflib.Graph()
     for ramen_content in ramen_data:
         output_graph.add((ramen_ns[ramen_content[0]], RDF['type'], ramen_onto_ns['ramen']))
