@@ -1,0 +1,52 @@
+from examples.ramen_rec.app.pipelines import SimilarRamenCandidateGenerator
+from examples.ramen_rec.app.models import RamenContext, ScoreRamenStyle, ScoreRamenRating, FilterSameBrand, RamenCandidate
+from examples.ramen_rec.tests.conftest import TestRamens
+from frex.pipelines import CandidateFilterer, CandidateRanker, CandidateScorer
+from frex.models import Explanation
+from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
+
+
+def test_generate_candidates(ramen_candidate_generator: SimilarRamenCandidateGenerator,
+                             test_ramen_101, test_ramen_202, test_ramen_103):
+
+    recommend_for_context = RamenContext(target_ramen=test_ramen_101)
+
+    candidates = list(ramen_candidate_generator.get_candidates(context=recommend_for_context))
+    candidate_ramens = {candidate.domain_object.to_json() for candidate in candidates}
+
+    # length set to 50 is just set by implementation of similar_ramen_candidate_generator
+    assert len(candidates) == 50 and \
+           test_ramen_101.to_json() not in candidate_ramens and \
+           test_ramen_202.to_json() not in candidate_ramens and \
+           test_ramen_103.to_json() in candidate_ramens
+
+
+def test_score_rating(test_ramen_101, test_ramen_202, test_ramen_103, rating_scorer):
+    score_context = RamenContext(target_ramen=test_ramen_101)
+
+    cand_202 = placeholder_ramen_candidate(test_ramen_202)
+    cand_103 = placeholder_ramen_candidate(test_ramen_103)
+
+    assert rating_scorer.score(context=score_context, candidate=cand_202) == cand_202.domain_object.rating/5 and \
+           rating_scorer.score(context=score_context, candidate=cand_103) == cand_103.domain_object.rating/5
+
+
+def test_score_style(test_ramen_101, test_ramen_202, test_ramen_103, style_scorer):
+    score_context = RamenContext(target_ramen=test_ramen_101)
+
+    cand_202 = placeholder_ramen_candidate(test_ramen_202)
+    cand_103 = placeholder_ramen_candidate(test_ramen_103)
+
+
+    assert style_scorer.score(context=score_context, candidate=cand_202) == 0 and \
+           style_scorer.score(context=score_context, candidate=cand_103) == 1
+
+
+def test_filter_same_brand(test_ramen_101, test_ramen_202, test_ramen_103, same_brand_filterer):
+    score_context = RamenContext(target_ramen=test_ramen_101)
+
+    cand_202 = placeholder_ramen_candidate(test_ramen_202)
+    cand_103 = placeholder_ramen_candidate(test_ramen_103)
+
+    assert not same_brand_filterer.filter(context=score_context, candidate=cand_202) and \
+           same_brand_filterer.filter(context=score_context, candidate=cand_103)

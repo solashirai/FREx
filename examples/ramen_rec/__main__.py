@@ -5,22 +5,21 @@ from frex.pipelines import PipelineExecutor, CandidateScorer, CandidateFilterer,
 from examples.ramen_rec.app.services import GraphRamenQueryService
 from examples.ramen_rec.app.pipelines import SimilarRamenCandidateGenerator
 from examples.ramen_rec.app.models import RamenContext, FilterSameBrand, ScoreRamenStyle, ScoreRamenRating
+from examples.ramen_rec.app.utils import cfg
 from rdflib import URIRef
 
 
 def run_example():
-    SRC_ROOT = Path(__file__).parent.parent
-    DATA_DIR = (SRC_ROOT / 'data').resolve()
     data_files = [
-        (DATA_DIR / 'ramen-ratings.ttl').resolve(),
-        (DATA_DIR / 'ramen-users.ttl').resolve()
+        (cfg.DATA_DIR / 'ramen-ratings.ttl').resolve(),
+        (cfg.DATA_DIR / 'ramen-users.ttl').resolve()
     ]
 
     ramen_graph = LocalGraph(file_paths=data_files)
     ramen_q = GraphRamenQueryService(queryable=ramen_graph)
 
     ramen_rec_pipe = PipelineExecutor(stages=(
-        SimilarRamenCandidateGenerator(ramen_vector_file=(DATA_DIR / 'ramen-vectors.pkl').resolve(),
+        SimilarRamenCandidateGenerator(ramen_vector_file=(cfg.DATA_DIR / 'ramen-vectors.pkl').resolve(),
                                        ramen_query_service=ramen_q),
 
         CandidateScorer(scoring_function=ScoreRamenRating(),
