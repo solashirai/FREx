@@ -1,3 +1,4 @@
+from .exceptions import *
 from .sparql_queryable import SparqlQueryable
 from .local_graph import LocalGraph
 from .remote_graph import RemoteGraph

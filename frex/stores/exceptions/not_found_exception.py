@@ -1,4 +1,4 @@
-from frex.pipelines.exceptions import CustomException
+from frex.stores.exceptions import CustomException
 from rdflib import URIRef
 from typing import Optional
 

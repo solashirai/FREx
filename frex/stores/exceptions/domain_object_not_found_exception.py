@@ -1,4 +1,4 @@
-from frex.pipelines.exceptions import NotFoundException
+from frex.stores.exceptions import NotFoundException
 from rdflib import URIRef
 from typing import Optional
 

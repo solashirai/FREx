@@ -1,4 +1,4 @@
-from frex.pipelines.exceptions import MalformedContentException
+from frex.stores.exceptions import MalformedContentException
 from rdflib import URIRef
 from typing import Optional
 
