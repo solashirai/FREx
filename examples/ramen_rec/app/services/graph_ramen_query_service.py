@@ -1,4 +1,4 @@
-from frex.stores.exceptions import *
+from examples.ramen_rec.app.services.exceptions import *
 from frex.stores import LocalGraph, RequestResultCache, SparqlQueryable
 from rdflib import URIRef, Graph
 from rdflib.namespace import RDF, RDFS

@@ -29,7 +29,7 @@ def graph_ramen_query_service(ramen_graph) -> GraphRamenQueryService:
 
 @pytest.fixture(scope='session')
 def ramen_candidate_generator(graph_ramen_query_service) -> SimilarRamenCandidateGenerator:
-    ram_gen = SimilarRamenCandidateGenerator(ramen_vector_file=(ramen_utils.DATA_DIR / 'ramen-vectors.pkl').resolve(),
+    ram_gen = SimilarRamenCandidateGenerator(ramen_vector_file=(RamenUtils.DATA_DIR / 'ramen-vectors.pkl').resolve(),
                                              ramen_query_service=graph_ramen_query_service)
     return ram_gen
 

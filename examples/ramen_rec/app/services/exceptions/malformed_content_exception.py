@@ -1,14 +1,14 @@
-from frex.stores.exceptions import CustomException
+from examples.ramen_rec.app.services.exceptions import CustomException
 from rdflib import URIRef
 from typing import Optional
 
 
-class NotFoundException(CustomException):
+class MalformedContentException(CustomException):
 
     def __init__(self, *, uri: URIRef, message: Optional[str] = None):
         self.__uri = uri
         if not message:
-            message = f"URI not found: {uri}"
+            message = f"Content malformed: {uri}"
         CustomException.__init__(self, message=message)
 
     @property

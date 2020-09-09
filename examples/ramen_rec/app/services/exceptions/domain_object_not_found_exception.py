@@ -1,4 +1,4 @@
-from frex.stores.exceptions import NotFoundException
+from examples.ramen_rec.app.services.exceptions import NotFoundException
 from rdflib import URIRef
 from typing import Optional
 

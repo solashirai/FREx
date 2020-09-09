@@ -1,4 +1,4 @@
-from frex.stores.exceptions import MalformedContentException
+from examples.ramen_rec.app.services.exceptions import MalformedContentException
 from rdflib import URIRef
 from typing import Optional
 
