@@ -5,6 +5,5 @@ from examples.ramen_rec.app.models import RamenEater
 
 
 class RamenEaterQueryService(ABC):
-
     def get_ramen_eater_by_uri(self, *, ramen_eater_uri: URIRef) -> RamenEater:
         pass

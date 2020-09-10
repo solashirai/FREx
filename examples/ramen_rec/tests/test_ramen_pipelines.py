@@ -1,6 +1,6 @@
 from frex.pipelines import PipelineExecutor
 from frex.pipeline_stages.scorers import CandidateRanker
-from examples.ramen_rec.app.models import RamenContext
+from examples.ramen_rec.app.models import RamenContext, RamenEaterContext
 from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
 
 
@@ -63,7 +63,7 @@ def test_filter_same_brand(
     ) and same_brand_filterer.filter(context=score_context, candidate=cand_103)
 
 
-def test_full_pipeline(
+def test_full_ramen_pipeline(
     ramen_candidate_generator,
     same_brand_filterer,
     style_scorer,
@@ -97,4 +97,70 @@ def test_full_pipeline(
                 for candidate in best_candidates
             ]
         )
+    )
+
+
+def test_filter_prohibited_country(
+    test_ramen_101,
+    test_ramen_202,
+    prohibited_country_filterer,
+    test_ramen_eater_01_context,
+):
+
+    cand_202 = placeholder_ramen_candidate(test_ramen_202)
+    cand_101 = placeholder_ramen_candidate(test_ramen_101)
+
+    assert prohibited_country_filterer.filter(
+        context=test_ramen_eater_01_context, candidate=cand_202
+    ) and not prohibited_country_filterer.filter(
+        context=test_ramen_eater_01_context, candidate=cand_101
+    )
+
+
+def test_score_likes_brand(
+    test_ramen_101, test_ramen_1011, likes_brand_scorer, test_ramen_eater_01_context
+):
+    cand_1011 = placeholder_ramen_candidate(test_ramen_1011)
+    cand_101 = placeholder_ramen_candidate(test_ramen_101)
+
+    assert likes_brand_scorer.score(
+        context=test_ramen_eater_01_context, candidate=cand_101
+    ) == (False, 0) and likes_brand_scorer.score(
+        context=test_ramen_eater_01_context, candidate=cand_1011
+    ) == (
+        True,
+        1,
+    )
+
+
+def test_score_likes_style(
+    test_ramen_101, test_ramen_1011, likes_style_scorer, test_ramen_eater_01_context
+):
+    cand_1011 = placeholder_ramen_candidate(test_ramen_1011)
+    cand_101 = placeholder_ramen_candidate(test_ramen_101)
+
+    assert likes_style_scorer.score(
+        context=test_ramen_eater_01_context, candidate=cand_101
+    ) == (True, 1) and likes_style_scorer.score(
+        context=test_ramen_eater_01_context, candidate=cand_1011
+    ) == (
+        False,
+        0,
+    )
+
+
+def test_score_likes_country(
+    test_ramen_101, test_ramen_1011, likes_country_scorer, test_ramen_eater_01_context
+):
+
+    cand_101 = placeholder_ramen_candidate(test_ramen_101)
+    cand_1011 = placeholder_ramen_candidate(test_ramen_1011)
+
+    assert likes_country_scorer.score(
+        context=test_ramen_eater_01_context, candidate=cand_101
+    ) == (True, 1) and likes_country_scorer.score(
+        context=test_ramen_eater_01_context, candidate=cand_1011
+    ) == (
+        False,
+        0,
     )

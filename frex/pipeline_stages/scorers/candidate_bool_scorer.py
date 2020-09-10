@@ -5,8 +5,12 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateBoolScorer(_PipelineStage):
-    def __init__(self, *, success_scoring_explanation: Explanation,
-                 failure_scoring_explanation: Explanation):
+    def __init__(
+        self,
+        *,
+        success_scoring_explanation: Explanation,
+        failure_scoring_explanation: Explanation
+    ):
         self.success_scoring_explanation = success_scoring_explanation
         self.failure_scoring_explanation = failure_scoring_explanation
 
@@ -23,7 +27,5 @@ class CandidateBoolScorer(_PipelineStage):
                 candidate.applied_explanations.append(self.success_scoring_explanation)
             else:
                 candidate.applied_explanations.append(self.failure_scoring_explanation)
-            candidate.applied_scores.append(
-                score
-            )
+            candidate.applied_scores.append(score)
             yield candidate

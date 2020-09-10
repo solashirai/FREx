@@ -3,7 +3,7 @@ from rdflib import Namespace, URIRef
 from examples.ramen_rec.app import *
 from frex.stores import LocalGraph
 from frex.models import Explanation
-from frex.pipeline_stages.scorers import CandidateScorer
+from frex.pipeline_stages.scorers import CandidateScorer, CandidateBoolScorer
 from frex.pipeline_stages.filters import CandidateFilterer
 
 ramen_onto_ns = Namespace("http://www.frex.com/examples/ramenOnto/")
@@ -37,11 +37,20 @@ def graph_ramen_eater_query_service(ramen_graph) -> GraphRamenEaterQueryService:
 def ramen_candidate_generator(
     graph_ramen_query_service,
 ) -> SimilarRamenCandidateGenerator:
-    ram_gen = SimilarRamenCandidateGenerator(
+    return SimilarRamenCandidateGenerator(
         ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
         ramen_query_service=graph_ramen_query_service,
     )
-    return ram_gen
+
+
+@pytest.fixture(scope="session")
+def ramen_eater_candidate_generator(
+    graph_ramen_query_service,
+) -> MatchEaterLikesRamenCandidateGenerator:
+    return MatchEaterLikesRamenCandidateGenerator(
+        ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
+        ramen_query_service=graph_ramen_query_service,
+    )
 
 
 @pytest.fixture(scope="session")
@@ -68,6 +77,51 @@ def same_brand_filterer() -> CandidateFilterer:
         filter_explanation=Explanation(
             explanation_string="This ramen is from a different brand than the target ramen"
         )
+    )
+
+
+@pytest.fixture(scope="session")
+def prohibited_country_filterer() -> CandidateFilterer:
+    return RamenEaterProhibitCountryFilter(
+        filter_explanation=Explanation(
+            explanation_string="This ramen is not from a prohibited country."
+        )
+    )
+
+
+@pytest.fixture(scope="session")
+def likes_style_scorer() -> CandidateBoolScorer:
+    return RamenEaterLikesStyleScorer(
+        success_scoring_explanation=Explanation(
+            explanation_string="This ramen is a style that the user likes."
+        ),
+        failure_scoring_explanation=Explanation(
+            explanation_string="This ramen is not a style that the user likes."
+        ),
+    )
+
+
+@pytest.fixture(scope="session")
+def likes_country_scorer() -> CandidateBoolScorer:
+    return RamenEaterLikesCountryScorer(
+        success_scoring_explanation=Explanation(
+            explanation_string="This ramen is from a country that the user likes."
+        ),
+        failure_scoring_explanation=Explanation(
+            explanation_string="This ramen is from not a country that the user likes."
+        ),
+    )
+
+
+@pytest.fixture(scope="session")
+def likes_brand_scorer() -> CandidateBoolScorer:
+    return RamenEaterLikesBrandScorer(
+        success_scoring_explanation=Explanation(
+            explanation_string="This ramen is from a brand that the user likes."
+        ),
+        failure_scoring_explanation=Explanation(
+            explanation_string="This ramen is from not a brand that the user likes."
+        ),
     )
 
 
@@ -108,6 +162,18 @@ def test_ramen_103() -> Ramen:
 
 
 @pytest.fixture(scope="session")
+def test_ramen_1011() -> Ramen:
+    return Ramen(
+        uri=ramen_ns["1011"],
+        label="Bowl Hot & Spicy Chicken Flavor Ramen Noodles With Vegetables",
+        brand="Maruchan",
+        rating=4.0,
+        country="USA",
+        style="Bowl",
+    )
+
+
+@pytest.fixture(scope="session")
 def test_ramen_eater_01() -> RamenEater:
     return RamenEater(
         uri=ex_ns["USR01"],
@@ -122,6 +188,11 @@ def test_ramen_eater_01() -> RamenEater:
             ]
         ),
     )
+
+
+@pytest.fixture(scope="session")
+def test_ramen_eater_01_context(test_ramen_eater_01) -> RamenEaterContext:
+    return RamenEaterContext(ramen_eater_profile=test_ramen_eater_01)
 
 
 def placeholder_ramen_candidate(dom_obj: Ramen) -> RamenCandidate:

@@ -23,7 +23,9 @@ def run_and_display(*, pipe: PipelineExecutor, context: Context):
         print(c.domain_object.to_json())
         print(f"Scores -- Explanations:")
         for expl_ind, expl in enumerate(c.applied_explanations):
-            print(f'Score {float(c.applied_scores[expl_ind]):4.3} -- {expl.explanation_string}')
+            print(
+                f"Score {float(c.applied_scores[expl_ind]):4.3} -- {expl.explanation_string}"
+            )
 
 
 def demo_similar_ramens(*, ramen_uri: URIRef):
@@ -89,7 +91,9 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
 
     print(f"Demo retrieve 'recommendations' for ramens eater {ramen_eater_uri}")
     try:
-        target_ramen_eater = ramen_eater_q.get_ramen_eater_by_uri(ramen_eater_uri=ramen_eater_uri)
+        target_ramen_eater = ramen_eater_q.get_ramen_eater_by_uri(
+            ramen_eater_uri=ramen_eater_uri
+        )
     except DomainObjectNotFoundException:
         print(f"Target ramen eater with URI {ramen_eater_uri} not found.")
         sys.exit(2)
@@ -119,7 +123,7 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
                 ),
                 failure_scoring_explanation=Explanation(
                     explanation_string="This ramen is from not a brand that the user likes."
-                )
+                ),
             ),
             RamenEaterLikesStyleScorer(
                 success_scoring_explanation=Explanation(
@@ -127,7 +131,7 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
                 ),
                 failure_scoring_explanation=Explanation(
                     explanation_string="This ramen is not a style that the user likes."
-                )
+                ),
             ),
             RamenEaterLikesCountryScorer(
                 success_scoring_explanation=Explanation(
@@ -135,7 +139,7 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
                 ),
                 failure_scoring_explanation=Explanation(
                     explanation_string="This ramen is from not a country that the user likes."
-                )
+                ),
             ),
             CandidateRanker(),
         )

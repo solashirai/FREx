@@ -58,7 +58,7 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
                 domain_object=ramen,
                 applied_explanations=[
                     Explanation(
-                        explanation_string=f"This ramen is identified as being similar to all of the user\'s favorite ramens."
+                        explanation_string=f"This ramen is identified as being similar to all of the user's favorite ramens."
                     )
                 ],
                 applied_scores=[0],
