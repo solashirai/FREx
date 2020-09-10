@@ -1,5 +1,5 @@
 import pytest
-from rdflib import Namespace
+from rdflib import Namespace, URIRef
 from examples.ramen_rec.app import *
 from frex.stores import LocalGraph
 from frex.models import Explanation
@@ -112,7 +112,15 @@ def test_ramen_eater_01() -> RamenEater:
     return RamenEater(
         uri=ex_ns["USR01"],
         likes_ramen_from="Taiwan",
+        likes_ramen_brand="Maruchan",
         likes_ramen_style="Pack",
+        prohibit_ramen_from="USA",
+        favorite_ramen_uris=frozenset(
+            [
+                URIRef("http://www.frex.com/examples/ramen/101"),
+                URIRef("http://www.frex.com/examples/ramen/1011"),
+            ]
+        ),
     )
 
 

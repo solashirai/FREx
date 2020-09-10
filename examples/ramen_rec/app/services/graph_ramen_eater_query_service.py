@@ -47,18 +47,35 @@ class GraphRamenEaterQueryService(RamenQueryService):
         likes_ramen_from = cache_graph.value(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["likesRamenFrom"]
         )
+        likes_ramen_brand = cache_graph.value(
+            ramen_eater_uri, RamenUtils.ramen_onto_ns["likesRamenBrand"]
+        )
         likes_ramen_style = cache_graph.value(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["likesRamenStyle"]
+        )
+        prohibit_ramen_from = cache_graph.value(
+            ramen_eater_uri, RamenUtils.ramen_onto_ns["prohibitRamenFrom"]
+        )
+        favorite_ramen_uris = cache_graph.objects(
+            ramen_eater_uri, RamenUtils.ramen_onto_ns["favoriteRamen"]
         )
 
         if any(
             ramen_eater_property is None
-            for ramen_eater_property in [likes_ramen_from, likes_ramen_style]
+            for ramen_eater_property in [
+                likes_ramen_from,
+                likes_ramen_style,
+                likes_ramen_brand,
+                prohibit_ramen_from,
+            ]
         ):
             raise MalformedDomainObjectException(uri=ramen_eater_uri)
 
         return RamenEater(
             uri=ramen_eater_uri,
             likes_ramen_from=likes_ramen_from.value,
+            likes_ramen_brand=likes_ramen_brand.value,
             likes_ramen_style=likes_ramen_style.value,
+            prohibit_ramen_from=prohibit_ramen_from.value,
+            favorite_ramen_uris=frozenset(favorite_ramen_uris),
         )

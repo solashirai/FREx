@@ -1,19 +1,48 @@
-from frex.models import Explanation
+from frex.models import Explanation, Context
 from frex.stores import LocalGraph
 from frex.pipelines import PipelineExecutor
 from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app import *
 from rdflib import URIRef
+from typing import List
+import sys
 
 
-def run_example():
+def run_and_display(*, pipe: PipelineExecutor, context: Context):
+
+    print("Retrieving top 5 recommended ramens using demo pipeline...")
+    print("")
+
+    output_candidates = list(pipe.execute(context=context))
+
+    best_candidates = output_candidates[:5]
+
+    print("Top 5 Ramens and the explanations applied:")
+    for c in best_candidates:
+        print("--")
+        print(c.domain_object.to_json())
+        print(f"Scores -- Explanations:")
+        for expl_ind, expl in enumerate(c.applied_explanations):
+            print(f'Score {float(c.applied_scores[expl_ind]):4.3} -- {expl.explanation_string}')
+
+
+def demo_similar_ramens(*, ramen_uri: URIRef):
     data_files = [
         (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-        (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
     ]
 
     ramen_graph = LocalGraph(file_paths=data_files)
     ramen_q = GraphRamenQueryService(queryable=ramen_graph)
+
+    print(f"Demo retrieve 'recommendations' for ramens similar to {ramen_uri}")
+    try:
+        target_ramen = ramen_q.get_ramen_by_uri(ramen_uri=ramen_uri)
+    except DomainObjectNotFoundException:
+        print(f"Target ramen with URI {ramen_uri} not found.")
+        sys.exit(2)
+    print("Target ramen content: ")
+    print(target_ramen.to_json())
+    print("")
 
     ramen_rec_pipe = PipelineExecutor(
         stages=(
@@ -23,7 +52,7 @@ def run_example():
             ),
             SameBrandFilter(
                 filter_explanation=Explanation(
-                    explanation_string="This ramen is from a different brand than the target ramen"
+                    explanation_string="This ramen is from a different brand than the target ramen."
                 )
             ),
             RamenRatingScorer(
@@ -40,19 +69,103 @@ def run_example():
         )
     )
 
-    target_ramen_uri = RamenUtils.ramen_ns["101"]
-    print(f"get recommendations for ramen with URI {target_ramen_uri}")
-    target_ramen = ramen_q.get_ramen_by_uri(ramen_uri=target_ramen_uri)
     recommend_for_context = RamenContext(target_ramen=target_ramen)
 
-    output_candidates = list(ramen_rec_pipe.execute(context=recommend_for_context))
+    run_and_display(pipe=ramen_rec_pipe, context=recommend_for_context)
 
-    best_candidates = output_candidates[:5]
 
-    print(len(output_candidates))
-    print("top 5 candidates")
-    for c in best_candidates:
-        print(c)
+def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
+    data_files = [
+        (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
+    ]
+    user_files = [
+        (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
+    ]
+
+    ramen_graph = LocalGraph(file_paths=data_files)
+    ramen_q = GraphRamenQueryService(queryable=ramen_graph)
+    user_graph = LocalGraph(file_paths=user_files)
+    ramen_eater_q = GraphRamenEaterQueryService(queryable=user_graph)
+
+    print(f"Demo retrieve 'recommendations' for ramens eater {ramen_eater_uri}")
+    try:
+        target_ramen_eater = ramen_eater_q.get_ramen_eater_by_uri(ramen_eater_uri=ramen_eater_uri)
+    except DomainObjectNotFoundException:
+        print(f"Target ramen eater with URI {ramen_eater_uri} not found.")
+        sys.exit(2)
+    print("Target ramen eater content: ")
+    print(target_ramen_eater.to_json())
+    print("")
+
+    ramen_rec_pipe = PipelineExecutor(
+        stages=(
+            MatchEaterLikesRamenCandidateGenerator(
+                ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
+                ramen_query_service=ramen_q,
+            ),
+            RamenEaterProhibitCountryFilter(
+                filter_explanation=Explanation(
+                    explanation_string="This ramen is not from a country that is prohibited by the eater."
+                )
+            ),
+            RamenRatingScorer(
+                scoring_explanation=Explanation(
+                    explanation_string="This ramen has a high rating score."
+                )
+            ),
+            RamenEaterLikesBrandScorer(
+                success_scoring_explanation=Explanation(
+                    explanation_string="This ramen is from a brand that the user likes."
+                ),
+                failure_scoring_explanation=Explanation(
+                    explanation_string="This ramen is from not a brand that the user likes."
+                )
+            ),
+            RamenEaterLikesStyleScorer(
+                success_scoring_explanation=Explanation(
+                    explanation_string="This ramen is a style that the user likes."
+                ),
+                failure_scoring_explanation=Explanation(
+                    explanation_string="This ramen is not a style that the user likes."
+                )
+            ),
+            RamenEaterLikesCountryScorer(
+                success_scoring_explanation=Explanation(
+                    explanation_string="This ramen is from a country that the user likes."
+                ),
+                failure_scoring_explanation=Explanation(
+                    explanation_string="This ramen is from not a country that the user likes."
+                )
+            ),
+            CandidateRanker(),
+        )
+    )
+
+    recommend_for_context = RamenEaterContext(ramen_eater_profile=target_ramen_eater)
+
+    run_and_display(pipe=ramen_rec_pipe, context=recommend_for_context)
+
+
+def run_example(argv):
+
+    if len(argv) != 2:
+        print(
+            "The Ramen Recommendation toy example expects two inputs: the context type {EATER or RAMEN} and a URI suffix."
+        )
+        print("e.g. examples.ramen_rec RAMEN 101")
+        sys.exit(2)
+    context_type = argv[0]
+    uri_suffix = argv[1]
+
+    if context_type == "RAMEN":
+        demo_similar_ramens(ramen_uri=RamenUtils.ramen_ns[uri_suffix])
+    elif context_type == "EATER":
+        demo_ramen_for_user(ramen_eater_uri=RamenUtils.ex_ns[uri_suffix])
+    else:
+        print(
+            "Invalid context type. The first argument should be EATER (to demo ramen recommendations for a ramen eater) or RAMEN (to demo retrieving recommending similar ramens to an input ramen)."
+        )
+        sys.exit(2)
 
 
 if __name__ == "__main__":
@@ -65,4 +178,4 @@ if __name__ == "__main__":
         "Scoring is based on the ramen rating info and whether or not it is the same style as the target ramen."
     )
     print("---")
-    run_example()
+    run_example(sys.argv[1:])

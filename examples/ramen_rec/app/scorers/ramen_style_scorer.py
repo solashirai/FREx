@@ -1,6 +1,6 @@
 from frex.pipeline_stages.scorers import CandidateScorer
-from examples.ramen_rec.app.models.ramen_context import RamenContext
-from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
+from examples.ramen_rec.app.models import RamenContext
+from examples.ramen_rec.app.models import RamenCandidate
 
 
 class RamenStyleScorer(CandidateScorer):

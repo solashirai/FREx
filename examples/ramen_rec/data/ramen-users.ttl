@@ -4,4 +4,8 @@
 
 <http://www.frex.com/examples/USR01> a ns1:ramenEater ;
     ns1:likesRamenFrom "Taiwan" ;
-    ns1:likesRamenStyle "Pack" .
+    ns1:likesRamenBrand "Maruchan" ;
+    ns1:likesRamenStyle "Pack" ;
+    ns1:favoriteRamen <http://www.frex.com/examples/ramen/101> ,
+        <http://www.frex.com/examples/ramen/1011> ;
+    ns1:prohibitRamenFrom "USA" .

@@ -1,2 +1,5 @@
 from .ramen_style_scorer import RamenStyleScorer
 from .ramen_rating_scorer import RamenRatingScorer
+from .ramen_eater_likes_style_scorer import RamenEaterLikesStyleScorer
+from .ramen_eater_likes_brand_scorer import RamenEaterLikesBrandScorer
+from .ramen_eater_likes_country_scorer import RamenEaterLikesCountryScorer
