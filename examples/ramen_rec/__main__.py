@@ -154,17 +154,17 @@ def run_example(argv):
 
     if len(argv) != 2:
         print(
-            "The Ramen Recommendation toy example expects two inputs: the context type {EATER or RAMEN} and a URI suffix."
+            "The Ramen Recommendation toy example expects two inputs: the context type {EATER or RAMEN} and a URI."
         )
-        print("e.g. examples.ramen_rec RAMEN 101")
+        print("e.g. examples.ramen_rec RAMEN http://www.frex.com/examples/ramen/101")
         sys.exit(2)
     context_type = argv[0]
     uri_suffix = argv[1]
 
     if context_type == "RAMEN":
-        demo_similar_ramens(ramen_uri=RamenUtils.ramen_ns[uri_suffix])
+        demo_similar_ramens(ramen_uri=URIRef(uri_suffix))
     elif context_type == "EATER":
-        demo_ramen_for_user(ramen_eater_uri=RamenUtils.ex_ns[uri_suffix])
+        demo_ramen_for_user(ramen_eater_uri=URIRef(uri_suffix))
     else:
         print(
             "Invalid context type. The first argument should be EATER (to demo ramen recommendations for a ramen eater) or RAMEN (to demo retrieving recommending similar ramens to an input ramen)."
