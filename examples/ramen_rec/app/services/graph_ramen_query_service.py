@@ -4,6 +4,7 @@ from rdflib import URIRef, Graph
 from rdflib.namespace import RDF, RDFS
 from typing import List, Generator
 from examples.ramen_rec.app.models import Ramen
+from examples.ramen_rec.app.utils import RamenUtils
 from examples.ramen_rec.app.services import RamenQueryService
 
 
@@ -59,17 +60,15 @@ class GraphRamenQueryService(RamenQueryService):
         if (
             ramen_uri,
             RDF["type"],
-            GraphRamenQueryService.ramen_ns["ramen"],
+            RamenUtils.ramen_onto_ns["ramen"],
         ) not in cache_graph:
             raise DomainObjectNotFoundException(uri=ramen_uri)
 
         label = cache_graph.value(ramen_uri, RDFS["label"])
-        brand = cache_graph.value(ramen_uri, GraphRamenQueryService.ramen_ns["brand"])
-        country = cache_graph.value(
-            ramen_uri, GraphRamenQueryService.ramen_ns["country"]
-        )
-        rating = cache_graph.value(ramen_uri, GraphRamenQueryService.ramen_ns["rating"])
-        style = cache_graph.value(ramen_uri, GraphRamenQueryService.ramen_ns["style"])
+        brand = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["brand"])
+        country = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["country"])
+        rating = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["rating"])
+        style = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["style"])
 
         if any(
             ramen_property is None

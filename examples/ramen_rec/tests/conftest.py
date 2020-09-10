@@ -8,6 +8,7 @@ from frex.pipeline_stages.filters import CandidateFilterer
 
 ramen_onto_ns = Namespace("http://www.frex.com/examples/ramenOnto/")
 ramen_ns = Namespace("http://www.frex.com/examples/ramen/")
+ex_ns = Namespace("http://www.frex.com/examples/")
 data_files = [
     (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
     (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
@@ -23,6 +24,12 @@ def ramen_graph() -> LocalGraph:
 @pytest.fixture(scope="session")
 def graph_ramen_query_service(ramen_graph) -> GraphRamenQueryService:
     ramen_q = GraphRamenQueryService(queryable=ramen_graph)
+    return ramen_q
+
+
+@pytest.fixture(scope="session")
+def graph_ramen_eater_query_service(ramen_graph) -> GraphRamenEaterQueryService:
+    ramen_q = GraphRamenEaterQueryService(queryable=ramen_graph)
     return ramen_q
 
 
@@ -100,6 +107,15 @@ def test_ramen_103() -> Ramen:
     )
 
 
+@pytest.fixture(scope="session")
+def test_ramen_eater_01() -> RamenEater:
+    return RamenEater(
+        uri=ex_ns["USR01"],
+        likes_ramen_from="Taiwan",
+        likes_ramen_style="Pack",
+    )
+
+
 def placeholder_ramen_candidate(dom_obj: Ramen) -> RamenCandidate:
     return RamenCandidate(
         domain_object=dom_obj, applied_explanations=[], applied_scores=[]
@@ -110,3 +126,4 @@ class TestRamens:
     test_ramen_101_uri = ramen_ns["101"]
     test_ramen_202_uri = ramen_ns["202"]
     test_ramen_103_uri = ramen_ns["103"]
+    test_ramen_eater_01 = ex_ns["USR01"]

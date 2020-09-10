@@ -40,7 +40,7 @@ def run_example():
         )
     )
 
-    target_ramen_uri = URIRef("http://www.frex.com/examples/ramen/101")
+    target_ramen_uri = RamenUtils.ramen_ns["101"]
     print(f"get recommendations for ramen with URI {target_ramen_uri}")
     target_ramen = ramen_q.get_ramen_by_uri(ramen_uri=target_ramen_uri)
     recommend_for_context = RamenContext(target_ramen=target_ramen)
