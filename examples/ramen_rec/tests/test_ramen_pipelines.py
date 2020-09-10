@@ -129,7 +129,7 @@ def test_score_likes_brand(
         context=test_ramen_eater_01_context, candidate=cand_1011
     ) == (
         True,
-        1,
+        0.9,
     )
 
 
@@ -141,7 +141,7 @@ def test_score_likes_style(
 
     assert likes_style_scorer.score(
         context=test_ramen_eater_01_context, candidate=cand_101
-    ) == (True, 1) and likes_style_scorer.score(
+    ) == (True, 1.1) and likes_style_scorer.score(
         context=test_ramen_eater_01_context, candidate=cand_1011
     ) == (
         False,
