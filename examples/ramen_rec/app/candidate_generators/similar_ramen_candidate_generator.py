@@ -36,9 +36,10 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
         )
 
         # for this system, we'll just say we return the top 50 ramens as candidates
-        sorted_uris: List[URIRef] = self.get_top_n_candidates(
+        sorted_uris = self.get_top_n_candidates(
             candidate_score_dict=ramen_sim_scores, top_n=50
         )
+        sorted_uris = [tup[0] for tup in sorted_uris]
 
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=sorted_uris)
         for ramen in ramens:

@@ -43,14 +43,14 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
 
             # we will check the top 1000 ramens then find intersections between the
             # top 1000 for each favorite ramen of the user.
-            sorted_uris: List[URIRef] = self.get_top_n_candidates(
+            sorted_uris = self.get_top_n_candidates(
                 candidate_score_dict=ramen_sim_scores, top_n=1000
             )
 
             if not top_ramen_uris:
-                top_ramen_uris = set(sorted_uris)
+                top_ramen_uris = set(tup[0] for tup in sorted_uris)
             else:
-                top_ramen_uris = top_ramen_uris.intersection(set(sorted_uris))
+                top_ramen_uris = top_ramen_uris.intersection(set(tup[0] for tup in sorted_uris))
 
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=top_ramen_uris)
         for ramen in ramens:
