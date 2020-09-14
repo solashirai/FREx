@@ -61,11 +61,11 @@ class CandidateGenerator(_PipelineStage):
     @staticmethod
     def get_top_n_candidates(
         *, candidate_score_dict: List[Tuple[Any, float]], top_n: int
-    ) -> List[Any]:
+    ) -> List[Tuple[Any, float]]:
         sorted_uris = sorted(
             candidate_score_dict, key=lambda item: item[1], reverse=True
         )
-        return [tup for tup in sorted_uris[:top_n]]
+        return sorted_uris[:top_n]
 
     @abstractmethod
     def get_candidates(self, *, context: Context) -> Generator[Candidate, None, None]:
