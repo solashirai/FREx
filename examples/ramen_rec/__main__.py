@@ -1,4 +1,4 @@
-from frex.models import Explanation, Context
+from frex.models import Explanation
 from frex.stores import LocalGraph
 from frex.pipelines import _Pipeline
 from frex.pipeline_stages.scorers import CandidateRanker
@@ -8,12 +8,12 @@ from typing import List
 import sys
 
 
-def run_and_display(*, pipe: _Pipeline, context: Context):
+def run_and_display(*, pipe: _Pipeline):
 
     print("Retrieving top 5 recommended ramens using demo pipeline...")
     print("")
 
-    output_candidates = list(pipe(context=context))
+    output_candidates = list(pipe())
 
     best_candidates = output_candidates[:5]
 
@@ -50,11 +50,10 @@ def demo_similar_ramens(*, ramen_uri: URIRef):
     ramen_rec_pipe = RecommendSimilarRamenPipeline(
         vector_file=vector_file,
         ramen_query_service=ramen_q,
+        context=RamenContext(target_ramen=target_ramen)
     )
 
-    recommend_for_context = RamenContext(target_ramen=target_ramen)
-
-    run_and_display(pipe=ramen_rec_pipe, context=recommend_for_context)
+    run_and_display(pipe=ramen_rec_pipe)
 
 
 def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
@@ -86,10 +85,10 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
     ramen_rec_pipe = RecommendForEaterPipeline(
         vector_file=vector_file,
         ramen_query_service=ramen_q,
+        context=RamenEaterContext(ramen_eater_profile=target_ramen_eater)
     )
-    recommend_for_context = RamenEaterContext(ramen_eater_profile=target_ramen_eater)
 
-    run_and_display(pipe=ramen_rec_pipe, context=recommend_for_context)
+    run_and_display(pipe=ramen_rec_pipe)
 
 
 def run_example(argv):

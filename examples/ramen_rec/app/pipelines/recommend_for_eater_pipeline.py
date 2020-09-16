@@ -1,24 +1,24 @@
-from frex.models import Explanation, Context
-from frex.stores import LocalGraph
+from frex.models import Explanation
 from frex.pipelines import _Pipeline
 from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app import *
-from rdflib import URIRef
-from typing import List
-import sys
 from pathlib import Path
 
 
 class RecommendForEaterPipeline(_Pipeline):
     def __init__(
-        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService
+        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService, context: RamenEaterContext
     ):
         _Pipeline.__init__(
             self,
+            context=context,
             stages=(
                 MatchEaterLikesRamenCandidateGenerator(
                     ramen_vector_file=vector_file.resolve(),
                     ramen_query_service=ramen_query_service,
+                    generator_explanation=Explanation(
+                        explanation_string=f"This ramen is identified as being similar to all of the user's favorite ramens."
+                    )
                 ),
                 RamenEaterProhibitCountryFilter(
                     filter_explanation=Explanation(

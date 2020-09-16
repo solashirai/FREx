@@ -4,5 +4,7 @@ from examples.ramen_rec.app.models.ramen_candidate import RamenCandidate
 
 
 class SameBrandFilter(CandidateFilterer):
-    def filter(self, *, context: RamenContext, candidate: RamenCandidate) -> bool:
-        return context.target_ramen.brand == candidate.domain_object.brand
+    context: RamenContext
+
+    def filter(self, *, candidate: RamenCandidate) -> bool:
+        return self.context.target_ramen.brand == candidate.domain_object.brand

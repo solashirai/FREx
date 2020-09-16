@@ -8,9 +8,7 @@ def test_generate_candidates(
     ramen_candidate_generator, test_ramen_101, test_ramen_202, test_ramen_103
 ):
 
-    recommend_for_context = RamenContext(target_ramen=test_ramen_101)
-
-    candidates = list(ramen_candidate_generator(context=recommend_for_context))
+    candidates = list(ramen_candidate_generator())
     candidate_ramens = {candidate.domain_object.to_json() for candidate in candidates}
 
     # length set to 50 is just set by implementation of similar_ramen_candidate_generator
@@ -24,27 +22,27 @@ def test_generate_candidates(
 
 def test_score_rating(test_ramen_101, test_ramen_202, test_ramen_103, rating_scorer):
     score_context = RamenContext(target_ramen=test_ramen_101)
-
+    rating_scorer.set_context(context=score_context)
     cand_202 = placeholder_ramen_candidate(test_ramen_202)
     cand_103 = placeholder_ramen_candidate(test_ramen_103)
 
     assert (
-        rating_scorer.score(context=score_context, candidate=cand_202)
+        rating_scorer.score(candidate=cand_202)
         == cand_202.domain_object.rating / 5
-        and rating_scorer.score(context=score_context, candidate=cand_103)
+        and rating_scorer.score(candidate=cand_103)
         == cand_103.domain_object.rating / 5
     )
 
 
 def test_score_style(test_ramen_101, test_ramen_202, test_ramen_103, style_scorer):
     score_context = RamenContext(target_ramen=test_ramen_101)
-
+    style_scorer.set_context(context=score_context)
     cand_202 = placeholder_ramen_candidate(test_ramen_202)
     cand_103 = placeholder_ramen_candidate(test_ramen_103)
 
     assert (
-        style_scorer.score(context=score_context, candidate=cand_202) == 0
-        and style_scorer.score(context=score_context, candidate=cand_103) == 1
+        style_scorer.score(candidate=cand_202) == 0
+        and style_scorer.score(candidate=cand_103) == 1
     )
 
 
@@ -52,21 +50,20 @@ def test_filter_same_brand(
     test_ramen_101, test_ramen_202, test_ramen_103, same_brand_filterer
 ):
     score_context = RamenContext(target_ramen=test_ramen_101)
+    same_brand_filterer.set_context(context=score_context)
 
     cand_202 = placeholder_ramen_candidate(test_ramen_202)
     cand_103 = placeholder_ramen_candidate(test_ramen_103)
 
-    assert not same_brand_filterer.filter(
-        context=score_context, candidate=cand_202
-    ) and same_brand_filterer.filter(context=score_context, candidate=cand_103)
+    assert not same_brand_filterer.filter(candidate=cand_202
+    ) and same_brand_filterer.filter(candidate=cand_103)
 
 
 def test_full_ramen_pipeline(
     sim_ramen_pipe,
     test_ramen_101,
 ):
-    rec_context = RamenContext(target_ramen=test_ramen_101)
-    output_candidates = list(sim_ramen_pipe(context=rec_context))
+    output_candidates = list(sim_ramen_pipe())
 
     best_candidates = output_candidates[:10]
 
@@ -92,27 +89,27 @@ def test_filter_prohibited_country(
     prohibited_country_filterer,
     test_ramen_eater_01_context,
 ):
+    prohibited_country_filterer.set_context(
+        context=test_ramen_eater_01_context)
 
     cand_202 = placeholder_ramen_candidate(test_ramen_202)
     cand_101 = placeholder_ramen_candidate(test_ramen_101)
 
-    assert prohibited_country_filterer.filter(
-        context=test_ramen_eater_01_context, candidate=cand_202
-    ) and not prohibited_country_filterer.filter(
-        context=test_ramen_eater_01_context, candidate=cand_101
+    assert prohibited_country_filterer.filter(candidate=cand_202
+    ) and not prohibited_country_filterer.filter(candidate=cand_101
     )
 
 
 def test_score_likes_brand(
     test_ramen_101, test_ramen_1011, likes_brand_scorer, test_ramen_eater_01_context
 ):
+    likes_brand_scorer.set_context(
+        context=test_ramen_eater_01_context)
     cand_1011 = placeholder_ramen_candidate(test_ramen_1011)
     cand_101 = placeholder_ramen_candidate(test_ramen_101)
 
-    assert likes_brand_scorer.score(
-        context=test_ramen_eater_01_context, candidate=cand_101
-    ) == (False, 0) and likes_brand_scorer.score(
-        context=test_ramen_eater_01_context, candidate=cand_1011
+    assert likes_brand_scorer.score(candidate=cand_101
+    ) == (False, 0) and likes_brand_scorer.score(candidate=cand_1011
     ) == (
         True,
         0.9,
@@ -122,13 +119,13 @@ def test_score_likes_brand(
 def test_score_likes_style(
     test_ramen_101, test_ramen_1011, likes_style_scorer, test_ramen_eater_01_context
 ):
+    likes_style_scorer.set_context(
+        context=test_ramen_eater_01_context)
     cand_1011 = placeholder_ramen_candidate(test_ramen_1011)
     cand_101 = placeholder_ramen_candidate(test_ramen_101)
 
-    assert likes_style_scorer.score(
-        context=test_ramen_eater_01_context, candidate=cand_101
-    ) == (True, 1.1) and likes_style_scorer.score(
-        context=test_ramen_eater_01_context, candidate=cand_1011
+    assert likes_style_scorer.score(candidate=cand_101
+    ) == (True, 1.1) and likes_style_scorer.score(candidate=cand_1011
     ) == (
         False,
         0,
@@ -138,14 +135,13 @@ def test_score_likes_style(
 def test_score_likes_country(
     test_ramen_101, test_ramen_1011, likes_country_scorer, test_ramen_eater_01_context
 ):
+    likes_country_scorer.set_context(context=test_ramen_eater_01_context)
 
     cand_101 = placeholder_ramen_candidate(test_ramen_101)
     cand_1011 = placeholder_ramen_candidate(test_ramen_1011)
 
-    assert likes_country_scorer.score(
-        context=test_ramen_eater_01_context, candidate=cand_101
-    ) == (True, 1) and likes_country_scorer.score(
-        context=test_ramen_eater_01_context, candidate=cand_1011
+    assert likes_country_scorer.score(candidate=cand_101
+    ) == (True, 1) and likes_country_scorer.score(candidate=cand_1011
     ) == (
         False,
         0,

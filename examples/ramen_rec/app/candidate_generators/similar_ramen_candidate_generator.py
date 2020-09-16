@@ -1,29 +1,32 @@
 from frex.pipeline_stages.candidate_generators import CandidateGenerator
 from frex.utils import VectorSimilarityUtils
-from typing import Dict, List, Generator
+from typing import Dict, List, Generator, Optional
 from rdflib import URIRef
 from frex.models import Explanation, Candidate
 from examples.ramen_rec.app.models import RamenContext, RamenCandidate
 from examples.ramen_rec.app.services import GraphRamenQueryService
 import numpy as np
 import pickle
+from pathlib import Path
 
 
 class SimilarRamenCandidateGenerator(CandidateGenerator):
     def __init__(
-        self, *, ramen_vector_file: str, ramen_query_service: GraphRamenQueryService
+        self, *, ramen_vector_file: Path, ramen_query_service: GraphRamenQueryService,
+            **kwargs
     ):
-        with open(ramen_vector_file, "rb") as f:
+        with open(str(ramen_vector_file), "rb") as f:
             self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
         self.ramen_query_service = ramen_query_service
+
+        CandidateGenerator.__init__(self, **kwargs)
 
     def __call__(
         self,
         *,
-        context: RamenContext,
         candidates: Generator[Candidate, None, None] = None,
     ) -> Generator[Candidate, None, None]:
-        target_ramen_uri = context.target_ramen.uri
+        target_ramen_uri = self.context.target_ramen.uri
         target_ramen_vector = self.ramen_vector_dict[target_ramen_uri]
 
         comp_ramen_uris, comp_ramen_vectors = [], []
@@ -50,9 +53,7 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
             yield RamenCandidate(
                 domain_object=ramen,
                 applied_explanations=[
-                    Explanation(
-                        explanation_string=f"This ramen is identified as being similar to the target ramen."
-                    )
+                    self.generator_explanation
                 ],
                 applied_scores=[0],
             )

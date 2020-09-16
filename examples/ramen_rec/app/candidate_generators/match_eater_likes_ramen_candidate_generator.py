@@ -1,29 +1,32 @@
 from frex.pipeline_stages.candidate_generators import CandidateGenerator
 from frex.utils import VectorSimilarityUtils
-from typing import Dict, List, Generator
+from typing import Dict, List, Generator, Optional
 from rdflib import URIRef
 from frex.models import Explanation, Candidate
 from examples.ramen_rec.app.models import RamenEaterContext, RamenCandidate
 from examples.ramen_rec.app.services import GraphRamenQueryService
 import numpy as np
 import pickle
+from pathlib import Path
 
 
 class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
     def __init__(
-        self, *, ramen_vector_file: str, ramen_query_service: GraphRamenQueryService
+        self, *, ramen_vector_file: Path, ramen_query_service: GraphRamenQueryService,
+            **kwargs
     ):
-        with open(ramen_vector_file, "rb") as f:
+        with open(str(ramen_vector_file), "rb") as f:
             self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
         self.ramen_query_service = ramen_query_service
+
+        CandidateGenerator.__init__(self, **kwargs)
 
     def __call__(
         self,
         *,
-        context: RamenEaterContext,
         candidates: Generator[Candidate, None, None] = None,
     ) -> Generator[Candidate, None, None]:
-        favorite_ramen_uris = context.ramen_eater_profile.favorite_ramen_uris
+        favorite_ramen_uris = self.context.ramen_eater_profile.favorite_ramen_uris
 
         # we compute viable candidates as candidates that are in the top-similarity set for all of the user's
         #  favorite recipes.
@@ -63,9 +66,7 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
             yield RamenCandidate(
                 domain_object=ramen,
                 applied_explanations=[
-                    Explanation(
-                        explanation_string=f"This ramen is identified as being similar to all of the user's favorite ramens."
-                    )
+                    self.generator_explanation
                 ],
                 applied_scores=[0],
             )
