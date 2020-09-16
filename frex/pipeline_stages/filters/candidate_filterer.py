@@ -13,7 +13,7 @@ class CandidateFilterer(_PipelineStage):
     def filter(self, *, context: Context, candidate: Candidate) -> bool:
         pass
 
-    def execute(
+    def __call__(
         self, *, context: Context, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:

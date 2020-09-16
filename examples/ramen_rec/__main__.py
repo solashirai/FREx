@@ -1,6 +1,6 @@
 from frex.models import Explanation, Context
 from frex.stores import LocalGraph
-from frex.pipelines import PipelineExecutor
+from frex.pipelines import _Pipeline
 from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app import *
 from rdflib import URIRef
@@ -8,12 +8,12 @@ from typing import List
 import sys
 
 
-def run_and_display(*, pipe: PipelineExecutor, context: Context):
+def run_and_display(*, pipe: _Pipeline, context: Context):
 
     print("Retrieving top 5 recommended ramens using demo pipeline...")
     print("")
 
-    output_candidates = list(pipe.execute(context=context))
+    output_candidates = list(pipe(context=context))
 
     best_candidates = output_candidates[:5]
 
@@ -32,6 +32,7 @@ def demo_similar_ramens(*, ramen_uri: URIRef):
     data_files = [
         (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
     ]
+    vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
     ramen_graph = LocalGraph(file_paths=data_files)
     ramen_q = GraphRamenQueryService(queryable=ramen_graph)
@@ -46,29 +47,9 @@ def demo_similar_ramens(*, ramen_uri: URIRef):
     print(target_ramen.to_json())
     print("")
 
-    ramen_rec_pipe = PipelineExecutor(
-        stages=(
-            SimilarRamenCandidateGenerator(
-                ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
-                ramen_query_service=ramen_q,
-            ),
-            SameBrandFilter(
-                filter_explanation=Explanation(
-                    explanation_string="This ramen is from a different brand than the target ramen."
-                )
-            ),
-            RamenRatingScorer(
-                scoring_explanation=Explanation(
-                    explanation_string="This ramen has a high rating score."
-                )
-            ),
-            RamenStyleScorer(
-                scoring_explanation=Explanation(
-                    explanation_string="This ramen is the same style as the target ramen."
-                )
-            ),
-            CandidateRanker(),
-        )
+    ramen_rec_pipe = RecommendSimilarRamenPipeline(
+        vector_file=vector_file,
+        ramen_query_service=ramen_q,
     )
 
     recommend_for_context = RamenContext(target_ramen=target_ramen)
@@ -83,6 +64,7 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
     user_files = [
         (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
     ]
+    vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
     ramen_graph = LocalGraph(file_paths=data_files)
     ramen_q = GraphRamenQueryService(queryable=ramen_graph)
@@ -101,50 +83,10 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
     print(target_ramen_eater.to_json())
     print("")
 
-    ramen_rec_pipe = PipelineExecutor(
-        stages=(
-            MatchEaterLikesRamenCandidateGenerator(
-                ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
-                ramen_query_service=ramen_q,
-            ),
-            RamenEaterProhibitCountryFilter(
-                filter_explanation=Explanation(
-                    explanation_string="This ramen is not from a country that is prohibited by the eater."
-                )
-            ),
-            RamenRatingScorer(
-                scoring_explanation=Explanation(
-                    explanation_string="This ramen has a high rating score."
-                )
-            ),
-            RamenEaterLikesBrandScorer(
-                success_scoring_explanation=Explanation(
-                    explanation_string="This ramen is from a brand that the user likes."
-                ),
-                failure_scoring_explanation=Explanation(
-                    explanation_string="This ramen is from not a brand that the user likes."
-                ),
-            ),
-            RamenEaterLikesStyleScorer(
-                success_scoring_explanation=Explanation(
-                    explanation_string="This ramen is a style that the user likes."
-                ),
-                failure_scoring_explanation=Explanation(
-                    explanation_string="This ramen is not a style that the user likes."
-                ),
-            ),
-            RamenEaterLikesCountryScorer(
-                success_scoring_explanation=Explanation(
-                    explanation_string="This ramen is from a country that the user likes."
-                ),
-                failure_scoring_explanation=Explanation(
-                    explanation_string="This ramen is from not a country that the user likes."
-                ),
-            ),
-            CandidateRanker(),
-        )
+    ramen_rec_pipe = RecommendForEaterPipeline(
+        vector_file=vector_file,
+        ramen_query_service=ramen_q,
     )
-
     recommend_for_context = RamenEaterContext(ramen_eater_profile=target_ramen_eater)
 
     run_and_display(pipe=ramen_rec_pipe, context=recommend_for_context)

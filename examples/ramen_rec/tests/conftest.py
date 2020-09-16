@@ -13,6 +13,7 @@ data_files = [
     (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
     (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
 ]
+vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
 
 @pytest.fixture(scope="session")
@@ -38,7 +39,7 @@ def ramen_candidate_generator(
     graph_ramen_query_service,
 ) -> SimilarRamenCandidateGenerator:
     return SimilarRamenCandidateGenerator(
-        ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
+        ramen_vector_file=vector_file.resolve(),
         ramen_query_service=graph_ramen_query_service,
     )
 
@@ -48,7 +49,7 @@ def ramen_eater_candidate_generator(
     graph_ramen_query_service,
 ) -> MatchEaterLikesRamenCandidateGenerator:
     return MatchEaterLikesRamenCandidateGenerator(
-        ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
+        ramen_vector_file=vector_file.resolve(),
         ramen_query_service=graph_ramen_query_service,
     )
 
@@ -122,6 +123,20 @@ def likes_brand_scorer() -> CandidateBoolScorer:
         failure_scoring_explanation=Explanation(
             explanation_string="This ramen is from not a brand that the user likes."
         ),
+    )
+
+
+@pytest.fixture(scope="session")
+def sim_ramen_pipe(graph_ramen_query_service) -> RecommendSimilarRamenPipeline:
+    return RecommendSimilarRamenPipeline(
+        ramen_query_service=graph_ramen_query_service, vector_file=vector_file
+    )
+
+
+@pytest.fixture(scope="session")
+def rec_for_eater_pipe(graph_ramen_query_service) -> RecommendForEaterPipeline:
+    return RecommendForEaterPipeline(
+        ramen_query_service=graph_ramen_query_service, vector_file=vector_file
     )
 
 

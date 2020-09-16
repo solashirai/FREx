@@ -1,4 +1,5 @@
 from frex.pipeline_stages.candidate_generators import CandidateGenerator
+from frex.utils import VectorSimilarityUtils
 from typing import Dict, List, Generator
 from rdflib import URIRef
 from frex.models import Explanation, Candidate
@@ -16,8 +17,11 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
             self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
         self.ramen_query_service = ramen_query_service
 
-    def get_candidates(
-        self, *, context: RamenEaterContext
+    def __call__(
+        self,
+        *,
+        context: RamenEaterContext,
+        candidates: Generator[Candidate, None, None] = None,
     ) -> Generator[Candidate, None, None]:
         favorite_ramen_uris = context.ramen_eater_profile.favorite_ramen_uris
 
@@ -34,7 +38,7 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
                     comp_ramen_uris.append(ram_uri)
                     comp_ramen_vectors.append(ram_vec)
 
-            ramen_sim_scores = self.get_item_vector_similarity(
+            ramen_sim_scores = VectorSimilarityUtils.get_item_vector_similarity(
                 target_item=target_ramen_uri,
                 target_vector=target_ramen_vector,
                 comparison_items=comp_ramen_uris,
@@ -43,14 +47,16 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
 
             # we will check the top 1000 ramens then find intersections between the
             # top 1000 for each favorite ramen of the user.
-            sorted_uris = self.get_top_n_candidates(
+            sorted_uris = VectorSimilarityUtils.get_top_n_candidates(
                 candidate_score_dict=ramen_sim_scores, top_n=1000
             )
 
             if not top_ramen_uris:
                 top_ramen_uris = set(tup[0] for tup in sorted_uris)
             else:
-                top_ramen_uris = top_ramen_uris.intersection(set(tup[0] for tup in sorted_uris))
+                top_ramen_uris = top_ramen_uris.intersection(
+                    set(tup[0] for tup in sorted_uris)
+                )
 
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=top_ramen_uris)
         for ramen in ramens:

@@ -1,6 +1,6 @@
-from frex.pipelines import PipelineExecutor
 from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app.models import RamenContext, RamenEaterContext
+from examples.ramen_rec.app.pipelines import *
 from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
 
 
@@ -10,9 +10,7 @@ def test_generate_candidates(
 
     recommend_for_context = RamenContext(target_ramen=test_ramen_101)
 
-    candidates = list(
-        ramen_candidate_generator.get_candidates(context=recommend_for_context)
-    )
+    candidates = list(ramen_candidate_generator(context=recommend_for_context))
     candidate_ramens = {candidate.domain_object.to_json() for candidate in candidates}
 
     # length set to 50 is just set by implementation of similar_ramen_candidate_generator
@@ -64,23 +62,11 @@ def test_filter_same_brand(
 
 
 def test_full_ramen_pipeline(
-    ramen_candidate_generator,
-    same_brand_filterer,
-    style_scorer,
-    rating_scorer,
+    sim_ramen_pipe,
     test_ramen_101,
 ):
-    ramen_rec_pipe = PipelineExecutor(
-        stages=(
-            ramen_candidate_generator,
-            same_brand_filterer,
-            style_scorer,
-            rating_scorer,
-            CandidateRanker(),
-        )
-    )
     rec_context = RamenContext(target_ramen=test_ramen_101)
-    output_candidates = list(ramen_rec_pipe.execute(context=rec_context))
+    output_candidates = list(sim_ramen_pipe(context=rec_context))
 
     best_candidates = output_candidates[:10]
 

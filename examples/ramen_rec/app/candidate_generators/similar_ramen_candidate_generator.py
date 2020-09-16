@@ -1,4 +1,5 @@
 from frex.pipeline_stages.candidate_generators import CandidateGenerator
+from frex.utils import VectorSimilarityUtils
 from typing import Dict, List, Generator
 from rdflib import URIRef
 from frex.models import Explanation, Candidate
@@ -16,8 +17,11 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
             self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
         self.ramen_query_service = ramen_query_service
 
-    def get_candidates(
-        self, *, context: RamenContext
+    def __call__(
+        self,
+        *,
+        context: RamenContext,
+        candidates: Generator[Candidate, None, None] = None,
     ) -> Generator[Candidate, None, None]:
         target_ramen_uri = context.target_ramen.uri
         target_ramen_vector = self.ramen_vector_dict[target_ramen_uri]
@@ -28,7 +32,7 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
                 comp_ramen_uris.append(ram_uri)
                 comp_ramen_vectors.append(ram_vec)
 
-        ramen_sim_scores = self.get_item_vector_similarity(
+        ramen_sim_scores = VectorSimilarityUtils.get_item_vector_similarity(
             target_item=target_ramen_uri,
             target_vector=target_ramen_vector,
             comparison_items=comp_ramen_uris,
@@ -36,7 +40,7 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
         )
 
         # for this system, we'll just say we return the top 50 ramens as candidates
-        sorted_uris = self.get_top_n_candidates(
+        sorted_uris = VectorSimilarityUtils.get_top_n_candidates(
             candidate_score_dict=ramen_sim_scores, top_n=50
         )
         sorted_uris = [tup[0] for tup in sorted_uris]

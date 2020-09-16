@@ -12,7 +12,7 @@ class CandidateScorer(_PipelineStage):
     def score(self, *, context: Context, candidate: Candidate) -> float:
         pass
 
-    def execute(
+    def __call__(
         self, *, context: Context, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:

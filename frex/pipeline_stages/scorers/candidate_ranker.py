@@ -4,7 +4,7 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateRanker(_PipelineStage):
-    def execute(
+    def __call__(
         self, *, context: Context, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
         all_candidates = list(candidates)

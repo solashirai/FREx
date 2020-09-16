@@ -18,7 +18,7 @@ class CandidateBoolScorer(_PipelineStage):
     def score(self, *, context: Context, candidate: Candidate) -> Tuple[bool, float]:
         pass
 
-    def execute(
+    def __call__(
         self, *, context: Context, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
