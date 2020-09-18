@@ -12,7 +12,7 @@ class RecommendForEaterPipeline(_Pipeline):
         _Pipeline.__init__(
             self,
             context=context,
-            stages=(
+            candidate_generators=(
                 MatchEaterLikesRamenCandidateGenerator(
                     ramen_vector_file=vector_file.resolve(),
                     ramen_query_service=ramen_query_service,
@@ -20,6 +20,8 @@ class RecommendForEaterPipeline(_Pipeline):
                         explanation_string=f"This ramen is identified as being similar to all of the user's favorite ramens."
                     )
                 ),
+            ),
+            stages=(
                 RamenEaterProhibitCountryFilter(
                     filter_explanation=Explanation(
                         explanation_string="This ramen is not from a country that is prohibited by the eater."

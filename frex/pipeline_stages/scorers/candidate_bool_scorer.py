@@ -14,7 +14,6 @@ class CandidateBoolScorer(_PipelineStage):
     ):
         self.success_scoring_explanation = success_scoring_explanation
         self.failure_scoring_explanation = failure_scoring_explanation
-        _PipelineStage.__init__(self, **kwargs)
 
     @abstractmethod
     def score(self, *, candidate: Candidate) -> Tuple[bool, float]:

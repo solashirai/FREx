@@ -25,8 +25,9 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
         self,
         *,
         candidates: Generator[Candidate, None, None] = None,
+        context: RamenEaterContext
     ) -> Generator[Candidate, None, None]:
-        favorite_ramen_uris = self.context.ramen_eater_profile.favorite_ramen_uris
+        favorite_ramen_uris = context.ramen_eater_profile.favorite_ramen_uris
 
         # we compute viable candidates as candidates that are in the top-similarity set for all of the user's
         #  favorite recipes.
@@ -64,6 +65,7 @@ class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=top_ramen_uris)
         for ramen in ramens:
             yield RamenCandidate(
+                context=context,
                 domain_object=ramen,
                 applied_explanations=[
                     self.generator_explanation

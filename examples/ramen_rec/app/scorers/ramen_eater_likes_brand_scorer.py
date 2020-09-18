@@ -6,13 +6,12 @@ from typing import Tuple
 
 
 class RamenEaterLikesBrandScorer(CandidateBoolScorer):
-    context: RamenEaterContext
 
     def score(
         self, *, candidate: RamenCandidate
     ) -> Tuple[bool, float]:
         if (
-            self.context.ramen_eater_profile.likes_ramen_brand
+            candidate.context.ramen_eater_profile.likes_ramen_brand
             == candidate.domain_object.brand
         ):
             return True, 0.9

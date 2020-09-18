@@ -8,15 +8,13 @@ class CandidateFilterer(_PipelineStage):
     def __init__(self, *, filter_explanation: Explanation, filter_score: float = 0, **kwargs):
         self.filter_explanation = filter_explanation
         self.filter_score = filter_score
-        _PipelineStage.__init__(self,
-                                **kwargs)
 
     @abstractmethod
     def filter(self, *, candidate: Candidate) -> bool:
         pass
 
     def __call__(
-        self, *, candidates: Generator[Candidate, None, None], **kwargs
+        self, *, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
             if not self.filter(candidate=candidate):

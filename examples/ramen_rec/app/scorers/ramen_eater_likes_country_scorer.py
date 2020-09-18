@@ -5,13 +5,12 @@ from typing import Tuple
 
 
 class RamenEaterLikesCountryScorer(CandidateBoolScorer):
-    context: RamenEaterContext
 
     def score(
         self, *, candidate: RamenCandidate
     ) -> Tuple[bool, float]:
         if (
-            self.context.ramen_eater_profile.likes_ramen_from
+            candidate.context.ramen_eater_profile.likes_ramen_from
             == candidate.domain_object.country
         ):
             return True, 1

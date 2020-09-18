@@ -25,8 +25,9 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
         self,
         *,
         candidates: Generator[Candidate, None, None] = None,
+        context: RamenContext
     ) -> Generator[Candidate, None, None]:
-        target_ramen_uri = self.context.target_ramen.uri
+        target_ramen_uri = context.target_ramen.uri
         target_ramen_vector = self.ramen_vector_dict[target_ramen_uri]
 
         comp_ramen_uris, comp_ramen_vectors = [], []
@@ -51,6 +52,7 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
         ramens = self.ramen_query_service.get_ramens_by_uri(ramen_uris=sorted_uris)
         for ramen in ramens:
             yield RamenCandidate(
+                context=context,
                 domain_object=ramen,
                 applied_explanations=[
                     self.generator_explanation

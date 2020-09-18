@@ -209,8 +209,9 @@ def test_ramen_eater_01_context(test_ramen_eater_01) -> RamenEaterContext:
     return RamenEaterContext(ramen_eater_profile=test_ramen_eater_01)
 
 
-def placeholder_ramen_candidate(dom_obj: Ramen) -> RamenCandidate:
+def placeholder_ramen_candidate(dom_obj: Ramen, context) -> RamenCandidate:
     return RamenCandidate(
+        context=context,
         domain_object=dom_obj, applied_explanations=[], applied_scores=[]
     )
 

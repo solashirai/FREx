@@ -9,7 +9,6 @@ class CandidateScorer(_PipelineStage):
                  scoring_explanation: Explanation,
                  **kwargs):
         self.scoring_explanation = scoring_explanation
-        _PipelineStage.__init__(self, **kwargs)
 
     @abstractmethod
     def score(self, *, candidate: Candidate) -> float:
