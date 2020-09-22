@@ -4,8 +4,9 @@ from examples.ramen_rec.app.models import RamenCandidate
 
 
 class RamenEaterProhibitCountryFilter(CandidateFilterer):
-    def filter(self, *, context: RamenEaterContext, candidate: RamenCandidate) -> bool:
+
+    def filter(self, *, candidate: RamenCandidate) -> bool:
         return (
-            context.ramen_eater_profile.prohibit_ramen_from
+            candidate.context.ramen_eater_profile.prohibit_ramen_from
             == candidate.domain_object.country
         )

@@ -1,12 +1,11 @@
 from abc import ABC
-from typing import Generator
-from frex.models import Candidate, Context
+from typing import Generator, Callable, Optional
+from frex.models import Candidate
 from abc import ABC, abstractmethod
 
 
 class _PipelineStage(ABC):
+
     @abstractmethod
-    def execute(
-        self, *, context: Context, candidates: Generator[Candidate, None, None]
-    ) -> Generator[Candidate, None, None]:
+    def __call__(self, *, candidates: Generator[Candidate, None, None]) -> Generator[Candidate, None, None]:
         pass

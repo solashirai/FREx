@@ -5,26 +5,19 @@ from rdflib.namespace import RDF, RDFS
 from typing import List, Generator
 from examples.ramen_rec.app.models import Ramen
 from examples.ramen_rec.app.utils import RamenUtils
-from examples.ramen_rec.app.services import RamenQueryService
+from examples.ramen_rec.app.services import RamenQueryService, _GraphQueryService
 
 
-class GraphRamenQueryService(RamenQueryService):
-    def __init__(self, *, queryable: SparqlQueryable):
-        self.queryable = queryable
-
-    def get_cache_graph(self, *, sparql: str) -> Graph:
-        return RequestResultCache(
-            result=self.queryable.query(sparql=sparql)
-        ).get_graph()
+class GraphRamenQueryService(_GraphQueryService, RamenQueryService):
 
     def get_ramens_by_uri(
         self, *, ramen_uris: List[URIRef]
     ) -> Generator[Ramen, None, None]:
         if isinstance(self.queryable, LocalGraph):
-            cache_graph = self.queryable.get_graph()
+            self.cache_graph = self.queryable.get_graph()
         else:
             ramen_values = " ".join(ramen_uri.n3() for ramen_uri in ramen_uris)
-            cache_graph = self.get_cache_graph(
+            self.get_cache_graph(
                 sparql=f"""
                 CONSTRUCT {{ ?s ?p ?o }}
                 WHERE {{
@@ -36,14 +29,14 @@ class GraphRamenQueryService(RamenQueryService):
 
         for ramen_uri in ramen_uris:
             yield self.graph_get_ramen_by_uri(
-                ramen_uri=ramen_uri, cache_graph=cache_graph
+                ramen_uri=ramen_uri
             )
 
     def get_ramen_by_uri(self, *, ramen_uri: URIRef) -> Ramen:
         if isinstance(self.queryable, LocalGraph) and False:
-            cache_graph = self.queryable.get_graph()
+            self.cache_graph = self.queryable.get_graph()
         else:
-            cache_graph = self.get_cache_graph(
+            self.get_cache_graph(
                 sparql=f"""
                 CONSTRUCT {{ ?s ?p ?o }}
                 WHERE {{
@@ -52,23 +45,23 @@ class GraphRamenQueryService(RamenQueryService):
                 }}
                 """
             )
-        return self.graph_get_ramen_by_uri(ramen_uri=ramen_uri, cache_graph=cache_graph)
+        return self.graph_get_ramen_by_uri(ramen_uri=ramen_uri)
 
     def graph_get_ramen_by_uri(
-        self, *, ramen_uri: URIRef, cache_graph: Graph = None
+        self, *, ramen_uri: URIRef
     ) -> Ramen:
         if (
             ramen_uri,
             RDF["type"],
             RamenUtils.ramen_onto_ns["ramen"],
-        ) not in cache_graph:
+        ) not in self.cache_graph:
             raise DomainObjectNotFoundException(uri=ramen_uri)
 
-        label = cache_graph.value(ramen_uri, RDFS["label"])
-        brand = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["brand"])
-        country = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["country"])
-        rating = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["rating"])
-        style = cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["style"])
+        label = self.cache_graph.value(ramen_uri, RDFS["label"])
+        brand = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["brand"])
+        country = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["country"])
+        rating = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["rating"])
+        style = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["style"])
 
         if any(
             ramen_property is None

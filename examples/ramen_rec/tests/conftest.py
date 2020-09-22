@@ -9,10 +9,11 @@ from frex.pipeline_stages.filters import CandidateFilterer
 ramen_onto_ns = Namespace("http://www.frex.com/examples/ramenOnto/")
 ramen_ns = Namespace("http://www.frex.com/examples/ramen/")
 ex_ns = Namespace("http://www.frex.com/examples/")
-data_files = [
+data_files = (
     (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-    (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
-]
+    (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve()
+)
+vector_file = (RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve()
 
 
 @pytest.fixture(scope="session")
@@ -36,10 +37,15 @@ def graph_ramen_eater_query_service(ramen_graph) -> GraphRamenEaterQueryService:
 @pytest.fixture(scope="session")
 def ramen_candidate_generator(
     graph_ramen_query_service,
+        test_ramen_101
 ) -> SimilarRamenCandidateGenerator:
     return SimilarRamenCandidateGenerator(
-        ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
+        ramen_vector_file=vector_file,
         ramen_query_service=graph_ramen_query_service,
+        generator_explanation=Explanation(
+                        explanation_string=f"This ramen is identified as being similar to the target ramen."
+                    ),
+        context=RamenContext(target_ramen=test_ramen_101)
     )
 
 
@@ -48,7 +54,7 @@ def ramen_eater_candidate_generator(
     graph_ramen_query_service,
 ) -> MatchEaterLikesRamenCandidateGenerator:
     return MatchEaterLikesRamenCandidateGenerator(
-        ramen_vector_file=(RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve(),
+        ramen_vector_file=vector_file,
         ramen_query_service=graph_ramen_query_service,
     )
 
@@ -126,6 +132,14 @@ def likes_brand_scorer() -> CandidateBoolScorer:
 
 
 @pytest.fixture(scope="session")
+def sim_ramen_pipe(graph_ramen_query_service, test_ramen_101) -> RecommendSimilarRamenPipeline:
+    return RecommendSimilarRamenPipeline(
+        context=RamenContext(target_ramen=test_ramen_101),
+        ramen_query_service=graph_ramen_query_service, vector_file=vector_file
+    )
+
+
+@pytest.fixture(scope="session")
 def test_ramen_101() -> Ramen:
     return Ramen(
         uri=ramen_ns["101"],
@@ -195,8 +209,9 @@ def test_ramen_eater_01_context(test_ramen_eater_01) -> RamenEaterContext:
     return RamenEaterContext(ramen_eater_profile=test_ramen_eater_01)
 
 
-def placeholder_ramen_candidate(dom_obj: Ramen) -> RamenCandidate:
+def placeholder_ramen_candidate(dom_obj: Ramen, context) -> RamenCandidate:
     return RamenCandidate(
+        context=context,
         domain_object=dom_obj, applied_explanations=[], applied_scores=[]
     )
 

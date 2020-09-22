@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="frex",
-    version="0.1",
+    version="0.2",
     description="Package for Explainable Recommender Framework.",
     url="git@github.com:solashirai/ExplainableRecommenderFramework.git",
     author="Sola S. Shirai",
@@ -11,6 +11,7 @@ setup(
         "frex.models",
         "frex.pipelines",
         "frex.stores",
+        "frex.utils",
         "frex.pipeline_stages",
         "frex.pipeline_stages.candidate_generators",
         "frex.pipeline_stages.filters",

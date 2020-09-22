@@ -1,4 +1,5 @@
 from .exceptions import *
+from ._graph_query_service import _GraphQueryService
 from .ramen_query_service import RamenQueryService
 from .graph_ramen_query_service import GraphRamenQueryService
 from .ramen_eater_query_service import RamenEaterQueryService

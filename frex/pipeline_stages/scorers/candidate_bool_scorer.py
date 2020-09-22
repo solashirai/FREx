@@ -1,6 +1,6 @@
 from abc import abstractmethod
-from typing import Tuple, Generator
-from frex.models import Explanation, Candidate, Context
+from typing import Tuple, Generator, Optional, Type
+from frex.models import Explanation, Candidate
 from frex.pipeline_stages import _PipelineStage
 
 
@@ -9,20 +9,21 @@ class CandidateBoolScorer(_PipelineStage):
         self,
         *,
         success_scoring_explanation: Explanation,
-        failure_scoring_explanation: Explanation
+        failure_scoring_explanation: Explanation,
+        **kwargs
     ):
         self.success_scoring_explanation = success_scoring_explanation
         self.failure_scoring_explanation = failure_scoring_explanation
 
     @abstractmethod
-    def score(self, *, context: Context, candidate: Candidate) -> Tuple[bool, float]:
+    def score(self, *, candidate: Candidate) -> Tuple[bool, float]:
         pass
 
-    def execute(
-        self, *, context: Context, candidates: Generator[Candidate, None, None]
+    def __call__(
+        self, *, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
-            success, score = self.score(context=context, candidate=candidate)
+            success, score = self.score(candidate=candidate)
             if success:
                 candidate.applied_explanations.append(self.success_scoring_explanation)
             else:
