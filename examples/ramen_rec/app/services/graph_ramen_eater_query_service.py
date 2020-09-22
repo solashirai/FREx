@@ -5,23 +5,16 @@ from rdflib.namespace import RDF, RDFS
 from typing import List, Generator
 from examples.ramen_rec.app.utils import RamenUtils
 from examples.ramen_rec.app.models import RamenEater
-from examples.ramen_rec.app.services import RamenQueryService
+from examples.ramen_rec.app.services import RamenQueryService, _GraphQueryService
 
 
-class GraphRamenEaterQueryService(RamenQueryService):
-    def __init__(self, *, queryable: SparqlQueryable):
-        self.queryable = queryable
-
-    def get_cache_graph(self, *, sparql: str) -> Graph:
-        return RequestResultCache(
-            result=self.queryable.query(sparql=sparql)
-        ).get_graph()
+class GraphRamenEaterQueryService(_GraphQueryService, RamenQueryService):
 
     def get_ramen_eater_by_uri(self, *, ramen_eater_uri: URIRef) -> RamenEater:
         if isinstance(self.queryable, LocalGraph) and False:
-            cache_graph = self.queryable.get_graph()
+            self.cache_graph = self.queryable.get_graph()
         else:
-            cache_graph = self.get_cache_graph(
+            self.get_cache_graph(
                 sparql=f"""
                 CONSTRUCT {{ ?s ?p ?o }}
                 WHERE {{
@@ -31,32 +24,32 @@ class GraphRamenEaterQueryService(RamenQueryService):
                 """
             )
         return self.graph_get_ramen_eater_by_uri(
-            ramen_eater_uri=ramen_eater_uri, cache_graph=cache_graph
+            ramen_eater_uri=ramen_eater_uri
         )
 
     def graph_get_ramen_eater_by_uri(
-        self, *, ramen_eater_uri: URIRef, cache_graph: Graph = None
+        self, *, ramen_eater_uri: URIRef
     ) -> RamenEater:
         if (
             ramen_eater_uri,
             RDF["type"],
             RamenUtils.ramen_onto_ns["ramenEater"],
-        ) not in cache_graph:
+        ) not in self.cache_graph:
             raise DomainObjectNotFoundException(uri=ramen_eater_uri)
 
-        likes_ramen_from = cache_graph.value(
+        likes_ramen_from = self.cache_graph.value(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["likesRamenFrom"]
         )
-        likes_ramen_brand = cache_graph.value(
+        likes_ramen_brand = self.cache_graph.value(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["likesRamenBrand"]
         )
-        likes_ramen_style = cache_graph.value(
+        likes_ramen_style = self.cache_graph.value(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["likesRamenStyle"]
         )
-        prohibit_ramen_from = cache_graph.value(
+        prohibit_ramen_from = self.cache_graph.value(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["prohibitRamenFrom"]
         )
-        favorite_ramen_uris = cache_graph.objects(
+        favorite_ramen_uris = self.cache_graph.objects(
             ramen_eater_uri, RamenUtils.ramen_onto_ns["favoriteRamen"]
         )
 
