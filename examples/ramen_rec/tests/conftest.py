@@ -9,10 +9,10 @@ from frex.pipeline_stages.filters import CandidateFilterer
 ramen_onto_ns = Namespace("http://www.frex.com/examples/ramenOnto/")
 ramen_ns = Namespace("http://www.frex.com/examples/ramen/")
 ex_ns = Namespace("http://www.frex.com/examples/")
-data_files = [
+data_files = (
     (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-    (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
-]
+    (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve()
+)
 vector_file = (RamenUtils.DATA_DIR / "ramen-vectors.pkl").resolve()
 
 

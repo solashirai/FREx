@@ -29,9 +29,9 @@ def run_and_display(*, pipe: _Pipeline):
 
 
 def demo_similar_ramens(*, ramen_uri: URIRef):
-    data_files = [
+    data_files = (
         (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-    ]
+    )
     vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
     ramen_graph = LocalGraph(file_paths=data_files)
@@ -57,12 +57,12 @@ def demo_similar_ramens(*, ramen_uri: URIRef):
 
 
 def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
-    data_files = [
+    data_files = (
         (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-    ]
-    user_files = [
+    )
+    user_files = (
         (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
-    ]
+    )
     vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
     ramen_graph = LocalGraph(file_paths=data_files)
