@@ -5,12 +5,20 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateFilterer(_PipelineStage):
+    """
+    CandidateFilterer should implement a filter function to determine which candidates to remove from consideration.
+    filter(candidate) -> True will remove the candidate.
+    """
     def __init__(self, *, filter_explanation: Explanation, filter_score: float = 0, **kwargs):
         self.filter_explanation = filter_explanation
         self.filter_score = filter_score
 
     @abstractmethod
     def filter(self, *, candidate: Candidate) -> bool:
+        """
+        The filter should return True when the candidate that is passed in should be removed from
+        consideration as a candidate.
+        """
         pass
 
     def __call__(

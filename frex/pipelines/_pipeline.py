@@ -6,6 +6,10 @@ from abc import ABC, abstractmethod
 
 
 class _Pipeline(ABC):
+    """
+    Pipelines should be implemented using _Pipeline, separately specifying candidate generator and
+    stages to pass all candidates through.
+    """
     def __init__(self, *, context: Optional[object] = None, candidate_generators: Tuple[CandidateGenerator],
                  stages: Tuple[_PipelineStage, ...]):
         self.context = context

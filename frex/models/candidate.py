@@ -7,6 +7,12 @@ from frex.models import Explanation, DomainObject
 @dataclass_json
 @dataclass
 class Candidate:
+    """
+    Candidate classes should store some context for the current setting, a domain-specific object that is the
+    candidate to return as part of the recommendation, and lists of applied explanations and scores.
+    We expect applied explanations and scores to always have the same length, as pipeline stages should apply
+    both when they are passed through.
+    """
     context: Any
     domain_object: DomainObject
     applied_explanations: List[Explanation]

@@ -6,6 +6,10 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateGenerator(_PipelineStage):
+    """
+    CandidateGenerator pipeline stages should implement logic in the __call__ method to generate domain-specific
+    candidates for the current context.
+    """
     def __init__(self, *,
                  generator_explanation: Explanation,
                  **kwargs):

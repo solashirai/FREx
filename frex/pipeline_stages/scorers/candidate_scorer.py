@@ -5,6 +5,9 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateScorer(_PipelineStage):
+    """
+    CandidateScorer is a scoring pipeline stage that applies some score to candidates.
+    """
     def __init__(self, *,
                  scoring_explanation: Explanation,
                  **kwargs):

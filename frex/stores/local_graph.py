@@ -6,6 +6,9 @@ from frex.stores import SparqlQueryable
 
 
 class LocalGraph(SparqlQueryable):
+    """
+    LocalGraph should be used to store and access rdf graphs locally.
+    """
     def __init__(self, *, file_paths: Tuple[Path]):
         self.graph = Graph()
         for file_path in file_paths:

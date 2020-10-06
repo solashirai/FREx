@@ -6,4 +6,7 @@ from rdflib import URIRef
 @dataclass_json
 @dataclass(frozen=True)
 class DomainObject:
+    """
+    DomainObject classes should be able to point to some uri that identifies them.
+    """
     uri: URIRef
