@@ -8,4 +8,10 @@ class SparqlQueryable(ABC):
     """
     @abstractmethod
     def query(self, *, sparql: str) -> Result:
+        """
+        Query the sparql queryable and retrieve a result.
+
+        :param sparql: A string containing valid SPARQL to query.
+        :return: A Result containing the result from calling the SPARQL query.
+        """
         pass

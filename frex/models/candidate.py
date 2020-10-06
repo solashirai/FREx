@@ -20,4 +20,8 @@ class Candidate:
 
     @property
     def total_score(self) -> float:
+        """
+        Get the sum of scores in applied_scores for this candidate.
+        :return: The sum of self.applied_scores
+        """
         return sum(self.applied_scores)

@@ -18,6 +18,9 @@ class CandidateFilterer(_PipelineStage):
         """
         The filter should return True when the candidate that is passed in should be removed from
         consideration as a candidate.
+
+        :param candidate: A domain-specific candidate to filter
+        :return: True if the candidate should be removed, False if it should be kept and passed on to later stages.
         """
         pass
 

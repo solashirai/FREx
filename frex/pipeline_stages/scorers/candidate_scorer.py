@@ -15,6 +15,12 @@ class CandidateScorer(_PipelineStage):
 
     @abstractmethod
     def score(self, *, candidate: Candidate) -> float:
+        """
+        Score a candidate
+
+        :param candidate: A domain-specific candidate
+        :return: Some score applied to the candidate based on the implemented scoring function.
+        """
         pass
 
     def __call__(

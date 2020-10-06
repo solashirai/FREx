@@ -14,7 +14,18 @@ class RequestResultCache(ResultCache):
         self.cache_graph = Graph().parse(data=result.serialize(format="xml"))
 
     def get_graph(self) -> Graph:
+        """
+        Get the local Graph object.
+
+        :return: The local Graph object
+        """
         return self.cache_graph
 
     def query(self, *, sparql: str) -> Result:
+        """
+        Query the local graph object.
+
+        :param sparql: A string containing valid SPARQL to query the graph.
+        :return: A Result containing the result from calling the SPARQL query.
+        """
         return self.cache_graph.query(sparql)
