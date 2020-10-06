@@ -5,13 +5,24 @@ from scipy.sparse import csr_matrix, lil_matrix
 
 class VectorSimilarityUtils:
     @staticmethod
-    def sparse_l2_norm(*, matrix: csr_matrix):
+    def sparse_l2_norm(*, matrix: csr_matrix) -> np.array:
+        """
+        Return the l2 norm of an input csr sparse matrix.
+        This is significantly faster and less memory intensive than simply passing the matrix to numpy.
+        """
         return np.sqrt(np.sum(matrix.multiply(matrix), axis=1))
 
     @staticmethod
     def cosine_sim(
         *, comparison_vector: np.array, comparison_matrix: np.array
     ) -> np.array:
+        """
+        Return the cosine similarity between a given vector and the rows of a matrix.
+
+        :param comparison_vector: The vector to serve as the source of comparison
+        :param comparison_matrix: A matrix containing rows with which the comparison_vector will be compared
+        :return: An array of cosine similarities between the comparison_vector and each row of the comparison_matrix
+        """
         if isinstance(comparison_vector, csr_matrix):
             # sparse matrices seem to be very slow or require a ton of memory to call np.linalg.norm, so
             # compute using csr_matrix functions here.
@@ -39,6 +50,12 @@ class VectorSimilarityUtils:
         items and scores.
         The shape of item content vectors is expected to be (1, N) for each item.
         The target item and its vector should not be contained in comparison_items or comparison_contents.
+
+        :param target_item: The item to get similarities for. currently unused.
+        :param target_vector: A vector representing the target_item.
+        :param comparison_items: A list of other items to compare the target_item with.
+        :param comparison_contents: A list of vectors that represent each item in comparison_items
+        :return: A list of tuples (x, y) where x is an item and y is the similarity of that item and the target_item
         """
         ind_to_item = dict()
         content_matrix = np.zeros(shape=(len(comparison_items), target_vector.shape[1]))
@@ -61,6 +78,15 @@ class VectorSimilarityUtils:
     def get_top_n_candidates(
         *, candidate_score_dict: List[Tuple[Any, float]], top_n: int
     ) -> List[Tuple[Any, float]]:
+        """
+        Get the top N candidates out of a list of tuples, where the second index of the tuple is the item's score.
+        This score should typically be something like a similarity score, e.g. what comes out of the
+        get_item_vector_similarity function.
+
+        :param candidate_score_dict: A list of tuples (x, y) where x is an item and y is some score for that item
+        :param top_n: The number of items to return
+        :return: A list of the top N items from candidate_score_dict in descending order
+        """
         sorted_uris = sorted(
             candidate_score_dict, key=lambda item: item[1], reverse=True
         )

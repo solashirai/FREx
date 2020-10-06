@@ -5,7 +5,8 @@ from abc import ABC, abstractmethod
 
 
 class _PipelineStage(ABC):
-
     @abstractmethod
-    def __call__(self, *, candidates: Generator[Candidate, None, None]) -> Generator[Candidate, None, None]:
+    def __call__(
+        self, *, candidates: Generator[Candidate, None, None]
+    ) -> Generator[Candidate, None, None]:
         pass

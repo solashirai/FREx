@@ -5,10 +5,20 @@ from frex.stores import SparqlQueryable
 
 
 class RemoteGraph(SparqlQueryable):
+    """
+    RemoteGraph is used for accessing remote SPARQL endpoints.
+    """
+
     def __init__(self, *, endpoint: str):
         self.graph = SPARQLStore(endpoint)
 
     def query(self, *, sparql: str) -> Result:
+        """
+        Query the remote graph using the API endpoint.
+
+        :param sparql: A string containing valid SPARQL to query the graph.
+        :return: A Result containing the result from calling the SPARQL query.
+        """
         try:
             result = self.graph.query(sparql)
         except ResultException:

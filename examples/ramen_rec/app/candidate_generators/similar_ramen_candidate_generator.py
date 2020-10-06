@@ -11,6 +11,9 @@ from pathlib import Path
 
 
 class SimilarRamenCandidateGenerator(CandidateGenerator):
+    """
+    Generate candidate ramens similar to an input ramen.
+    """
     def __init__(
         self, *, ramen_vector_file: Path, ramen_query_service: GraphRamenQueryService,
             **kwargs

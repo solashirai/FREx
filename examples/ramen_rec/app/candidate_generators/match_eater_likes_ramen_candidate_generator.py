@@ -11,6 +11,9 @@ from pathlib import Path
 
 
 class MatchEaterLikesRamenCandidateGenerator(CandidateGenerator):
+    """
+    Generate candidate ramens similar to ramens that the eater's profile has marked as 'favorite' ramens.
+    """
     def __init__(
         self, *, ramen_vector_file: Path, ramen_query_service: GraphRamenQueryService,
             **kwargs

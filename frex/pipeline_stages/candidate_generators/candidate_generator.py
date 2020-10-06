@@ -6,13 +6,19 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateGenerator(_PipelineStage):
-    def __init__(self, *,
-                 generator_explanation: Explanation,
-                 **kwargs):
+    """
+    CandidateGenerator pipeline stages should implement logic in the __call__ method to generate domain-specific
+    candidates for the current context.
+    """
+
+    def __init__(self, *, generator_explanation: Explanation, **kwargs):
         self.generator_explanation = generator_explanation
 
     @abstractmethod
     def __call__(
-        self, *, candidates: Optional[Generator[Candidate, None, None]] = None, context: Any
+        self,
+        *,
+        candidates: Optional[Generator[Candidate, None, None]] = None,
+        context: Any
     ) -> Generator[Candidate, None, None]:
         pass

@@ -5,6 +5,12 @@ from frex.pipeline_stages import _PipelineStage
 
 
 class CandidateBoolScorer(_PipelineStage):
+    """
+    CandidateBoolScorer is a scoring pipeline stage that scores based on whether or not the candidate matches some
+    given condition. The score function for this class returns a bool indicating whether the condition was matched,
+    and an appropriate explanation is attached to the candidate.
+    """
+
     def __init__(
         self,
         *,
@@ -17,6 +23,14 @@ class CandidateBoolScorer(_PipelineStage):
 
     @abstractmethod
     def score(self, *, candidate: Candidate) -> Tuple[bool, float]:
+        """
+        score should return True if the candidate matches some success condition. Regardless of whether the candidate
+        passes the success, the score function should also return a score to applied.
+
+        :param candidate: A domain-specific candidate to score
+        :return: A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and
+        y is the score applied to the candidate.
+        """
         pass
 
     def __call__(

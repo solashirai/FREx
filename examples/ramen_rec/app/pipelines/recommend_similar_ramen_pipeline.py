@@ -6,6 +6,9 @@ from pathlib import Path
 
 
 class RecommendSimilarRamenPipeline(_Pipeline):
+    """
+    A pipeline to recommend ramens similar to an input ramen context.
+    """
     def __init__(
         self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService, context: RamenContext
     ):
