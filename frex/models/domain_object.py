@@ -9,4 +9,5 @@ class DomainObject:
     """
     DomainObject classes should be able to point to some uri that identifies them.
     """
+
     uri: URIRef

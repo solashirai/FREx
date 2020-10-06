@@ -10,4 +10,5 @@ class Explanation:
     More complex explanation types may be integrated into the framework at a later point, if it makes sense to use
     them in a general way.
     """
+
     explanation_string: str

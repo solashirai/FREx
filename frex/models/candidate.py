@@ -13,6 +13,7 @@ class Candidate:
     We expect applied explanations and scores to always have the same length, as pipeline stages should apply
     both when they are passed through.
     """
+
     context: Any
     domain_object: DomainObject
     applied_explanations: List[Explanation]

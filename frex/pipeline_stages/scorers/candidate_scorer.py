@@ -8,9 +8,8 @@ class CandidateScorer(_PipelineStage):
     """
     CandidateScorer is a scoring pipeline stage that applies some score to candidates.
     """
-    def __init__(self, *,
-                 scoring_explanation: Explanation,
-                 **kwargs):
+
+    def __init__(self, *, scoring_explanation: Explanation, **kwargs):
         self.scoring_explanation = scoring_explanation
 
     @abstractmethod
@@ -28,7 +27,5 @@ class CandidateScorer(_PipelineStage):
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
             candidate.applied_explanations.append(self.scoring_explanation)
-            candidate.applied_scores.append(
-                self.score(candidate=candidate)
-            )
+            candidate.applied_scores.append(self.score(candidate=candidate))
             yield candidate

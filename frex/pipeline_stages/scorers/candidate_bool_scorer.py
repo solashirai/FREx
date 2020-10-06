@@ -10,6 +10,7 @@ class CandidateBoolScorer(_PipelineStage):
     given condition. The score function for this class returns a bool indicating whether the condition was matched,
     and an appropriate explanation is attached to the candidate.
     """
+
     def __init__(
         self,
         *,

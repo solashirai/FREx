@@ -8,6 +8,7 @@ class CandidateRanker(_PipelineStage):
     CandidateRanker is a helper pipeline stage that will sort the current candidates.
     Sorting needs to collect all candidates coming in from the generator, so it should be used infrequently.
     """
+
     def __call__(
         self, *, candidates: Generator[Candidate, None, None]
     ) -> Generator[Candidate, None, None]:
