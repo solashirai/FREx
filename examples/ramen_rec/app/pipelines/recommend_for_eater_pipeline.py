@@ -6,6 +6,9 @@ from pathlib import Path
 
 
 class RecommendForEaterPipeline(_Pipeline):
+    """
+    A pipeline to recommend ramens for a specific ramen eater.
+    """
     def __init__(
         self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService, context: RamenEaterContext
     ):
