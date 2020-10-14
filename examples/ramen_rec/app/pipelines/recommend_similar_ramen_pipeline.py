@@ -9,19 +9,19 @@ class RecommendSimilarRamenPipeline(_Pipeline):
     """
     A pipeline to recommend ramens similar to an input ramen context.
     """
+
     def __init__(
-        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService, context: RamenContext
+        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService
     ):
         _Pipeline.__init__(
             self,
-            context=context,
             candidate_generators=(
                 SimilarRamenCandidateGenerator(
                     ramen_vector_file=vector_file.resolve(),
                     ramen_query_service=ramen_query_service,
                     generator_explanation=Explanation(
                         explanation_string=f"This ramen is identified as being similar to the target ramen."
-                    )
+                    ),
                 ),
             ),
             stages=(

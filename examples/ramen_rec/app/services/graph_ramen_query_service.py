@@ -9,7 +9,6 @@ from examples.ramen_rec.app.services import RamenQueryService, _GraphQueryServic
 
 
 class GraphRamenQueryService(_GraphQueryService, RamenQueryService):
-
     def get_ramens_by_uri(
         self, *, ramen_uris: List[URIRef]
     ) -> Generator[Ramen, None, None]:
@@ -28,9 +27,7 @@ class GraphRamenQueryService(_GraphQueryService, RamenQueryService):
             )
 
         for ramen_uri in ramen_uris:
-            yield self.graph_get_ramen_by_uri(
-                ramen_uri=ramen_uri
-            )
+            yield self.graph_get_ramen_by_uri(ramen_uri=ramen_uri)
 
     def get_ramen_by_uri(self, *, ramen_uri: URIRef) -> Ramen:
         if isinstance(self.queryable, LocalGraph) and False:
@@ -47,9 +44,7 @@ class GraphRamenQueryService(_GraphQueryService, RamenQueryService):
             )
         return self.graph_get_ramen_by_uri(ramen_uri=ramen_uri)
 
-    def graph_get_ramen_by_uri(
-        self, *, ramen_uri: URIRef
-    ) -> Ramen:
+    def graph_get_ramen_by_uri(self, *, ramen_uri: URIRef) -> Ramen:
         if (
             ramen_uri,
             RDF["type"],

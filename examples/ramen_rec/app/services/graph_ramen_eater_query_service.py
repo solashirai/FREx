@@ -9,7 +9,6 @@ from examples.ramen_rec.app.services import RamenQueryService, _GraphQueryServic
 
 
 class GraphRamenEaterQueryService(_GraphQueryService, RamenQueryService):
-
     def get_ramen_eater_by_uri(self, *, ramen_eater_uri: URIRef) -> RamenEater:
         if isinstance(self.queryable, LocalGraph) and False:
             self.cache_graph = self.queryable.get_graph()
@@ -23,13 +22,9 @@ class GraphRamenEaterQueryService(_GraphQueryService, RamenQueryService):
                 }}
                 """
             )
-        return self.graph_get_ramen_eater_by_uri(
-            ramen_eater_uri=ramen_eater_uri
-        )
+        return self.graph_get_ramen_eater_by_uri(ramen_eater_uri=ramen_eater_uri)
 
-    def graph_get_ramen_eater_by_uri(
-        self, *, ramen_eater_uri: URIRef
-    ) -> RamenEater:
+    def graph_get_ramen_eater_by_uri(self, *, ramen_eater_uri: URIRef) -> RamenEater:
         if (
             ramen_eater_uri,
             RDF["type"],

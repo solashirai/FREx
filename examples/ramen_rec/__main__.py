@@ -8,12 +8,12 @@ from typing import List
 import sys
 
 
-def run_and_display(*, pipe: _Pipeline):
+def run_and_display(*, pipe: _Pipeline, context):
 
     print("Retrieving top 5 recommended ramens using demo pipeline...")
     print("")
 
-    output_candidates = list(pipe())
+    output_candidates = list(pipe(context=context))
 
     best_candidates = output_candidates[:5]
 
@@ -29,9 +29,7 @@ def run_and_display(*, pipe: _Pipeline):
 
 
 def demo_similar_ramens(*, ramen_uri: URIRef):
-    data_files = (
-        (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-    )
+    data_files = ((RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),)
     vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
     ramen_graph = LocalGraph(file_paths=data_files)
@@ -50,19 +48,16 @@ def demo_similar_ramens(*, ramen_uri: URIRef):
     ramen_rec_pipe = RecommendSimilarRamenPipeline(
         vector_file=vector_file,
         ramen_query_service=ramen_q,
-        context=RamenContext(target_ramen=target_ramen)
     )
 
-    run_and_display(pipe=ramen_rec_pipe)
+    run_and_display(
+        pipe=ramen_rec_pipe, context=RamenContext(target_ramen=target_ramen)
+    )
 
 
 def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
-    data_files = (
-        (RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),
-    )
-    user_files = (
-        (RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),
-    )
+    data_files = ((RamenUtils.DATA_DIR / "ramen-ratings.ttl").resolve(),)
+    user_files = ((RamenUtils.DATA_DIR / "ramen-users.ttl").resolve(),)
     vector_file = RamenUtils.DATA_DIR / "ramen-vectors.pkl"
 
     ramen_graph = LocalGraph(file_paths=data_files)
@@ -83,12 +78,13 @@ def demo_ramen_for_user(*, ramen_eater_uri: URIRef):
     print("")
 
     ramen_rec_pipe = RecommendForEaterPipeline(
-        vector_file=vector_file,
-        ramen_query_service=ramen_q,
-        context=RamenEaterContext(ramen_eater_profile=target_ramen_eater)
+        vector_file=vector_file, ramen_query_service=ramen_q
     )
 
-    run_and_display(pipe=ramen_rec_pipe)
+    run_and_display(
+        pipe=ramen_rec_pipe,
+        context=RamenEaterContext(ramen_eater_profile=target_ramen_eater),
+    )
 
 
 def run_example(argv):

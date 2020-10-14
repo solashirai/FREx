@@ -14,9 +14,13 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
     """
     Generate candidate ramens similar to an input ramen.
     """
+
     def __init__(
-        self, *, ramen_vector_file: Path, ramen_query_service: GraphRamenQueryService,
-            **kwargs
+        self,
+        *,
+        ramen_vector_file: Path,
+        ramen_query_service: GraphRamenQueryService,
+        **kwargs
     ):
         with open(str(ramen_vector_file), "rb") as f:
             self.ramen_vector_dict: Dict[URIRef, np.ndarray] = pickle.load(f)
@@ -57,8 +61,6 @@ class SimilarRamenCandidateGenerator(CandidateGenerator):
             yield RamenCandidate(
                 context=context,
                 domain_object=ramen,
-                applied_explanations=[
-                    self.generator_explanation
-                ],
+                applied_explanations=[self.generator_explanation],
                 applied_scores=[0],
             )

@@ -9,19 +9,19 @@ class RecommendForEaterPipeline(_Pipeline):
     """
     A pipeline to recommend ramens for a specific ramen eater.
     """
+
     def __init__(
-        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService, context: RamenEaterContext
+        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService
     ):
         _Pipeline.__init__(
             self,
-            context=context,
             candidate_generators=(
                 MatchEaterLikesRamenCandidateGenerator(
                     ramen_vector_file=vector_file.resolve(),
                     ramen_query_service=ramen_query_service,
                     generator_explanation=Explanation(
                         explanation_string=f"This ramen is identified as being similar to all of the user's favorite ramens."
-                    )
+                    ),
                 ),
             ),
             stages=(

@@ -12,5 +12,6 @@ class RamenCandidate(Candidate):
     RamenCandidates are created for either a ramen context (for recommending similar ramens) or a ramen eater
     context (for recommending ramens to a particular ramen eater).
     """
+
     context: Union[RamenContext, RamenEaterContext]
     domain_object: Ramen

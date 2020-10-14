@@ -4,7 +4,6 @@ from examples.ramen_rec.app.models import RamenCandidate
 
 
 class RamenEaterProhibitCountryFilter(CandidateFilterer):
-
     def filter(self, *, candidate: RamenCandidate) -> bool:
         """
         Filter out candidate ramens based on the ramen eater's context, which contains prohibited countries.
