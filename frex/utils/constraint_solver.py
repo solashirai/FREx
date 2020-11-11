@@ -1,6 +1,6 @@
 from __future__ import annotations
 from ortools.linear_solver import pywraplp
-from frex.models import Candidate
+from frex.models import Candidate, ConstraintSectionSolution, ConstraintSolution
 from typing import Tuple
 from frex.utils.common import rgetattr
 from frex.utils import ConstraintType, Constraint
@@ -96,7 +96,7 @@ class ConstraintSolver:
         )
         return self
 
-    def solve(self) -> Tuple[Tuple[Candidate]]:
+    def solve(self) -> ConstraintSolution:
         """
         Perform integer programming to solve constraints and maximize an objective function based on the total scores
         applied to candidates. This function expects candidates that are the result of some recommendation pipeline
@@ -113,6 +113,10 @@ class ConstraintSolver:
         """
 
         candidate_count = len(self.candidates)
+
+        # keep track of attributes that have constraints applied, to be able to show relevant results in the solution
+        attributes_of_interest = set()
+
         solve_choice = {}
         for i in range(candidate_count):
             for j in range(self.sections):
@@ -135,6 +139,7 @@ class ConstraintSolver:
         # constraints are added to the solver here (rather than in the add_section_constraints function) because we need
         # to know the number of sections/candidates beforehand to correctly map out these constraints.
         for psc in self.section_constraints:
+            attributes_of_interest.add(psc.attribute_name)
             for j in range(self.sections):
                 ss = self.solver.Sum(
                     [
@@ -148,6 +153,7 @@ class ConstraintSolver:
         # constraints to apply to the overall solution, based on certain field names
         # constraints are added to the solver here for similar reasons as the section_constraints
         for oc in self.overall_constraints:
+            attributes_of_interest.add(oc.attribute_name)
             ss = self.solver.Sum(
                 [
                     rgetattr(self.candidates[i].domain_object, oc.attribute_name) * solve_choice[i, j]
@@ -170,17 +176,32 @@ class ConstraintSolver:
         status = self.solver.Solve()
 
         if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
-            print('Total final score = ', self.solver.Objective().Value(), '\n')
-            print()
-            output_candidates = []
+            sections = []
+            overall_attributes = {attr:0 for attr in attributes_of_interest}
             for j in range(self.sections):
                 section_candidates = []
+                section_attributes = {attr:0 for attr in attributes_of_interest}
+                section_score = 0
                 for i in range(candidate_count):
                     if solve_choice[i, j].solution_value() > 0.5:
-                        print("Candidate ", i, " assigned to section ", j)
+                        # print("Candidate ", i, " assigned to section ", j)
                         section_candidates.append(self.candidates[i])
-                output_candidates.append(tuple(section_candidates))
-            return tuple(output_candidates)
+                        section_score += self.candidates[i].total_score
+                        for attr in attributes_of_interest:
+                            section_attributes[attr] += rgetattr(self.candidates[i].domain_object, attr)
+                sections.append(ConstraintSectionSolution(
+                    section_candidates=tuple(section_candidates),
+                    section_score=section_score,
+                    section_attribute_values=section_attributes
+                ))
+                for attr in attributes_of_interest:
+                    overall_attributes[attr] += section_attributes[attr]
+
+            return ConstraintSolution(
+                sections=tuple(sections),
+                overall_score=self.solver.Objective().Value(),
+                overall_attribute_values=overall_attributes
+            )
         else:
             # print('No solution found.')
             return ()  # TODO: what to return if no solution?

@@ -15,7 +15,7 @@ def test_choose_ramens_using_constraints(
         )
     )
 
-    final_candidates = ConstraintSolver().\
+    solution = ConstraintSolver().\
         set_candidates(candidates=pipeline_candidate_results)\
         .set_sections(num_sections=2)\
         .set_items_per_section(count=3)\
@@ -27,10 +27,10 @@ def test_choose_ramens_using_constraints(
     section_ratings = []
     section_prices = []
     total_price = 0
-    for section in final_candidates:
+    for section in solution.sections:
         section_rating = 0
         section_price = 0
-        for c in section:
+        for c in section.section_candidates:
             section_rating += c.domain_object.rating
             section_price += c.domain_object.price
             total_price += c.domain_object.price
@@ -41,6 +41,8 @@ def test_choose_ramens_using_constraints(
         all(sr >= 7 for sr in section_ratings)
         and all(sp <= 7 for sp in section_prices)
         and total_price <= 13
-        and len(final_candidates) == 2
-        and len(final_candidates[0]) == 3
+        and total_price == solution.overall_attribute_values['price']
+        and section_prices[0] == solution.sections[0].section_attribute_values['price']
+        and len(solution.sections) == 2
+        and len(solution.sections[0].section_candidates) == 3
     )
