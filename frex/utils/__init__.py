@@ -1,1 +1,2 @@
 from .vector_similarity_utils import VectorSimilarityUtils
+from .constraint_solver_utils import ConstraintSolverUtils
