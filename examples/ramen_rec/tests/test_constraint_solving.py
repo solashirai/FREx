@@ -2,40 +2,26 @@ from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app.models import RamenContext, RamenEaterContext
 from examples.ramen_rec.app.pipelines import *
 from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
-from frex.utils import ConstraintSolverUtils
+from frex.utils import ConstraintSolver, ConstraintType
 
 
 def test_choose_ramens_using_constraints(
     sim_ramen_pipe,
     test_ramen_101,
 ):
-    output_candidates = tuple(
+    pipeline_candidate_results = tuple(
         sim_ramen_pipe(
             context=RamenContext(target_ramen=test_ramen_101),
         )
     )
 
-    csu = ConstraintSolverUtils()
-
-    final_candidates = csu.solve_constraints_on_candidates(
-        candidates=output_candidates,
-        num_sections=2,  # 2 sections (e.g., think of this like 2 days)
-        per_section_count=3,  # choose 3 ramens per section (e.g., 3 ramens per day)
-        per_section_constraints=(
-            (
-                "rating",
-                "leq",
-                13,
-            ),  # total combined ratings of ramens chosen for a section is <= 13
-        ),
-        overall_constraints=(
-            (
-                "rating",
-                "leq",
-                22,
-            ),  # total combined ratings of all ramens chosen is <= 22
-        ),
-    )
+    final_candidates = ConstraintSolver().\
+        set_candidates(candidates=pipeline_candidate_results)\
+        .set_sections(num_sections=2)\
+        .set_items_per_section(count=3)\
+        .add_section_constraint(attribute_name='rating', constraint_type=ConstraintType.LEQ, constraint_val=13)\
+        .add_overall_constraint(attribute_name='rating', constraint_type=ConstraintType.LEQ, constraint_val=22)\
+        .solve()
 
     section_ratings = []
     total_rating = 0
