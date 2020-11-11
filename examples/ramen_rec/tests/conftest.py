@@ -148,6 +148,7 @@ def test_ramen_101() -> Ramen:
         rating=4.25,
         country="Taiwan",
         style="Pack",
+        price=2.8,
     )
 
 
@@ -160,6 +161,7 @@ def test_ramen_202() -> Ramen:
         rating=3.25,
         country="USA",
         style="Bowl",
+        price=2.65,
     )
 
 
@@ -172,6 +174,7 @@ def test_ramen_103() -> Ramen:
         rating=3.0,
         country="Taiwan",
         style="Pack",
+        price=3.23,
     )
 
 
@@ -184,6 +187,7 @@ def test_ramen_1011() -> Ramen:
         rating=4.0,
         country="USA",
         style="Bowl",
+        price=2.79,
     )
 
 

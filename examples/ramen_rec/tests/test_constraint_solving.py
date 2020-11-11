@@ -19,22 +19,28 @@ def test_choose_ramens_using_constraints(
         set_candidates(candidates=pipeline_candidate_results)\
         .set_sections(num_sections=2)\
         .set_items_per_section(count=3)\
-        .add_section_constraint(attribute_name='rating', constraint_type=ConstraintType.LEQ, constraint_val=13)\
-        .add_overall_constraint(attribute_name='rating', constraint_type=ConstraintType.LEQ, constraint_val=22)\
+        .add_section_constraint(attribute_name='price', constraint_type=ConstraintType.LEQ, constraint_val=7.0)\
+        .add_section_constraint(attribute_name='rating', constraint_type=ConstraintType.GEQ, constraint_val=7)\
+        .add_overall_constraint(attribute_name='price', constraint_type=ConstraintType.LEQ, constraint_val=13.0)\
         .solve()
 
     section_ratings = []
-    total_rating = 0
+    section_prices = []
+    total_price = 0
     for section in final_candidates:
         section_rating = 0
+        section_price = 0
         for c in section:
             section_rating += c.domain_object.rating
-            total_rating += c.domain_object.rating
+            section_price += c.domain_object.price
+            total_price += c.domain_object.price
         section_ratings.append(section_rating)
+        section_prices.append(section_price)
 
     assert (
-        all(sr <= 13 for sr in section_ratings)
-        and total_rating <= 22
+        all(sr >= 7 for sr in section_ratings)
+        and all(sp <= 7 for sp in section_prices)
+        and total_price <= 13
         and len(final_candidates) == 2
         and len(final_candidates[0]) == 3
     )

@@ -17,3 +17,4 @@ class Ramen(DomainObject):
     country: str
     style: str
     rating: float
+    price: float
