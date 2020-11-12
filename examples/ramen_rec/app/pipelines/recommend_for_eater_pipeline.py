@@ -40,7 +40,7 @@ class RecommendForEaterPipeline(_Pipeline):
                         explanation_string="This ramen is from a brand that the user likes."
                     ),
                     failure_scoring_explanation=Explanation(
-                        explanation_string="This ramen is from not a brand that the user likes."
+                        explanation_string="This ramen is not from a brand that the user likes."
                     ),
                 ),
                 RamenEaterLikesStyleScorer(

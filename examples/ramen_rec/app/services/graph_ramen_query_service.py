@@ -57,6 +57,7 @@ class GraphRamenQueryService(_GraphQueryService, RamenQueryService):
         country = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["country"])
         rating = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["rating"])
         style = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["style"])
+        price = self.cache_graph.value(ramen_uri, RamenUtils.ramen_onto_ns["price"])
 
         if any(
             ramen_property is None
@@ -71,4 +72,5 @@ class GraphRamenQueryService(_GraphQueryService, RamenQueryService):
             country=country.value,
             rating=rating.value,
             style=style.value,
+            price=price.value,
         )
