@@ -62,7 +62,13 @@ class ConstraintSolver:
         self._per_section_count = count
         return self
 
-    def add_section_constraint(self, *, attribute_name: str, constraint_type: ConstraintType, constraint_value: int):
+    def add_section_constraint(
+        self,
+        *,
+        attribute_name: str,
+        constraint_type: ConstraintType,
+        constraint_value: int
+    ):
         """
         Add a constraint to be applied to each section solution. E.g., a constraint on the cost of all items chosen
         within each given section.
@@ -73,13 +79,21 @@ class ConstraintSolver:
         :return: self, with a new Constraint added to the section_constraints list
         """
         self._section_constraints.append(
-            Constraint(attribute_name=attribute_name,
-                       constraint_type=constraint_type,
-                       constraint_value=constraint_value)
+            Constraint(
+                attribute_name=attribute_name,
+                constraint_type=constraint_type,
+                constraint_value=constraint_value,
+            )
         )
         return self
 
-    def add_overall_constraint(self, *, attribute_name: str, constraint_type: ConstraintType, constraint_value: int) -> ConstraintSolver:
+    def add_overall_constraint(
+        self,
+        *,
+        attribute_name: str,
+        constraint_type: ConstraintType,
+        constraint_value: int
+    ) -> ConstraintSolver:
         """
         Add a constraint to be applied to the entire solution. E.g., a constraint on the cost of all items chosen
         across all sections of the solution.
@@ -90,9 +104,11 @@ class ConstraintSolver:
         :return: self, with a new Constraint added to the overall_constraints list
         """
         self._overall_constraints.append(
-            Constraint(attribute_name=attribute_name,
-                       constraint_type=constraint_type,
-                       constraint_value=constraint_value)
+            Constraint(
+                attribute_name=attribute_name,
+                constraint_type=constraint_type,
+                constraint_value=constraint_value,
+            )
         )
         return self
 
@@ -125,7 +141,8 @@ class ConstraintSolver:
         # each item is only assigned to one section
         for i in range(candidate_count):
             self._solver.Add(
-                self._solver.Sum([solve_choice[i, j] for j in range(self._sections)]) <= 1
+                self._solver.Sum([solve_choice[i, j] for j in range(self._sections)])
+                <= 1
             )
 
         # each section has exactly per_section_count items chosen
@@ -156,7 +173,8 @@ class ConstraintSolver:
             attributes_of_interest.add(oc.attribute_name)
             ss = self._solver.Sum(
                 [
-                    rgetattr(self._candidates[i].domain_object, oc.attribute_name) * solve_choice[i, j]
+                    rgetattr(self._candidates[i].domain_object, oc.attribute_name)
+                    * solve_choice[i, j]
                     for i in range(candidate_count)
                     for j in range(self._sections)
                 ]
@@ -170,7 +188,9 @@ class ConstraintSolver:
                 # in the future, maybe incorporate more into this objective function
                 # e.g., we would prefer the combination of all items in a section to have some field value in a range,
                 # so incorporate that into the score somehow?
-                objective_terms.append(self._candidates[i].total_score * solve_choice[i, j])
+                objective_terms.append(
+                    self._candidates[i].total_score * solve_choice[i, j]
+                )
         self._solver.Maximize(self._solver.Sum(objective_terms))
 
         status = self._solver.Solve()
@@ -180,10 +200,10 @@ class ConstraintSolver:
             return None
 
         sections = []
-        overall_attributes = {attr:0 for attr in attributes_of_interest}
+        overall_attributes = {attr: 0 for attr in attributes_of_interest}
         for j in range(self._sections):
             section_candidates = []
-            section_attributes = {attr:0 for attr in attributes_of_interest}
+            section_attributes = {attr: 0 for attr in attributes_of_interest}
             section_score = 0
             for i in range(candidate_count):
                 if solve_choice[i, j].solution_value() > 0.5:
@@ -191,17 +211,21 @@ class ConstraintSolver:
                     section_candidates.append(self._candidates[i])
                     section_score += self._candidates[i].total_score
                     for attr in attributes_of_interest:
-                        section_attributes[attr] += rgetattr(self._candidates[i].domain_object, attr)
-            sections.append(ConstraintSectionSolution(
-                section_candidates=tuple(section_candidates),
-                section_score=section_score,
-                section_attribute_values=section_attributes
-            ))
+                        section_attributes[attr] += rgetattr(
+                            self._candidates[i].domain_object, attr
+                        )
+            sections.append(
+                ConstraintSectionSolution(
+                    section_candidates=tuple(section_candidates),
+                    section_score=section_score,
+                    section_attribute_values=section_attributes,
+                )
+            )
             for attr in attributes_of_interest:
                 overall_attributes[attr] += section_attributes[attr]
 
         return ConstraintSolution(
             sections=tuple(sections),
             overall_score=self._solver.Objective().Value(),
-            overall_attribute_values=overall_attributes
+            overall_attribute_values=overall_attributes,
         )

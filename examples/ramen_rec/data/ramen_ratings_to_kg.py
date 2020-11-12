@@ -9,7 +9,9 @@ def convert():
     One-off code to convert the ramen-raitings-csv file into RDF triples using very basic transformations.
     Don't look to this KG as an example of a good KG...
     """
-    random.seed(1)  # seed random var, since we're just using random to tack on a fake 'price' to ramens.
+    random.seed(
+        1
+    )  # seed random var, since we're just using random to tack on a fake 'price' to ramens.
     ramen_data = []
     with open("ramen-ratings.csv", "r", encoding="utf-8") as f:
         next(f)  # skip first line, header for CSV
@@ -58,7 +60,9 @@ def convert():
         output_graph.add(
             (
                 ramen_ns[ramen_content[0]],
-                ramen_onto_ns["price"],  # a random 'price' which will be used to demonstrate some constraints
+                ramen_onto_ns[
+                    "price"
+                ],  # a random 'price' which will be used to demonstrate some constraints
                 rdflib.Literal(round(random.uniform(0.5, 5.0), 2), datatype=XSD.float),
             )
         )
