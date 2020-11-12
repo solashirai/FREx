@@ -1,7 +1,7 @@
 from __future__ import annotations
 from ortools.linear_solver import pywraplp
 from frex.models import Candidate, ConstraintSectionSolution, ConstraintSolution
-from typing import Tuple
+from typing import Tuple, Optional
 from frex.utils.common import rgetattr
 from frex.utils import ConstraintType, Constraint
 from enum import Enum
@@ -96,7 +96,7 @@ class ConstraintSolver:
         )
         return self
 
-    def solve(self) -> ConstraintSolution:
+    def solve(self) -> Optional[ConstraintSolution]:
         """
         Perform integer programming to solve constraints and maximize an objective function based on the total scores
         applied to candidates. This function expects candidates that are the result of some recommendation pipeline
@@ -175,34 +175,33 @@ class ConstraintSolver:
 
         status = self.solver.Solve()
 
-        if status == pywraplp.Solver.OPTIMAL or status == pywraplp.Solver.FEASIBLE:
-            sections = []
-            overall_attributes = {attr:0 for attr in attributes_of_interest}
-            for j in range(self._sections):
-                section_candidates = []
-                section_attributes = {attr:0 for attr in attributes_of_interest}
-                section_score = 0
-                for i in range(candidate_count):
-                    if solve_choice[i, j].solution_value() > 0.5:
-                        # print("Candidate ", i, " assigned to section ", j)
-                        section_candidates.append(self._candidates[i])
-                        section_score += self._candidates[i].total_score
-                        for attr in attributes_of_interest:
-                            section_attributes[attr] += rgetattr(self._candidates[i].domain_object, attr)
-                sections.append(ConstraintSectionSolution(
-                    section_candidates=tuple(section_candidates),
-                    section_score=section_score,
-                    section_attribute_values=section_attributes
-                ))
-                for attr in attributes_of_interest:
-                    overall_attributes[attr] += section_attributes[attr]
+        if status != pywraplp.Solver.OPTIMAL and status != pywraplp.Solver.FEASIBLE:
+            # possibly to revisit, if in the future it makes more sense to raise an exception than return None
+            return None
 
-            return ConstraintSolution(
-                sections=tuple(sections),
-                overall_score=self.solver.Objective().Value(),
-                overall_attribute_values=overall_attributes
-            )
-        else:
-            # print('No solution found.')
-            return ()  # TODO: what to return if no solution?
+        sections = []
+        overall_attributes = {attr:0 for attr in attributes_of_interest}
+        for j in range(self._sections):
+            section_candidates = []
+            section_attributes = {attr:0 for attr in attributes_of_interest}
+            section_score = 0
+            for i in range(candidate_count):
+                if solve_choice[i, j].solution_value() > 0.5:
+                    # print("Candidate ", i, " assigned to section ", j)
+                    section_candidates.append(self._candidates[i])
+                    section_score += self._candidates[i].total_score
+                    for attr in attributes_of_interest:
+                        section_attributes[attr] += rgetattr(self._candidates[i].domain_object, attr)
+            sections.append(ConstraintSectionSolution(
+                section_candidates=tuple(section_candidates),
+                section_score=section_score,
+                section_attribute_values=section_attributes
+            ))
+            for attr in attributes_of_interest:
+                overall_attributes[attr] += section_attributes[attr]
 
+        return ConstraintSolution(
+            sections=tuple(sections),
+            overall_score=self.solver.Objective().Value(),
+            overall_attribute_values=overall_attributes
+        )
