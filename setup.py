@@ -5,7 +5,7 @@ setup(
     version="0.3",
     description="Package for Explainable Recommender Framework.",
     url="git@github.com:solashirai/ExplainableRecommenderFramework.git",
-    author="Sola S. Shirai",
+    author="Sola S.D. Shirai",
     packages=[
         "frex",
         "frex.models",
