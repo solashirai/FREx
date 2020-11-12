@@ -14,7 +14,7 @@ class ConstraintSolver:
     """
 
     def __init__(self):
-        self.solver = pywraplp.Solver.CreateSolver("SCIP")
+        self._solver = pywraplp.Solver.CreateSolver("SCIP")
         self._candidates = ()
         self._sections = 1
         self._per_section_count = 1
@@ -120,18 +120,18 @@ class ConstraintSolver:
         solve_choice = {}
         for i in range(candidate_count):
             for j in range(self._sections):
-                solve_choice[i, j] = self.solver.IntVar(0, 1, "")
+                solve_choice[i, j] = self._solver.IntVar(0, 1, "")
 
         # each item is only assigned to one section
         for i in range(candidate_count):
-            self.solver.Add(
-                self.solver.Sum([solve_choice[i, j] for j in range(self._sections)]) <= 1
+            self._solver.Add(
+                self._solver.Sum([solve_choice[i, j] for j in range(self._sections)]) <= 1
             )
 
         # each section has exactly per_section_count items chosen
         for j in range(self._sections):
-            self.solver.Add(
-                self.solver.Sum([solve_choice[i, j] for i in range(candidate_count)])
+            self._solver.Add(
+                self._solver.Sum([solve_choice[i, j] for i in range(candidate_count)])
                 == self._per_section_count
             )
 
@@ -141,27 +141,27 @@ class ConstraintSolver:
         for psc in self._section_constraints:
             attributes_of_interest.add(psc.attribute_name)
             for j in range(self._sections):
-                ss = self.solver.Sum(
+                ss = self._solver.Sum(
                     [
                         rgetattr(self._candidates[i].domain_object, psc.attribute_name)
                         * solve_choice[i, j]
                         for i in range(candidate_count)
                     ]
                 )
-                self.solver.Add(psc.constraint_type(ss, psc.constraint_value))
+                self._solver.Add(psc.constraint_type(ss, psc.constraint_value))
 
         # constraints to apply to the overall solution, based on certain field names
         # constraints are added to the solver here for similar reasons as the section_constraints
         for oc in self._overall_constraints:
             attributes_of_interest.add(oc.attribute_name)
-            ss = self.solver.Sum(
+            ss = self._solver.Sum(
                 [
                     rgetattr(self._candidates[i].domain_object, oc.attribute_name) * solve_choice[i, j]
                     for i in range(candidate_count)
                     for j in range(self._sections)
                 ]
             )
-            self.solver.Add(oc.constraint_type(ss, oc.constraint_value))
+            self._solver.Add(oc.constraint_type(ss, oc.constraint_value))
 
         # maximize score
         objective_terms = []
@@ -171,9 +171,9 @@ class ConstraintSolver:
                 # e.g., we would prefer the combination of all items in a section to have some field value in a range,
                 # so incorporate that into the score somehow?
                 objective_terms.append(self._candidates[i].total_score * solve_choice[i, j])
-        self.solver.Maximize(self.solver.Sum(objective_terms))
+        self._solver.Maximize(self._solver.Sum(objective_terms))
 
-        status = self.solver.Solve()
+        status = self._solver.Solve()
 
         if status != pywraplp.Solver.OPTIMAL and status != pywraplp.Solver.FEASIBLE:
             # possibly to revisit, if in the future it makes more sense to raise an exception than return None
@@ -202,6 +202,6 @@ class ConstraintSolver:
 
         return ConstraintSolution(
             sections=tuple(sections),
-            overall_score=self.solver.Objective().Value(),
+            overall_score=self._solver.Objective().Value(),
             overall_attribute_values=overall_attributes
         )
