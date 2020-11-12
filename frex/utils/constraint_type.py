@@ -7,20 +7,20 @@ class ConstraintType(Enum):
     """
 
     @staticmethod
-    def eq(x, y):
+    def __eq(x, y):
         return x == y
 
     @staticmethod
-    def leq(x, y):
+    def __leq(x, y):
         return x <= y
 
     @staticmethod
-    def geq(x, y):
+    def __geq(x, y):
         return x >= y
 
-    EQ = eq
-    LEQ = leq
-    GEQ = geq
+    EQ = __eq
+    LEQ = __leq
+    GEQ = __geq
 
     def __call__(self, *args):
         return self.value(*args)

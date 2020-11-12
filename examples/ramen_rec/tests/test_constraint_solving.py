@@ -15,13 +15,13 @@ def test_choose_ramens_using_constraints(
         )
     )
 
-    solution = ConstraintSolver().\
-        set_candidates(candidates=pipeline_candidate_results)\
-        .set_sections(num_sections=2)\
+    solution = ConstraintSolver()\
+        .set_candidates(candidates=pipeline_candidate_results)\
+        .set_sections(sections=2)\
         .set_items_per_section(count=3)\
-        .add_section_constraint(attribute_name='price', constraint_type=ConstraintType.LEQ, constraint_val=7.0)\
-        .add_section_constraint(attribute_name='rating', constraint_type=ConstraintType.GEQ, constraint_val=7)\
-        .add_overall_constraint(attribute_name='price', constraint_type=ConstraintType.LEQ, constraint_val=13.0)\
+        .add_section_constraint(attribute_name='price', constraint_type=ConstraintType.LEQ, constraint_value=7.0)\
+        .add_section_constraint(attribute_name='rating', constraint_type=ConstraintType.GEQ, constraint_value=7)\
+        .add_overall_constraint(attribute_name='price', constraint_type=ConstraintType.LEQ, constraint_value=13.0)\
         .solve()
 
     section_ratings = []
@@ -38,11 +38,11 @@ def test_choose_ramens_using_constraints(
         section_prices.append(section_price)
 
     assert (
-        all(sr >= 7 for sr in section_ratings)
-        and all(sp <= 7 for sp in section_prices)
-        and total_price <= 13
-        and total_price == solution.overall_attribute_values['price']
-        and section_prices[0] == solution.sections[0].section_attribute_values['price']
-        and len(solution.sections) == 2
-        and len(solution.sections[0].section_candidates) == 3
+            all(sr >= 7 for sr in section_ratings)
+            and all(sp <= 7 for sp in section_prices)
+            and total_price <= 13
+            and total_price == solution.overall_attribute_values['price']
+            and section_prices[0] == solution.sections[0].section_attribute_values['price']
+            and len(solution.sections) == 2
+            and len(solution.sections[0].section_candidates) == 3
     )

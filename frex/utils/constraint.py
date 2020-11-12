@@ -8,4 +8,4 @@ class Constraint(NamedTuple):
     """
     attribute_name: str
     constraint_type: ConstraintType
-    constraint_val: int
+    constraint_value: int

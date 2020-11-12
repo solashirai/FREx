@@ -9,4 +9,4 @@ from frex.models import ConstraintSectionSolution
 class ConstraintSolution:
     overall_score: int
     overall_attribute_values: Dict[str, int]
-    sections: Tuple[ConstraintSectionSolution]
+    sections: Tuple[ConstraintSectionSolution, ...]
