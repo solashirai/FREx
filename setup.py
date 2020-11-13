@@ -17,4 +17,14 @@ setup(
         "frex.pipeline_stages.filters",
         "frex.pipeline_stages.scorers",
     ],
+    install_requires=[
+        "dataclasses-json",
+        "numpy",
+        "pytest",
+        "rdflib",
+        "scipy",
+        "sklearn",
+        "SPARQLWrapper",
+        "ortools",
+    ]
 )
