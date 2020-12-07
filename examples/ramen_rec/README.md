@@ -1,3 +1,5 @@
+An example of running this toy example can be seen in the [jupyter notebook](https://github.com/solashirai/ExplainableRecommenderFramework/blob/master/examples/ramen_rec/example_run.ipynb).
+
 Data source: https://www.kaggle.com/residentmario/ramen-ratings
 
 This is a toy example using the explainable recommender framework to recommend ramen products.
