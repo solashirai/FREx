@@ -1,9 +1,10 @@
 from __future__ import annotations
-from ortools.linear_solver import pywraplp
-from frex.models import Candidate, ConstraintSectionSolution, ConstraintSolution
+# from ortools.linear_solver import pywraplp
+from ortools.sat.python import cp_model
+from frex.models import Candidate, ConstraintSolutionSection, ConstraintSolution
 from typing import Tuple, Optional
 from frex.utils.common import rgetattr
-from frex.utils import ConstraintType, Constraint
+from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint
 from enum import Enum
 
 
@@ -13,13 +14,17 @@ class ConstraintSolver:
     set of items.
     """
 
-    def __init__(self):
-        self._solver = pywraplp.Solver.CreateSolver("SCIP")
-        self._candidates = ()
-        self._sections = 1
-        self._per_section_count = 1
-        self._section_constraints = []
-        self._overall_constraints = []
+    def __init__(self, *, scaling: int = 1):
+        self._model = cp_model.CpModel()
+        self._solver = cp_model.CpSolver()
+        self._candidates: Tuple[Candidate, ...] = ()
+        self._sections: Tuple[SectionSetConstraint, ...] = ()
+
+        self._scaling = scaling
+
+        self._overall_item_constraints = []
+
+        self._count_constraints = []
 
     def set_candidates(self, *, candidates: Tuple[Candidate, ...]):
         """
@@ -34,60 +39,65 @@ class ConstraintSolver:
         self._candidates = candidates
         return self
 
-    def set_sections(self, *, sections: int):
+    def set_sections(self, *, sections: Tuple[SectionSetConstraint, ...]):
         """
-        Set the number of sections in the solution. A section can be thought of as a grouping of items, and the solution
-        will give a set of sections each containing some number of items based on all other constraints and the
-        optimization target.
-        For example, if we are trying to produce a meal plan for 7 days, we can model this by applying the constraint
-        solver with 7 sections (days) where each section contains some number of items (i.e. number of meals per day).
-        Candidates are also expected to have already been appropriately filtered by the pipeline so that we do not
-        consider undesirable candidates during the optimization process.
+        UPDATE DOCSTRING
 
-        :param sections: The number of sections for the final solution to contain
+        :param sections:
         :return: self, with an updated sections parameter
         """
         self._sections = sections
         return self
 
-    def set_items_per_section(self, *, count: int):
-        """
-        Set the number of items that should be assigned to each section in the solution. This corresponds to
-        the number of Candidates that are chosen in the final solution.
-        The implementation currently enforces that each section will contain *exactly* this many items.
-
-        :param count: The number of items that must be assigned to each section.
-        :return: self, with the per_section_count updated
-        """
-        self._per_section_count = count
-        return self
-
-    def add_section_constraint(
+    def add_overall_count_constraint(
         self,
         *,
-        attribute_name: str,
-        constraint_type: ConstraintType,
-        constraint_value: int
+        min_count: int = None,
+        max_count: int = None,
+        exact_count: int = None,
     ):
         """
-        Add a constraint to be applied to each section solution. E.g., a constraint on the cost of all items chosen
-        within each given section.
+        Set constraints on the total number of items chosen for the solution.
+        This function will check for an exact count first, and if it exists it will only create a constraint for making
+        sure the number of items assigned to the target section is equal to that quantity. Otherwise, both a min
+        and max count of items assigned to a section can be specified.
 
-        :param attribute_name: The domain_object's attribute to apply the constraint to
-        :param constraint_type: The type of constraint - i.e. ==, <=, or >=
-        :param constraint_value: The value to constraint the solution to
-        :return: self, with a new Constraint added to the section_constraints list
+        :param min_count: The minimum number of items to assign to the target section
+        :param max_count: The maximum number of items to assign to the target section
+        :param exact_count: An exact number of items to assign to the target section
+        :return:
         """
-        self._section_constraints.append(
-            Constraint(
-                attribute_name=attribute_name,
-                constraint_type=constraint_type,
-                constraint_value=constraint_value,
+        constraints = []
+        # check exact count first.
+        if exact_count is not None:
+            self._count_constraints.append(
+                AttributeConstraint(
+                    attribute_name='__item_count',
+                    constraint_type=ConstraintType.EQ,
+                    constraint_value=exact_count
+                )
             )
-        )
+        else:
+            if min_count is not None:
+                self._count_constraints.append(
+                    AttributeConstraint(
+                        attribute_name='__item_count',
+                        constraint_type=ConstraintType.GEQ,
+                        constraint_value=min_count
+                    )
+                )
+            if max_count is not None:
+                self._count_constraints.append(
+                    AttributeConstraint(
+                        attribute_name='__item_count',
+                        constraint_type=ConstraintType.LEQ,
+                        constraint_value=max_count
+                    )
+                )
+
         return self
 
-    def add_overall_constraint(
+    def add_overall_item_constraint(
         self,
         *,
         attribute_name: str,
@@ -103,8 +113,8 @@ class ConstraintSolver:
         :param constraint_value: The value to constraint the solution to
         :return: self, with a new Constraint added to the overall_constraints list
         """
-        self._overall_constraints.append(
-            Constraint(
+        self._overall_item_constraints.append(
+            AttributeConstraint(
                 attribute_name=attribute_name,
                 constraint_type=constraint_type,
                 constraint_value=constraint_value,
@@ -133,99 +143,74 @@ class ConstraintSolver:
         # keep track of attributes that have constraints applied, to be able to show relevant results in the solution
         attributes_of_interest = set()
 
-        solve_choice = {}
+        item_choices = []
         for i in range(candidate_count):
-            for j in range(self._sections):
-                solve_choice[i, j] = self._solver.IntVar(0, 1, "")
+            item_choices.append(self._model.NewIntVar(0, 1, ""))
+        item_choices = tuple(item_choices)
 
-        # each item is only assigned to one section
-        for i in range(candidate_count):
-            self._solver.Add(
-                self._solver.Sum([solve_choice[i, j] for j in range(self._sections)])
-                <= 1
-            )
+        for section in self._sections:
+            section.setup_section_constraints(items=self._candidates, item_selection=item_choices, model=self._model)
+            attributes_of_interest = attributes_of_interest.union(section.attributes_of_interest)
 
-        # each section has exactly per_section_count items chosen
-        for j in range(self._sections):
-            self._solver.Add(
-                self._solver.Sum([solve_choice[i, j] for i in range(candidate_count)])
-                == self._per_section_count
-            )
-
-        # constraints to apply on each section, based on certain field names
-        # constraints are added to the solver here (rather than in the add_section_constraints function) because we need
-        # to know the number of sections/candidates beforehand to correctly map out these constraints.
-        for psc in self._section_constraints:
-            attributes_of_interest.add(psc.attribute_name)
-            for j in range(self._sections):
-                ss = self._solver.Sum(
-                    [
-                        rgetattr(self._candidates[i].domain_object, psc.attribute_name)
-                        * solve_choice[i, j]
-                        for i in range(candidate_count)
-                    ]
-                )
-                self._solver.Add(psc.constraint_type(ss, psc.constraint_value))
-
-        # constraints to apply to the overall solution, based on certain field names
-        # constraints are added to the solver here for similar reasons as the section_constraints
-        for oc in self._overall_constraints:
+        for oc in self._overall_item_constraints:
             attributes_of_interest.add(oc.attribute_name)
-            ss = self._solver.Sum(
+            ss = sum(
                 [
-                    rgetattr(self._candidates[i].domain_object, oc.attribute_name)
-                    * solve_choice[i, j]
+                    int(round(rgetattr(self._candidates[i].domain_object, oc.attribute_name)*self._scaling))
+                    * item_choices[i]
                     for i in range(candidate_count)
-                    for j in range(self._sections)
                 ]
             )
-            self._solver.Add(oc.constraint_type(ss, oc.constraint_value))
+            self._model.Add(oc.constraint_type(ss, int(round(oc.constraint_value*self._scaling))))
+
+        if self._count_constraints:
+            item_count = sum([item_choices[i] for i in range(candidate_count)])
+            for cc in self._count_constraints:
+                self._model.Add(cc.constraint_type(item_count, cc.constraint_value))
 
         # maximize score
         objective_terms = []
         for i in range(candidate_count):
-            for j in range(self._sections):
-                # in the future, maybe incorporate more into this objective function
-                # e.g., we would prefer the combination of all items in a section to have some field value in a range,
-                # so incorporate that into the score somehow?
-                objective_terms.append(
-                    self._candidates[i].total_score * solve_choice[i, j]
-                )
-        self._solver.Maximize(self._solver.Sum(objective_terms))
+            # in the future, maybe incorporate more into this objective function
+            # e.g., we would prefer the combination of all items in a section to have some field value in a range,
+            # so incorporate that into the score somehow?
+            objective_terms.append(
+                int(round(self._candidates[i].total_score * self._scaling)) * item_choices[i]
+            )
+        self._model.Maximize(sum(objective_terms))
 
-        status = self._solver.Solve()
+        status = self._solver.Solve(self._model)
 
-        if status != pywraplp.Solver.OPTIMAL and status != pywraplp.Solver.FEASIBLE:
+        if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
             # possibly to revisit, if in the future it makes more sense to raise an exception than return None
             return None
 
-        sections = []
         overall_attributes = {attr: 0 for attr in attributes_of_interest}
-        for j in range(self._sections):
-            section_candidates = []
-            section_attributes = {attr: 0 for attr in attributes_of_interest}
-            section_score = 0
-            for i in range(candidate_count):
-                if solve_choice[i, j].solution_value() > 0.5:
-                    # print("Candidate ", i, " assigned to section ", j)
-                    section_candidates.append(self._candidates[i])
-                    section_score += self._candidates[i].total_score
-                    for attr in attributes_of_interest:
-                        section_attributes[attr] += rgetattr(
-                            self._candidates[i].domain_object, attr
-                        )
-            sections.append(
-                ConstraintSectionSolution(
-                    section_candidates=tuple(section_candidates),
-                    section_score=section_score,
-                    section_attribute_values=section_attributes,
-                )
-            )
-            for attr in attributes_of_interest:
-                overall_attributes[attr] += section_attributes[attr]
+
+        selected_candidates = []
+        if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
+            # TODO what to do if no solution?
+            print('no optimal or feasible solution found.', status)
+            return None
+        else:
+            # if status == cp_model.OPTIMAL:
+                # print('optimal solution found')
+
+            for i in range(len(item_choices)):
+                if self._solver.Value(item_choices[i]):
+                    candidate = self._candidates[i]
+                    selected_candidates.append(candidate)
+
+                    for attr in overall_attributes.keys():
+                        overall_attributes[attr] += rgetattr(candidate.domain_object, attr)
+        section_assignments = [section.get_solution_assignments(solver=self._solver,
+                                                                items=self._candidates,
+                                                                )
+                               for section in self._sections]
 
         return ConstraintSolution(
-            sections=tuple(sections),
-            overall_score=self._solver.Objective().Value(),
+            solution_section_sets=tuple(section_assignments),
+            overall_score=self._solver.ObjectiveValue()/self._scaling,
             overall_attribute_values=overall_attributes,
+            items=tuple(selected_candidates)
         )

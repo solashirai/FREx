@@ -1,7 +1,7 @@
 from typing import Tuple, Dict
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from frex.models import ConstraintSectionSolution
+from frex.models import ConstraintSolutionSectionSet, Candidate
 
 
 @dataclass_json
@@ -14,4 +14,5 @@ class ConstraintSolution:
 
     overall_score: int
     overall_attribute_values: Dict[str, int]
-    sections: Tuple[ConstraintSectionSolution, ...]
+    solution_section_sets: Tuple[ConstraintSolutionSectionSet, ...]
+    items: Tuple[Candidate, ...]
