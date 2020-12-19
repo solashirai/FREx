@@ -178,7 +178,7 @@ class SectionSetConstraint:
             next_level_bools = [new_or_bool]
             next_level_bools.extend(parent_bools)
             self._add_recursive_enforcement_booleans(model=model, parent_bools=next_level_bools, hierarchy=next_level)
-        if nested_and_bools:
+        if nested_or_bools:
             model.Add(sum(nested_or_bools) >= 1).OnlyEnforceIf(parent_bools)
 
     def add_section_assignment_constraint(
