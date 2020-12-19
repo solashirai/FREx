@@ -156,11 +156,10 @@ class SectionSetConstraint:
         :param hierarchy: The SectionConstraintHierarchy to be recursively working through to add boolean variables
         :return:
         """
-        print("????????????????????????????????????????????")
         self._section_enforcement_bools[self._uri_to_index[hierarchy.root_uri]].extend(parent_bools)
 
         nested_and_bools = []
-        for next_level in SectionConstraintHierarchy.dependency_and:
+        for next_level in hierarchy.dependency_and:
             new_and_bool = model.NewBoolVar("")
             nested_and_bools.append(new_and_bool)
 
@@ -171,7 +170,7 @@ class SectionSetConstraint:
             model.Add(sum(nested_and_bools) >= len(nested_and_bools)).OnlyEnforceIf(parent_bools)
 
         nested_or_bools = []
-        for next_level in SectionConstraintHierarchy.dependency_or:
+        for next_level in hierarchy.dependency_or:
             new_or_bool = model.NewBoolVar("")
             nested_or_bools.append(new_or_bool)
 
@@ -302,10 +301,8 @@ class SectionSetConstraint:
                 self._add_recursive_enforcement_booleans(
                     model=model, parent_bools=[top_level_bool], hierarchy=hierarchy)
 
-        print('section setup')
         for section_index in range(section_count):
             section_bools = self._section_enforcement_bools[section_index]
-            print(section_bools, ' bools for ', self._sections[section_index].uri)
 
             for ac in self._assignment_count_constraint[section_index]:
                 section_assignment_sum = sum(
