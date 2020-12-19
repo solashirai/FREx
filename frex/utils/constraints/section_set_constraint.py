@@ -23,7 +23,7 @@ class SectionSetConstraint:
         self._targeted_section_constraints: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
 
         self._section_constraint_hierarchies: List[SectionConstraintHierarchy, ...] = []
-        self._section_enforcement_bools = []
+        self._section_enforcement_bools = defaultdict(lambda: [])
 
         self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
         def always_true(*args):
@@ -58,7 +58,6 @@ class SectionSetConstraint:
         :return:
         """
         self._sections = sections
-        self._section_enforcement_bools = [[] for i in range(len(sections))]
         # keep a dictionary relating the domain object's URI to its index that is used for constraint solving purposes
         for index, section in enumerate(sections):
             self._uri_to_index[section.uri] = index
@@ -302,8 +301,10 @@ class SectionSetConstraint:
                 self._add_recursive_enforcement_booleans(
                     model=model, parent_bools=[top_level_bool], hierarchy=hierarchy)
 
+        print('section setup')
         for section_index in range(section_count):
             section_bools = self._section_enforcement_bools[section_index]
+            print(section_bools, ' bools for ', self._sections[section_index].uri)
 
             for ac in self._assignment_count_constraint[section_index]:
                 section_assignment_sum = sum(
