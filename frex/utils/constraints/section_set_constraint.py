@@ -25,7 +25,7 @@ class SectionSetConstraint:
         self._section_constraint_hierarchies: List[SectionConstraintHierarchy, ...] = []
         self._section_enforcement_bools = []
 
-        self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = {}
+        self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
         def always_true(*args):
             return True
         self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: always_true)
@@ -259,10 +259,10 @@ class SectionSetConstraint:
                 )
 
         if target_uri is not None:
-            self._assignment_count_constraint[self._uri_to_index[target_uri]] = constraints
+            self._assignment_count_constraint[self._uri_to_index[target_uri]].extend(constraints)
         else:
             for index in self._uri_to_index.values():
-                self._assignment_count_constraint[index] = constraints
+                self._assignment_count_constraint[index].extend(constraints)
         return self
 
     def setup_section_constraints(
