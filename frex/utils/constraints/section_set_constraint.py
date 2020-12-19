@@ -297,8 +297,10 @@ class SectionSetConstraint:
         # various constraints on each solution section
         if self._section_constraint_hierarchies:
             for hierarchy in self._section_constraint_hierarchies:
+                top_level_bool = model.NewBoolVar("")
+                model.Add(top_level_bool == 1)
                 self._add_recursive_enforcement_booleans(
-                    model=model, parent_bools=[], hierarchy=hierarchy)
+                    model=model, parent_bools=[top_level_bool], hierarchy=hierarchy)
 
         for section_index in range(section_count):
             section_bools = self._section_enforcement_bools[section_index]
