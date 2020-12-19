@@ -156,7 +156,8 @@ class SectionSetConstraint:
         :param hierarchy: The SectionConstraintHierarchy to be recursively working through to add boolean variables
         :return:
         """
-        self._section_enforcement_bools[self._uri_to_index[hierarchy.root_uri]] = parent_bools
+        print("????????????????????????????????????????????")
+        self._section_enforcement_bools[self._uri_to_index[hierarchy.root_uri]].extend(parent_bools)
 
         nested_and_bools = []
         for next_level in SectionConstraintHierarchy.dependency_and:
