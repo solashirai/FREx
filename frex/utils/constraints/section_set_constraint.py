@@ -69,18 +69,18 @@ class SectionSetConstraint:
             self,
             *,
             target_uri: URIRef,
-            filter: Callable[..., bool]
+            filter_function: Callable[..., bool]
     ):
         """
         Add a filter for sections to determine whether or not each item is allowed to be assigned to it.
         If no filter is specified for a given section, we assume all items are allowed to be assigned.
 
         :param target_uri: The URI of the section to set this filter for
-        :param filter: The filter function that takes anything as input and produces a bool indicating whether that item
-        is allowed to be assigned to the target section
+        :param filter_function: The filter function that takes anything as input and produces a bool indicating whether
+        that item is allowed to be assigned to the target section
         :return:
         """
-        self._section_assignment_filter[self._uri_to_index[target_uri]] = filter
+        self._section_assignment_filter[self._uri_to_index[target_uri]] = filter_function
         return self
 
     def add_section_constraint(
