@@ -306,7 +306,7 @@ class SectionSetConstraint:
             for ac in self._assignment_count_constraint[section_index]:
                 section_assignment_sum = sum(
                     [self._item_assignments[i, section_index]
-                     * self._section_assignment_filter[section_index](items[i])
+                     * self._section_assignment_filter[section_index](items[i].domain_object)
                      for i in range(item_count)])
                 model.Add(ac.constraint_type(section_assignment_sum, ac.constraint_value)).OnlyEnforceIf(section_bools)
 
@@ -315,7 +315,7 @@ class SectionSetConstraint:
                 ss = sum(
                     [
                         int(round(rgetattr(items[i].domain_object, ac.attribute_name)*self._scaling))
-                        * self._section_assignment_filter[section_index](items[i])
+                        * self._section_assignment_filter[section_index](items[i].domain_object)
                         * self._item_assignments[i, section_index]
                         for i in range(item_count)
                     ]
