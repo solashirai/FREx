@@ -14,5 +14,5 @@ class SectionConstraintHierarchy:
     This currently only correctly supports hierarchies of sections as trees (?)
     """
     root_uri: URIRef
-    dependency_and: Optional[Tuple[SectionConstraintHierarchy, ]] = ()
+    dependency_and: Optional[Tuple[SectionConstraintHierarchy, ...]] = ()
     dependency_or: Optional[Tuple[SectionConstraintHierarchy, ...]] = ()
