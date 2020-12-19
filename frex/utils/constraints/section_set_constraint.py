@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, List, Dict
+from typing import Optional, Tuple, List, Dict, Callable
 from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy
 from frex.utils.common import rgetattr
 from frex.models import DomainObject, Candidate, ConstraintSolutionSectionSet, ConstraintSolutionSection
@@ -26,6 +26,7 @@ class SectionSetConstraint:
         self._section_enforcement_bools = []
 
         self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = {}
+        self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: True)
         self._section_assignment_constraints: List[SectionAssignmentConstraint] = []
 
         # this dict will store variables used to assign items to each section in the optimization solution
@@ -60,6 +61,24 @@ class SectionSetConstraint:
         for index, section in enumerate(sections):
             self._uri_to_index[section.uri] = index
 
+        return self
+
+    def set_section_assignment_filter(
+            self,
+            *,
+            target_uri: URIRef,
+            filter: Callable[..., bool]
+    ):
+        """
+        Add a filter for sections to determine whether or not each item is allowed to be assigned to it.
+        If no filter is specified for a given section, we assume all items are allowed to be assigned.
+
+        :param target_uri: The URI of the section to set this filter for
+        :param filter: The filter function that takes anything as input and produces a bool indicating whether that item
+        is allowed to be assigned to the target section
+        :return:
+        """
+        self._section_assignment_filter[self._uri_to_index[target_uri]] = filter
         return self
 
     def add_section_constraint(
@@ -283,7 +302,10 @@ class SectionSetConstraint:
             section_bools = self._section_enforcement_bools[section_index]
 
             for ac in self._assignment_count_constraint[section_index]:
-                section_assignment_sum = sum([self._item_assignments[i, section_index] for i in range(item_count)])
+                section_assignment_sum = sum(
+                    [self._item_assignments[i, section_index]
+                     * self._section_assignment_filter[section_index](items[i])
+                     for i in range(item_count)])
                 model.Add(ac.constraint_type(section_assignment_sum, ac.constraint_value)).OnlyEnforceIf(section_bools)
 
             for ac in self._targeted_section_constraints[section_index]:
@@ -291,6 +313,7 @@ class SectionSetConstraint:
                 ss = sum(
                     [
                         int(round(rgetattr(items[i].domain_object, ac.attribute_name)*self._scaling))
+                        * self._section_assignment_filter[section_index](items[i])
                         * self._item_assignments[i, section_index]
                         for i in range(item_count)
                     ]
