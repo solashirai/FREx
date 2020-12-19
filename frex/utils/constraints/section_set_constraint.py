@@ -26,7 +26,9 @@ class SectionSetConstraint:
         self._section_enforcement_bools = []
 
         self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = {}
-        self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: True)
+        def always_true(*args):
+            return True
+        self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: always_true)
         self._section_assignment_constraints: List[SectionAssignmentConstraint] = []
 
         # this dict will store variables used to assign items to each section in the optimization solution
