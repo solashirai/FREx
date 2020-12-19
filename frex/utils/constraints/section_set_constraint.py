@@ -22,7 +22,7 @@ class SectionSetConstraint:
         self._uri_to_index = {}
         self._targeted_section_constraints: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
 
-        self._section_constraint_hierarchy: Optional[SectionConstraintHierarchy] = None
+        self._section_constraint_hierarchies: List[SectionConstraintHierarchy, ...] = []
         self._section_enforcement_bools = []
 
         self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = {}
@@ -114,7 +114,7 @@ class SectionSetConstraint:
         :param hierarchy: A SectionConstraintHierarchy of sections that will be applied for the solution sections.
         :return:
         """
-        self._section_constraint_hierarchy = hierarchy
+        self._section_constraint_hierarchies.append(hierarchy)
 
         return self
 
@@ -274,9 +274,10 @@ class SectionSetConstraint:
 
         # set up boolean operators among sections, which will be used to choose whether or not to enforce
         # various constraints on each solution section
-        if self._section_constraint_hierarchy:
-            self._add_recursive_enforcement_booleans(
-                model=model, parent_bools=[], hierarchy=self._section_constraint_hierarchy)
+        if self._section_constraint_hierarchies:
+            for hierarchy in self._section_constraint_hierarchies:
+                self._add_recursive_enforcement_booleans(
+                    model=model, parent_bools=[], hierarchy=hierarchy)
 
         for section_index in range(section_count):
             section_bools = self._section_enforcement_bools[section_index]
