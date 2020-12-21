@@ -1,4 +1,4 @@
-from typing import Optional, Tuple, List, Dict, Callable
+from typing import Optional, Tuple, List, Dict, Callable, Set
 from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy
 from frex.utils.common import rgetattr
 from frex.models import DomainObject, Candidate, ConstraintSolutionSectionSet, ConstraintSolutionSection
@@ -29,6 +29,7 @@ class SectionSetConstraint:
         def always_true(*args):
             return True
         self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: always_true)
+        self._allow_invalid_assignment: Set[int] = set()
         self._section_assignment_constraints: List[SectionAssignmentConstraint] = []
 
         # this dict will store variables used to assign items to each section in the optimization solution
@@ -80,6 +81,22 @@ class SectionSetConstraint:
         :return:
         """
         self._section_assignment_filter[self._uri_to_index[target_uri]] = filter_function
+        return self
+
+    def allow_invalid_assignment_to_section(
+            self,
+            *,
+            target_uri: URIRef
+    ):
+        """
+        Indicate that a section is allowed to have 'invalid' items (i.e., items that would return False by the section's
+        assignment filter) assigned to it. This can increase the time it takes to find a solution, but can allow uses
+        like having a 'restriction' between sections.
+
+        :param target_uri: The URI of the section to allow invalid assignments for
+        :return:
+        """
+        self._allow_invalid_assignment.add(self._uri_to_index[target_uri])
         return self
 
     def add_section_constraint(
@@ -285,10 +302,13 @@ class SectionSetConstraint:
 
         for i in range(item_count):
             this_item_assignment_vars = []
-            for j in range(section_count):
-                self._item_assignments[i, j] = model.NewIntVar(0, 1, "")
-                this_item_assignment_vars.append(self._item_assignments[i, j])
-                model.Add(self._item_assignments[i, j] <= item_selection[i])
+            for section_index in range(section_count):
+                self._item_assignments[i, section_index] = model.NewIntVar(0, 1, "")
+                this_item_assignment_vars.append(self._item_assignments[i, section_index])
+                model.Add(self._item_assignments[i, section_index] <= item_selection[i])
+                if section_index not in self._allow_invalid_assignment:
+                    model.Add(self._item_assignments[i, section_index] <=
+                              self._section_assignment_filter[section_index](items[i].domain_object))
             # ensure that each item is assigned to at least 1 section, if it is selected
             model.AddMaxEquality(item_selection[i], this_item_assignment_vars)
 
