@@ -345,6 +345,11 @@ class SectionSetConstraint:
 
         for sac in self._section_assignment_constraints:
             for i in range(item_count):
+                # ignore at-most-1 constraints if the item isn't actually allowed to be assigned to both, to save time.
+                if sac.constraint_type == ConstraintType.AM1:
+                    if not (self._section_assignment_filter[self._uri_to_index[sac.section_a_uri]](items[i].domain_object)
+                            and self._section_assignment_filter[self._uri_to_index[sac.section_b_uri]](items[i].domain_object)):
+                        continue
                 model.Add(sac.constraint_type(
                     self._item_assignments[i, self._uri_to_index[sac.section_a_uri]],
                     self._item_assignments[i, self._uri_to_index[sac.section_b_uri]]
