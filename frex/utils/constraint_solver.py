@@ -39,14 +39,14 @@ class ConstraintSolver:
         self._candidates = candidates
         return self
 
-    def set_sections(self, *, sections: Tuple[SectionSetConstraint, ...]):
+    def set_section_set_constraints(self, *, section_sets: Tuple[SectionSetConstraint, ...]):
         """
-        UPDATE DOCSTRING
+        Set all the SectionSetConstraints that need to be solved to produce a valid solution.
 
-        :param sections:
-        :return: self, with an updated sections parameter
+        :param section_sets: A tuple of SectionSetConstraints that will be applied to the solution
+        :return:
         """
-        self._sections = sections
+        self._sections = section_sets
         return self
 
     def add_overall_count_constraint(

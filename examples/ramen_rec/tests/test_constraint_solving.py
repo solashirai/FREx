@@ -49,7 +49,7 @@ def test_choose_ramens_using_constraints(
             constraint_value=13,
         )
         .add_overall_count_constraint(exact_count=6)  # not strictly necessary, but improves solving speed by a ton
-        .set_sections(sections=solver_sections)
+        .set_section_set_constraints(section_sets=solver_sections)
     )
 
     solution = (solver.solve())
