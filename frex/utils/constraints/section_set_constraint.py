@@ -32,6 +32,8 @@ class SectionSetConstraint:
         self._allow_invalid_assignment: Set[int] = set()
         self._section_assignment_constraints: List[SectionAssignmentConstraint] = []
 
+        self._required_item_assignments: Dict[URIRef, URIRef] = dict()
+
         # this dict will store variables used to assign items to each section in the optimization solution
         self._item_assignments = {}
 
@@ -281,6 +283,23 @@ class SectionSetConstraint:
                 self._assignment_count_constraint[index].extend(constraints)
         return self
 
+    def add_required_item_assignment(
+            self,
+            *,
+            section_uri: URIRef,
+            item_uri: URIRef
+    ):
+        """
+        Add a requirement that the given item is assigned to the target section.
+
+        :param section_uri: The URI of the section to assign the item to
+        :param item_uri: The URI of the item that must be assigned to the target section
+        :return:
+        """
+        self._required_item_assignments[item_uri] = section_uri
+
+        return self
+
     def setup_section_constraints(
             self,
             *,
@@ -302,6 +321,7 @@ class SectionSetConstraint:
 
         for i in range(item_count):
             this_item_assignment_vars = []
+
             for section_index in range(section_count):
                 self._item_assignments[i, section_index] = model.NewIntVar(0, 1, "")
                 this_item_assignment_vars.append(self._item_assignments[i, section_index])
@@ -309,6 +329,13 @@ class SectionSetConstraint:
                 if section_index not in self._allow_invalid_assignment:
                     model.Add(self._item_assignments[i, section_index] <=
                               self._section_assignment_filter[section_index](items[i].domain_object))
+
+            if items[i].domain_object.uri in self._required_item_assignments:
+                target_section_uri = self._required_item_assignments[items[i].domain_object.uri]
+                for section_index, section in enumerate(self._sections):
+                    if section.uri == target_section_uri:
+                        model.Add(self._item_assignments[i, section_index] == 1)
+
             # ensure that each item is assigned to at least 1 section, if it is selected
             model.AddMaxEquality(item_selection[i], this_item_assignment_vars)
 

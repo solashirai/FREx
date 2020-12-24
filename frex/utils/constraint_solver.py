@@ -6,6 +6,7 @@ from typing import Tuple, Optional
 from frex.utils.common import rgetattr
 from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint
 from enum import Enum
+from rdflib import URIRef
 
 
 class ConstraintSolver:
@@ -25,6 +26,8 @@ class ConstraintSolver:
         self._overall_item_constraints = []
 
         self._count_constraints = []
+
+        self._required_item_uris = []
 
     def set_candidates(self, *, candidates: Tuple[Candidate, ...]):
         """
@@ -122,6 +125,20 @@ class ConstraintSolver:
         )
         return self
 
+    def add_required_item_selection(
+            self,
+            *,
+            target_uri: URIRef
+    ):
+        """
+        Require that the final solution selects a candidate whose domain object has the target URI.
+
+        :param target_uri: the URI of the item that must be included in the final solution
+        :return:
+        """
+        self._required_item_uris.append(target_uri)
+        return self
+
     def solve(self) -> Optional[ConstraintSolution]:
         """
         Perform integer programming to solve constraints and maximize an objective function based on the total scores
@@ -138,6 +155,8 @@ class ConstraintSolver:
         :return:
         """
 
+        required_item_uris = set(self._required_item_uris)
+
         candidate_count = len(self._candidates)
 
         # keep track of attributes that have constraints applied, to be able to show relevant results in the solution
@@ -146,6 +165,8 @@ class ConstraintSolver:
         item_choices = []
         for i in range(candidate_count):
             item_choices.append(self._model.NewIntVar(0, 1, ""))
+            if self._candidates[i].domain_object.uri in required_item_uris:
+                self._model.Add(item_choices[i] == 1)
         item_choices = tuple(item_choices)
 
         for section in self._sections:
