@@ -5,3 +5,4 @@ rdflib==5.0.0
 scipy==1.5.2
 SPARQLWrapper==1.8.5
 ortools==8.0.8283
+requests==2.24.0

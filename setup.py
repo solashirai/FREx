@@ -16,5 +16,6 @@ setup(
         "sklearn",
         "SPARQLWrapper",
         "ortools",
+        "requests"
     ]
 )
