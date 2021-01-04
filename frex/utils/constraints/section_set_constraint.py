@@ -1,5 +1,5 @@
 from typing import Optional, Tuple, List, Dict, Callable, Set
-from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy
+from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy, ItemConstraint
 from frex.utils.common import rgetattr
 from frex.models import DomainObject, Candidate, ConstraintSolutionSectionSet, ConstraintSolutionSection
 from rdflib import URIRef
@@ -26,11 +26,13 @@ class SectionSetConstraint:
         self._section_enforcement_bools = defaultdict(lambda: [])
 
         self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
+
         def always_true(*args):
             return True
         self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: always_true)
         self._allow_invalid_assignment: Set[int] = set()
         self._section_assignment_constraints: List[SectionAssignmentConstraint] = []
+        self._item_ordering_constraints: List[ItemConstraint] = []
 
         self._required_item_assignments: Dict[URIRef, URIRef] = dict()
 
@@ -227,6 +229,33 @@ class SectionSetConstraint:
         )
         return self
 
+    def add_item_ordering_constraint(
+            self,
+            *,
+            item_a_uri: URIRef,
+            item_b_uri: URIRef,
+            constraint_type: ConstraintType
+    ):
+        """
+        Add a constraint that a particular item is assigned to a section before/after/together with another item.
+        This type of constraint assumes that the section ordering is meaningful and correlate to some temporal
+        sequence (e.g., each section is a day in the week, ordered Mon/Tues/..., and a constraint is added to
+        make sure the 'order' of item a comes before item b).
+
+        :param item_a_uri: The URI of the first item
+        :param item_b_uri: The URI of the second item
+        :param constraint_type: The type of constraint to apply to the ordering
+        :return:
+        """
+        self._item_ordering_constraints.append(
+            ItemConstraint(
+                constraint_type=constraint_type,
+                item_a_uri=item_a_uri,
+                item_b_uri=item_b_uri
+            )
+        )
+        return self
+
     def add_section_count_constraint(
         self,
         *,
@@ -318,9 +347,11 @@ class SectionSetConstraint:
         """
         item_count = len(item_selection)
         section_count = len(self._sections)
+        item_uri_to_index: Dict[URIRef, int] = dict()  # temporary dictionary to store item indices for convenience
 
         for i in range(item_count):
             this_item_assignment_vars = []
+            item_uri_to_index[items[i].domain_object.uri] = i
 
             for section_index in range(section_count):
                 self._item_assignments[i, section_index] = model.NewIntVar(0, 1, "")
@@ -381,6 +412,19 @@ class SectionSetConstraint:
                     self._item_assignments[i, self._uri_to_index[sac.section_a_uri]],
                     self._item_assignments[i, self._uri_to_index[sac.section_b_uri]]
                 ))
+
+        for ioc in self._item_ordering_constraints:
+            # multiply the index of each section by the item assignment value to enforce item ordering
+            # 1 is added to the index to avoid the edge case around sections with index 0
+            # this assumes each item is only assigned to a single section
+            model.Add(
+                ioc.constraint_type(
+                    sum([self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]*(j+1)
+                         for j in range(section_count)]),
+                    sum([self._item_assignments[item_uri_to_index[ioc.item_b_uri], j]*(j+1)
+                         for j in range(section_count)])
+                )
+            )
 
     def get_solution_assignments(
             self,

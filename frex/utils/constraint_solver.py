@@ -1,10 +1,9 @@
 from __future__ import annotations
-# from ortools.linear_solver import pywraplp
 from ortools.sat.python import cp_model
 from frex.models import Candidate, ConstraintSolutionSection, ConstraintSolution
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict, List
 from frex.utils.common import rgetattr
-from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint
+from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint, ItemConstraint
 from enum import Enum
 from rdflib import URIRef
 
@@ -23,7 +22,8 @@ class ConstraintSolver:
 
         self._scaling = scaling
 
-        self._overall_item_constraints = []
+        self._overall_item_constraints: List[AttributeConstraint] = []
+        self._item_selection_constraints: List[ItemConstraint] = []
 
         self._count_constraints = []
 
@@ -125,6 +125,31 @@ class ConstraintSolver:
         )
         return self
 
+    def add_item_selection_constraint(
+        self,
+        *,
+        item_a_uri: URIRef,
+        item_b_uri: URIRef,
+        constraint_type: ConstraintType
+    ):
+        """
+        Require that candidates chosen in the final solution have some relationship based on the constraint, e.g.,
+        EQ to ensure either both item_a and item_b are selected/not selected, or LEQ to ensure that if item_a is
+        selected then item_b must also be selected.
+        :param item_a_uri: The domain object's URI of the first item
+        :param item_b_uri: The domain object's URI of the second item
+        :param constraint_type: The type of constraint to apply for how the final items are selected
+        :return:
+        """
+        self._item_selection_constraints.append(
+            ItemConstraint(
+                item_a_uri=item_a_uri,
+                item_b_uri=item_b_uri,
+                constraint_type=constraint_type
+            )
+        )
+        return self
+
     def add_required_item_selection(
             self,
             *,
@@ -158,12 +183,14 @@ class ConstraintSolver:
         required_item_uris = set(self._required_item_uris)
 
         candidate_count = len(self._candidates)
+        dom_obj_uri_to_ind: Dict[URIRef, int] = dict()
 
         # keep track of attributes that have constraints applied, to be able to show relevant results in the solution
         attributes_of_interest = set()
 
         item_choices = []
         for i in range(candidate_count):
+            dom_obj_uri_to_ind[self._candidates[i].domain_object.uri] = i
             item_choices.append(self._model.NewIntVar(0, 1, ""))
             if self._candidates[i].domain_object.uri in required_item_uris:
                 self._model.Add(item_choices[i] == 1)
@@ -188,6 +215,14 @@ class ConstraintSolver:
             item_count = sum([item_choices[i] for i in range(candidate_count)])
             for cc in self._count_constraints:
                 self._model.Add(cc.constraint_type(item_count, cc.constraint_value))
+
+        for isc in self._item_selection_constraints:
+            self._model.Add(
+                isc.constraint_type(
+                    item_choices[dom_obj_uri_to_ind[isc.item_a_uri]],
+                    item_choices[dom_obj_uri_to_ind[isc.item_b_uri]],
+                )
+            )
 
         # maximize score
         objective_terms = []
