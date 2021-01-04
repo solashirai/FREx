@@ -229,11 +229,11 @@ class SectionSetConstraint:
         )
         return self
 
-    def add_item_ordering_constraint(
+    def add_item_ordering_dependence_constraint(
             self,
             *,
-            item_a_uri: URIRef,
-            item_b_uri: URIRef,
+            independent_uri: URIRef,
+            dependent_uri: URIRef,
             constraint_type: ConstraintType
     ):
         """
@@ -241,17 +241,19 @@ class SectionSetConstraint:
         This type of constraint assumes that the section ordering is meaningful and correlate to some temporal
         sequence (e.g., each section is a day in the week, ordered Mon/Tues/..., and a constraint is added to
         make sure the 'order' of item a comes before item b).
+        The selection of the item specified by the dependent_uri requires this constraint to be satisfied, while
+        the independent_uri item can be successfully selected even if the dependent_uri is not selected.
 
-        :param item_a_uri: The URI of the first item
-        :param item_b_uri: The URI of the second item
+        :param independent_uri: The URI of the item that can be selected independently of this constraint
+        :param dependent_uri: The URI of the item whose ordering must adhere to this constraint
         :param constraint_type: The type of constraint to apply to the ordering
         :return:
         """
         self._item_ordering_constraints.append(
             ItemConstraint(
                 constraint_type=constraint_type,
-                item_a_uri=item_a_uri,
-                item_b_uri=item_b_uri
+                item_a_uri=independent_uri,
+                item_b_uri=dependent_uri
             )
         )
         return self
@@ -415,14 +417,18 @@ class SectionSetConstraint:
 
         for ioc in self._item_ordering_constraints:
             # multiply the index of each section by the item assignment value to enforce item ordering
-            # 1 is added to the index to avoid the edge case around sections with index 0
+            # 1 is added to the index to avoid the edge case around sections with index 0.
+            # the extra addition of the (j+2) term ensures that the item specified at item_a_uri can be freely selected
+            # while the selection of item_b_uri will require item_a to be selected in the appropriate order.
             # this assumes each item is only assigned to a single section
             model.Add(
                 ioc.constraint_type(
                     sum([self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]*(j+1)
-                         for j in range(section_count)]),
+                         for j in range(section_count)])
+                    + item_selection[item_uri_to_index[ioc.item_b_uri]]*(section_count+2),
                     sum([self._item_assignments[item_uri_to_index[ioc.item_b_uri], j]*(j+1)
                          for j in range(section_count)])
+                    + item_selection[item_uri_to_index[ioc.item_a_uri]] * (section_count + 2)
                 )
             )
 
