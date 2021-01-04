@@ -3,7 +3,7 @@ from ortools.sat.python import cp_model
 from frex.models import Candidate, ConstraintSolutionSection, ConstraintSolution
 from typing import Tuple, Optional, Dict, List
 from frex.utils.common import rgetattr
-from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint, ItemConstraint
+from frex.models.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint, ItemConstraint
 from enum import Enum
 from rdflib import URIRef
 

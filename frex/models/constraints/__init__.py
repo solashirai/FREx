@@ -1,3 +1,6 @@
+from .constraint_solution_section import ConstraintSolutionSection
+from .constraint_solution_section_set import ConstraintSolutionSectionSet
+from .constraint_solution import ConstraintSolution
 from .constraint_type import ConstraintType
 from .attribute_constraint import AttributeConstraint
 from .section_assignment_constraint import SectionAssignmentConstraint

@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, List, Dict, Callable, Set
-from frex.utils.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy, ItemConstraint
+from frex.models.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy, ItemConstraint, ConstraintSolutionSectionSet, ConstraintSolutionSection
 from frex.utils.common import rgetattr
-from frex.models import DomainObject, Candidate, ConstraintSolutionSectionSet, ConstraintSolutionSection
+from frex.models import DomainObject, Candidate
 from rdflib import URIRef
 from collections import defaultdict
 from ortools.sat.python import cp_model

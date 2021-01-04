@@ -1,5 +1,5 @@
 from typing import NamedTuple
-from frex.utils.constraints import ConstraintType
+from frex.models.constraints import ConstraintType
 
 
 class AttributeConstraint(NamedTuple):

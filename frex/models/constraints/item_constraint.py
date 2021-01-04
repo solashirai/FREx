@@ -1,6 +1,6 @@
 from typing import NamedTuple
 from rdflib import URIRef
-from frex.utils.constraints import ConstraintType
+from frex.models.constraints import ConstraintType
 
 
 class ItemConstraint(NamedTuple):

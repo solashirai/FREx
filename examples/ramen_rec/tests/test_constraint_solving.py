@@ -3,7 +3,7 @@ from examples.ramen_rec.app.models import RamenContext, RamenEaterContext
 from examples.ramen_rec.app.pipelines import *
 from examples.ramen_rec.tests.conftest import placeholder_ramen_candidate
 from frex.utils import ConstraintSolver
-from frex.utils.constraints import ConstraintType, SectionSetConstraint
+from frex.models.constraints import ConstraintType, SectionSetConstraint
 from frex.models import DomainObject
 from rdflib import URIRef
 

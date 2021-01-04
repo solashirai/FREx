@@ -1,7 +1,7 @@
 from typing import Tuple, Dict
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
-from frex.models import Candidate, ConstraintSolutionSection
+from frex.models.constraints import ConstraintSolutionSection
 
 
 @dataclass_json
