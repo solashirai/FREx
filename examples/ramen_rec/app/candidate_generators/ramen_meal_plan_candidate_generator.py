@@ -17,11 +17,11 @@ class RamenMealPlanCandidateGenerator(CandidateGenerator):
     def __init__(
         self,
         *,
-        num_days: int = 2,
-        ramens_per_day: int = 3,
-        min_daily_rating: int = 7,
-        max_daily_price: int = 7,
-        max_total_price: int = 13,
+        num_days: int,
+        ramens_per_day: int,
+        min_daily_rating: int,
+        max_daily_price: int,
+        max_total_price: int,
         **kwargs
     ):
         days = []

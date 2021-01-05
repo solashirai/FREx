@@ -13,7 +13,12 @@ class RecommendMealPlanForEaterPipeline(_Pipeline):
     """
 
     def __init__(
-        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService
+        self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService,
+        num_days: int = 2,
+        ramens_per_day: int = 3,
+        min_daily_rating: int = 7,
+        max_daily_price: int = 7,
+        max_total_price: int = 13,
     ):
         self.ramen_candidate_pipe = RecommendForEaterPipeline(vector_file=vector_file,
                                                               ramen_query_service=ramen_query_service)
@@ -21,11 +26,11 @@ class RecommendMealPlanForEaterPipeline(_Pipeline):
             self,
             candidate_generators=(
                 RamenMealPlanCandidateGenerator(
-                    num_days=2,
-                    ramens_per_day=3,
-                    min_daily_rating=7,
-                    max_daily_price=7,
-                    max_total_price=13,
+                    num_days=num_days,
+                    ramens_per_day=ramens_per_day,
+                    min_daily_rating=min_daily_rating,
+                    max_daily_price=max_daily_price,
+                    max_total_price=max_total_price,
                     generator_explanation=Explanation(
                         explanation_string="Based on ramens that you might like, a meal plan was generated."
                     )
