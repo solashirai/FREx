@@ -9,50 +9,12 @@ from rdflib import URIRef
 
 
 def test_choose_ramens_using_constraints(
-    sim_ramen_pipe,
-    test_ramen_101,
+    mealplan_pipe,
+    test_ramen_eater_01,
 ):
-    pipeline_candidate_results = tuple(
-        sim_ramen_pipe(
-            context=RamenContext(target_ramen=test_ramen_101),
-        )
-    )
-
-    solver_sections = (SectionSetConstraint(scaling=100)
-        .set_sections(
-        sections=(
-            DomainObject(uri=URIRef('placeholder.com/day1')),
-            DomainObject(uri=URIRef('placeholder.com/day2'))))
-        .add_section_count_constraint(exact_count=3)
-        .add_section_assignment_constraint(
-            section_a_uri=URIRef('placeholder.com/day1'),
-            section_b_uri=URIRef('placeholder.com/day2'),
-            constraint_type=ConstraintType.AM1
-        )
-        .add_section_constraint(
-            attribute_name="price",
-            constraint_type=ConstraintType.LEQ,
-            constraint_value=7,
-        )
-        .add_section_constraint(
-        attribute_name="rating",
-        constraint_type=ConstraintType.GEQ,
-        constraint_value=7,
-        ),
-    )
-    solver = (
-        ConstraintSolver(scaling=100)
-        .set_candidates(candidates=pipeline_candidate_results)
-        .add_overall_item_constraint(
-            attribute_name="price",
-            constraint_type=ConstraintType.LEQ,
-            constraint_value=13,
-        )
-        .add_overall_count_constraint(exact_count=6)  # not strictly necessary, but improves solving speed by a ton
-        .set_section_set_constraints(section_sets=solver_sections)
-    )
-
-    solution = (solver.solve())
+    # pass in the user context and run the pipeline
+    output_mealplan = tuple(mealplan_pipe(context=RamenEaterContext(ramen_eater_profile=test_ramen_eater_01),))[0]
+    solution = output_mealplan.domain_object
 
     section_ratings = []
     section_prices = []
@@ -67,6 +29,7 @@ def test_choose_ramens_using_constraints(
                 total_price += c.domain_object.price
             section_ratings.append(section_rating)
             section_prices.append(section_price)
+    total_price = round(total_price, 2)
 
     assert (
             all(sr >= 7 for sr in section_ratings)

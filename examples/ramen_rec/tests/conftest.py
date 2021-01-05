@@ -140,6 +140,15 @@ def sim_ramen_pipe(
 
 
 @pytest.fixture(scope="session")
+def mealplan_pipe(
+    graph_ramen_query_service
+) -> RecommendMealPlanForEaterPipeline:
+    return RecommendMealPlanForEaterPipeline(
+        vector_file=vector_file, ramen_query_service=graph_ramen_query_service
+    )
+
+
+@pytest.fixture(scope="session")
 def test_ramen_101() -> Ramen:
     return Ramen(
         uri=ramen_ns["101"],
