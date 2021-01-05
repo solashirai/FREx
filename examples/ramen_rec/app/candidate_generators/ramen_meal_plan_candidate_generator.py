@@ -22,44 +22,46 @@ class RamenMealPlanCandidateGenerator(CandidateGenerator):
         min_daily_rating: int,
         max_daily_price: int,
         max_total_price: int,
-        **kwargs
+        **kwargs,
     ):
         days = []
         for i in range(num_days):
             # generate a bunch of fake 'day' domain objects
-            days.append(DomainObject(uri=URIRef(f'placeholder.com/day{str(i+1)}')))
+            days.append(DomainObject(uri=URIRef(f"placeholder.com/day{str(i+1)}")))
         days = tuple(days)
-        day_solver_section = (SectionSetConstraint(scaling=100)
-                                    .set_sections(sections=days)
-                                    .add_section_count_constraint(exact_count=ramens_per_day)
-                                    .add_section_constraint(
-            attribute_name="price",
-            constraint_type=ConstraintType.LEQ,
-            constraint_value=max_daily_price,
-        )
-                                    .add_section_constraint(
-            attribute_name="rating",
-            constraint_type=ConstraintType.GEQ,
-            constraint_value=min_daily_rating,
-        )
+        day_solver_section = (
+            SectionSetConstraint(scaling=100)
+            .set_sections(sections=days)
+            .add_section_count_constraint(exact_count=ramens_per_day)
+            .add_section_constraint(
+                attribute_name="price",
+                constraint_type=ConstraintType.LEQ,
+                constraint_value=max_daily_price,
+            )
+            .add_section_constraint(
+                attribute_name="rating",
+                constraint_type=ConstraintType.GEQ,
+                constraint_value=min_daily_rating,
+            )
         )
         for day_ind, day in enumerate(days):
-            for day2_ind, day2 in enumerate(days[day_ind+1:]):
+            for day2_ind, day2 in enumerate(days[day_ind + 1 :]):
                 day_solver_section.add_section_assignment_constraint(
                     section_a_uri=day.uri,
                     section_b_uri=day2.uri,
-                    constraint_type=ConstraintType.AM1
+                    constraint_type=ConstraintType.AM1,
                 )
         self.solver = (
             ConstraintSolver(scaling=100)
-                .add_overall_item_constraint(
+            .add_overall_item_constraint(
                 attribute_name="price",
                 constraint_type=ConstraintType.LEQ,
                 constraint_value=max_total_price,
             )
-                .add_overall_count_constraint(
-                exact_count=num_days*ramens_per_day)  # this constraint isnt strictly necessary, but improves solving speed by a ton
-                .set_section_set_constraints(section_sets=(day_solver_section,))
+            .add_overall_count_constraint(
+                exact_count=num_days * ramens_per_day
+            )  # this constraint isnt strictly necessary, but improves solving speed by a ton
+            .set_section_set_constraints(section_sets=(day_solver_section,))
         )
 
         CandidateGenerator.__init__(self, **kwargs)
@@ -68,13 +70,15 @@ class RamenMealPlanCandidateGenerator(CandidateGenerator):
         self,
         *,
         candidates: Generator[Candidate, None, None] = None,
-        context: RamenEaterContext
+        context: RamenEaterContext,
     ) -> Generator[Candidate, None, None]:
         candidates = tuple(candidates)
         self.solver.set_candidates(candidates=candidates)
 
         # just yielding a single 'best' solution for now
-        soln = self.solver.solve(output_uri=URIRef("placeholder.com/placeholderMealPlanURI"))
+        soln = self.solver.solve(
+            output_uri=URIRef("placeholder.com/placeholderMealPlanURI")
+        )
         yield RamenMealPlanCandidate(
             domain_object=soln,
             context=context,

@@ -13,7 +13,11 @@ def test_choose_ramens_using_constraints(
     test_ramen_eater_01,
 ):
     # pass in the user context and run the pipeline
-    output_mealplan = tuple(mealplan_pipe(context=RamenEaterContext(ramen_eater_profile=test_ramen_eater_01),))[0]
+    output_mealplan = tuple(
+        mealplan_pipe(
+            context=RamenEaterContext(ramen_eater_profile=test_ramen_eater_01),
+        )
+    )[0]
     solution = output_mealplan.domain_object
 
     section_ratings = []
@@ -32,12 +36,16 @@ def test_choose_ramens_using_constraints(
     total_price = round(total_price, 2)
 
     assert (
-            all(sr >= 7 for sr in section_ratings)
-            and all(sp <= 7 for sp in section_prices)
-            and total_price <= 13
-            and total_price == round(solution.overall_attribute_values["price"], 2)
-            and section_prices[0] == solution.solution_section_sets[0].sections[0].section_attribute_values["price"]
-            and len(solution.solution_section_sets[0].sections) == 2
-            and len(solution.solution_section_sets[0].sections[0].section_candidates)
-            == len(solution.solution_section_sets[0].sections[1].section_candidates) == 3
+        all(sr >= 7 for sr in section_ratings)
+        and all(sp <= 7 for sp in section_prices)
+        and total_price <= 13
+        and total_price == round(solution.overall_attribute_values["price"], 2)
+        and section_prices[0]
+        == solution.solution_section_sets[0]
+        .sections[0]
+        .section_attribute_values["price"]
+        and len(solution.solution_section_sets[0].sections) == 2
+        and len(solution.solution_section_sets[0].sections[0].section_candidates)
+        == len(solution.solution_section_sets[0].sections[1].section_candidates)
+        == 3
     )

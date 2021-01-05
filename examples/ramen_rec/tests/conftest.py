@@ -140,16 +140,15 @@ def sim_ramen_pipe(
 
 
 @pytest.fixture(scope="session")
-def mealplan_pipe(
-    graph_ramen_query_service
-) -> RecommendMealPlanForEaterPipeline:
+def mealplan_pipe(graph_ramen_query_service) -> RecommendMealPlanForEaterPipeline:
     return RecommendMealPlanForEaterPipeline(
-        vector_file=vector_file, ramen_query_service=graph_ramen_query_service,
-        num_days = 2,
-        ramens_per_day = 3,
-        min_daily_rating = 7,
-        max_daily_price = 7,
-        max_total_price = 13
+        vector_file=vector_file,
+        ramen_query_service=graph_ramen_query_service,
+        num_days=2,
+        ramens_per_day=3,
+        min_daily_rating=7,
+        max_daily_price=7,
+        max_total_price=13,
     )
 
 

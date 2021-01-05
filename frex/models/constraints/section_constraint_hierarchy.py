@@ -13,6 +13,7 @@ class SectionConstraintHierarchy:
     is used to capture logical AND / OR operators among relations.
     This currently only correctly supports hierarchies of sections as trees (?)
     """
+
     root_uri: URIRef
     dependency_and: Optional[Tuple[SectionConstraintHierarchy, ...]] = ()
     dependency_or: Optional[Tuple[SectionConstraintHierarchy, ...]] = ()

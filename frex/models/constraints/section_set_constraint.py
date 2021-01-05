@@ -1,5 +1,13 @@
 from typing import Optional, Tuple, List, Dict, Callable, Set
-from frex.models.constraints import ConstraintType, AttributeConstraint, SectionAssignmentConstraint, SectionConstraintHierarchy, ItemConstraint, ConstraintSolutionSectionSet, ConstraintSolutionSection
+from frex.models.constraints import (
+    ConstraintType,
+    AttributeConstraint,
+    SectionAssignmentConstraint,
+    SectionConstraintHierarchy,
+    ItemConstraint,
+    ConstraintSolutionSectionSet,
+    ConstraintSolutionSection,
+)
 from frex.utils.common import rgetattr
 from frex.models import DomainObject, Candidate
 from rdflib import URIRef
@@ -20,16 +28,23 @@ class SectionSetConstraint:
     def __init__(self, *, scaling: int = 1):
         self._sections: Tuple[DomainObject, ...] = ()
         self._uri_to_index = {}
-        self._targeted_section_constraints: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
+        self._targeted_section_constraints: Dict[
+            int, List[AttributeConstraint]
+        ] = defaultdict(lambda: [])
 
         self._section_constraint_hierarchies: List[SectionConstraintHierarchy, ...] = []
         self._section_enforcement_bools = defaultdict(lambda: [])
 
-        self._assignment_count_constraint: Dict[int, List[AttributeConstraint]] = defaultdict(lambda: [])
+        self._assignment_count_constraint: Dict[
+            int, List[AttributeConstraint]
+        ] = defaultdict(lambda: [])
 
         def always_true(*args):
             return True
-        self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(lambda: always_true)
+
+        self._section_assignment_filter: Dict[int, Callable[..., bool]] = defaultdict(
+            lambda: always_true
+        )
         self._allow_invalid_assignment: Set[int] = set()
         self._section_assignment_constraints: List[SectionAssignmentConstraint] = []
         self._item_ordering_constraints: List[ItemConstraint] = []
@@ -70,10 +85,7 @@ class SectionSetConstraint:
         return self
 
     def set_section_assignment_filter(
-            self,
-            *,
-            target_uri: URIRef,
-            filter_function: Callable[..., bool]
+        self, *, target_uri: URIRef, filter_function: Callable[..., bool]
     ):
         """
         Add a filter for sections to determine whether or not each item is allowed to be assigned to it.
@@ -84,14 +96,12 @@ class SectionSetConstraint:
         that item is allowed to be assigned to the target section
         :return:
         """
-        self._section_assignment_filter[self._uri_to_index[target_uri]] = filter_function
+        self._section_assignment_filter[
+            self._uri_to_index[target_uri]
+        ] = filter_function
         return self
 
-    def allow_invalid_assignment_to_section(
-            self,
-            *,
-            target_uri: URIRef
-    ):
+    def allow_invalid_assignment_to_section(self, *, target_uri: URIRef):
         """
         Indicate that a section is allowed to have 'invalid' items (i.e., items that would return False by the section's
         assignment filter) assigned to it. This can increase the time it takes to find a solution, but can allow uses
@@ -143,9 +153,7 @@ class SectionSetConstraint:
         return self
 
     def add_hierarchical_section_constraint(
-            self,
-            *,
-            hierarchy: SectionConstraintHierarchy
+        self, *, hierarchy: SectionConstraintHierarchy
     ):
         """
         Add constraints based on a hierarchy of logical AND/OR operators that should be enforced.
@@ -160,11 +168,11 @@ class SectionSetConstraint:
         return self
 
     def _add_recursive_enforcement_booleans(
-            self,
-            *,
-            model: cp_model,
-            parent_bools,  # WHAT TYPE IS THIS? List[???]
-            hierarchy: SectionConstraintHierarchy
+        self,
+        *,
+        model: cp_model,
+        parent_bools,  # WHAT TYPE IS THIS? List[???]
+        hierarchy: SectionConstraintHierarchy
     ):
         """
         Recursively add boolean variables to establish relationships among sections.
@@ -177,7 +185,9 @@ class SectionSetConstraint:
         :param hierarchy: The SectionConstraintHierarchy to be recursively working through to add boolean variables
         :return:
         """
-        self._section_enforcement_bools[self._uri_to_index[hierarchy.root_uri]].extend(parent_bools)
+        self._section_enforcement_bools[self._uri_to_index[hierarchy.root_uri]].extend(
+            parent_bools
+        )
 
         nested_and_bools = []
         for next_level in hierarchy.dependency_and:
@@ -186,9 +196,13 @@ class SectionSetConstraint:
 
             next_level_bools = [new_and_bool]
             next_level_bools.extend(parent_bools)
-            self._add_recursive_enforcement_booleans(model=model, parent_bools=next_level_bools, hierarchy=next_level)
+            self._add_recursive_enforcement_booleans(
+                model=model, parent_bools=next_level_bools, hierarchy=next_level
+            )
         if nested_and_bools:
-            model.Add(sum(nested_and_bools) >= len(nested_and_bools)).OnlyEnforceIf(parent_bools)
+            model.Add(sum(nested_and_bools) >= len(nested_and_bools)).OnlyEnforceIf(
+                parent_bools
+            )
 
         nested_or_bools = []
         for next_level in hierarchy.dependency_or:
@@ -197,16 +211,18 @@ class SectionSetConstraint:
 
             next_level_bools = [new_or_bool]
             next_level_bools.extend(parent_bools)
-            self._add_recursive_enforcement_booleans(model=model, parent_bools=next_level_bools, hierarchy=next_level)
+            self._add_recursive_enforcement_booleans(
+                model=model, parent_bools=next_level_bools, hierarchy=next_level
+            )
         if nested_or_bools:
             model.Add(sum(nested_or_bools) >= 1).OnlyEnforceIf(parent_bools)
 
     def add_section_assignment_constraint(
-            self,
-            *,
-            section_a_uri: URIRef,
-            section_b_uri: URIRef,
-            constraint_type: ConstraintType
+        self,
+        *,
+        section_a_uri: URIRef,
+        section_b_uri: URIRef,
+        constraint_type: ConstraintType
     ):
         """
         Add constraints on how items are assigned to different sections.
@@ -224,17 +240,17 @@ class SectionSetConstraint:
             SectionAssignmentConstraint(
                 constraint_type=constraint_type,
                 section_a_uri=section_a_uri,
-                section_b_uri=section_b_uri
+                section_b_uri=section_b_uri,
             )
         )
         return self
 
     def add_item_ordering_dependence_constraint(
-            self,
-            *,
-            independent_uri: URIRef,
-            dependent_uri: URIRef,
-            constraint_type: ConstraintType
+        self,
+        *,
+        independent_uri: URIRef,
+        dependent_uri: URIRef,
+        constraint_type: ConstraintType
     ):
         """
         Add a constraint that a particular item is assigned to a section before/after/together with another item.
@@ -253,7 +269,7 @@ class SectionSetConstraint:
             ItemConstraint(
                 constraint_type=constraint_type,
                 item_a_uri=independent_uri,
-                item_b_uri=dependent_uri
+                item_b_uri=dependent_uri,
             )
         )
         return self
@@ -284,42 +300,39 @@ class SectionSetConstraint:
         if exact_count is not None:
             constraints.append(
                 AttributeConstraint(
-                    attribute_name='__item_count',
+                    attribute_name="__item_count",
                     constraint_type=ConstraintType.EQ,
-                    constraint_value=exact_count
+                    constraint_value=exact_count,
                 )
             )
         else:
             if min_count is not None:
                 constraints.append(
                     AttributeConstraint(
-                        attribute_name='__item_count',
+                        attribute_name="__item_count",
                         constraint_type=ConstraintType.GEQ,
-                        constraint_value=min_count
+                        constraint_value=min_count,
                     )
                 )
             if max_count is not None:
                 constraints.append(
                     AttributeConstraint(
-                        attribute_name='__item_count',
+                        attribute_name="__item_count",
                         constraint_type=ConstraintType.LEQ,
-                        constraint_value=max_count
+                        constraint_value=max_count,
                     )
                 )
 
         if target_uri is not None:
-            self._assignment_count_constraint[self._uri_to_index[target_uri]].extend(constraints)
+            self._assignment_count_constraint[self._uri_to_index[target_uri]].extend(
+                constraints
+            )
         else:
             for index in self._uri_to_index.values():
                 self._assignment_count_constraint[index].extend(constraints)
         return self
 
-    def add_required_item_assignment(
-            self,
-            *,
-            section_uri: URIRef,
-            item_uri: URIRef
-    ):
+    def add_required_item_assignment(self, *, section_uri: URIRef, item_uri: URIRef):
         """
         Add a requirement that the given item is assigned to the target section.
 
@@ -332,11 +345,11 @@ class SectionSetConstraint:
         return self
 
     def setup_section_constraints(
-            self,
-            *,
-            items: Tuple[Candidate, ...],
-            item_selection: Tuple[IntVar, ...],
-            model: cp_model
+        self,
+        *,
+        items: Tuple[Candidate, ...],
+        item_selection: Tuple[IntVar, ...],
+        model: cp_model
     ):
         """
         Convert the various constraints applied to this solution section into a matrix form to feed into the
@@ -349,7 +362,9 @@ class SectionSetConstraint:
         """
         item_count = len(item_selection)
         section_count = len(self._sections)
-        item_uri_to_index: Dict[URIRef, int] = dict()  # temporary dictionary to store item indices for convenience
+        item_uri_to_index: Dict[
+            URIRef, int
+        ] = dict()  # temporary dictionary to store item indices for convenience
 
         for i in range(item_count):
             this_item_assignment_vars = []
@@ -357,14 +372,22 @@ class SectionSetConstraint:
 
             for section_index in range(section_count):
                 self._item_assignments[i, section_index] = model.NewIntVar(0, 1, "")
-                this_item_assignment_vars.append(self._item_assignments[i, section_index])
+                this_item_assignment_vars.append(
+                    self._item_assignments[i, section_index]
+                )
                 model.Add(self._item_assignments[i, section_index] <= item_selection[i])
                 if section_index not in self._allow_invalid_assignment:
-                    model.Add(self._item_assignments[i, section_index] <=
-                              self._section_assignment_filter[section_index](items[i].domain_object))
+                    model.Add(
+                        self._item_assignments[i, section_index]
+                        <= self._section_assignment_filter[section_index](
+                            items[i].domain_object
+                        )
+                    )
 
             if items[i].domain_object.uri in self._required_item_assignments:
-                target_section_uri = self._required_item_assignments[items[i].domain_object.uri]
+                target_section_uri = self._required_item_assignments[
+                    items[i].domain_object.uri
+                ]
                 for section_index, section in enumerate(self._sections):
                     if section.uri == target_section_uri:
                         model.Add(self._item_assignments[i, section_index] == 1)
@@ -379,41 +402,72 @@ class SectionSetConstraint:
                 top_level_bool = model.NewBoolVar("")
                 model.Add(top_level_bool == 1)
                 self._add_recursive_enforcement_booleans(
-                    model=model, parent_bools=[top_level_bool], hierarchy=hierarchy)
+                    model=model, parent_bools=[top_level_bool], hierarchy=hierarchy
+                )
 
         for section_index in range(section_count):
             section_bools = self._section_enforcement_bools[section_index]
 
             for ac in self._assignment_count_constraint[section_index]:
                 section_assignment_sum = sum(
-                    [self._item_assignments[i, section_index]
-                     * self._section_assignment_filter[section_index](items[i].domain_object)
-                     for i in range(item_count)])
-                model.Add(ac.constraint_type(section_assignment_sum, ac.constraint_value)).OnlyEnforceIf(section_bools)
+                    [
+                        self._item_assignments[i, section_index]
+                        * self._section_assignment_filter[section_index](
+                            items[i].domain_object
+                        )
+                        for i in range(item_count)
+                    ]
+                )
+                model.Add(
+                    ac.constraint_type(section_assignment_sum, ac.constraint_value)
+                ).OnlyEnforceIf(section_bools)
 
             for ac in self._targeted_section_constraints[section_index]:
                 self._attributes_of_interest.add(ac.attribute_name)
                 ss = sum(
                     [
-                        int(round(rgetattr(items[i].domain_object, ac.attribute_name)*self._scaling))
-                        * self._section_assignment_filter[section_index](items[i].domain_object)
+                        int(
+                            round(
+                                rgetattr(items[i].domain_object, ac.attribute_name)
+                                * self._scaling
+                            )
+                        )
+                        * self._section_assignment_filter[section_index](
+                            items[i].domain_object
+                        )
                         * self._item_assignments[i, section_index]
                         for i in range(item_count)
                     ]
                 )
-                model.Add(ac.constraint_type(ss, int(round(ac.constraint_value*self._scaling)))).OnlyEnforceIf(section_bools)
+                model.Add(
+                    ac.constraint_type(
+                        ss, int(round(ac.constraint_value * self._scaling))
+                    )
+                ).OnlyEnforceIf(section_bools)
 
         for sac in self._section_assignment_constraints:
             for i in range(item_count):
                 # ignore at-most-1 constraints if the item isn't actually allowed to be assigned to both, to save time.
                 if sac.constraint_type == ConstraintType.AM1:
-                    if not (self._section_assignment_filter[self._uri_to_index[sac.section_a_uri]](items[i].domain_object)
-                            and self._section_assignment_filter[self._uri_to_index[sac.section_b_uri]](items[i].domain_object)):
+                    if not (
+                        self._section_assignment_filter[
+                            self._uri_to_index[sac.section_a_uri]
+                        ](items[i].domain_object)
+                        and self._section_assignment_filter[
+                            self._uri_to_index[sac.section_b_uri]
+                        ](items[i].domain_object)
+                    ):
                         continue
-                model.Add(sac.constraint_type(
-                    self._item_assignments[i, self._uri_to_index[sac.section_a_uri]],
-                    self._item_assignments[i, self._uri_to_index[sac.section_b_uri]]
-                ))
+                model.Add(
+                    sac.constraint_type(
+                        self._item_assignments[
+                            i, self._uri_to_index[sac.section_a_uri]
+                        ],
+                        self._item_assignments[
+                            i, self._uri_to_index[sac.section_b_uri]
+                        ],
+                    )
+                )
 
         for ioc in self._item_ordering_constraints:
             # multiply the index of each section by the item assignment value to enforce item ordering
@@ -423,20 +477,29 @@ class SectionSetConstraint:
             # this assumes each item is only assigned to a single section
             model.Add(
                 ioc.constraint_type(
-                    sum([self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]*(j+1)
-                         for j in range(section_count)])
-                    + item_selection[item_uri_to_index[ioc.item_b_uri]]*(section_count+2),
-                    sum([self._item_assignments[item_uri_to_index[ioc.item_b_uri], j]*(j+1)
-                         for j in range(section_count)])
-                    + item_selection[item_uri_to_index[ioc.item_a_uri]] * (section_count + 2)
+                    sum(
+                        [
+                            self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]
+                            * (j + 1)
+                            for j in range(section_count)
+                        ]
+                    )
+                    + item_selection[item_uri_to_index[ioc.item_b_uri]]
+                    * (section_count + 2),
+                    sum(
+                        [
+                            self._item_assignments[item_uri_to_index[ioc.item_b_uri], j]
+                            * (j + 1)
+                            for j in range(section_count)
+                        ]
+                    )
+                    + item_selection[item_uri_to_index[ioc.item_a_uri]]
+                    * (section_count + 2),
                 )
             )
 
     def get_solution_assignments(
-            self,
-            *,
-            solver: cp_model.CpSolver,
-            items: Tuple[Candidate, ...]
+        self, *, solver: cp_model.CpSolver, items: Tuple[Candidate, ...]
     ) -> ConstraintSolutionSectionSet:
         """
         Using a solver that has already solved for the overall constraints, create a constraint solution section set
@@ -448,7 +511,9 @@ class SectionSetConstraint:
         :return: A ConstraintSolutionSectionSet object capturing the relevant information for this set of sections
         """
         section_scores = [0 for s in self._sections]
-        section_attribute_values = [{attr: 0 for attr in self._attributes_of_interest} for s in self._sections]
+        section_attribute_values = [
+            {attr: 0 for attr in self._attributes_of_interest} for s in self._sections
+        ]
         section_items = [[] for s in self._sections]
 
         for i in range(len(items)):
@@ -457,7 +522,9 @@ class SectionSetConstraint:
                     section_items[j].append(items[i])
                     section_scores[j] += items[i].total_score
                     for attr in self._attributes_of_interest:
-                        section_attribute_values[j][attr] += rgetattr(items[i].domain_object, attr)
+                        section_attribute_values[j][attr] += rgetattr(
+                            items[i].domain_object, attr
+                        )
 
         return ConstraintSolutionSectionSet(
             sections=tuple(
@@ -465,7 +532,7 @@ class SectionSetConstraint:
                     section_object=self._sections[j],
                     section_score=section_scores[j],
                     section_attribute_values=section_attribute_values[j],
-                    section_candidates=tuple(section_items[j])
+                    section_candidates=tuple(section_items[j]),
                 )
                 for j in range(len(self._sections))
             )

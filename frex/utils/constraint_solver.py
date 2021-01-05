@@ -3,7 +3,12 @@ from ortools.sat.python import cp_model
 from frex.models import Candidate, ConstraintSolutionSection, ConstraintSolution
 from typing import Tuple, Optional, Dict, List
 from frex.utils.common import rgetattr
-from frex.models.constraints import ConstraintType, AttributeConstraint, SectionSetConstraint, ItemConstraint
+from frex.models.constraints import (
+    ConstraintType,
+    AttributeConstraint,
+    SectionSetConstraint,
+    ItemConstraint,
+)
 from enum import Enum
 from rdflib import URIRef
 
@@ -42,7 +47,9 @@ class ConstraintSolver:
         self._candidates = candidates
         return self
 
-    def set_section_set_constraints(self, *, section_sets: Tuple[SectionSetConstraint, ...]):
+    def set_section_set_constraints(
+        self, *, section_sets: Tuple[SectionSetConstraint, ...]
+    ):
         """
         Set all the SectionSetConstraints that need to be solved to produce a valid solution.
 
@@ -75,26 +82,26 @@ class ConstraintSolver:
         if exact_count is not None:
             self._count_constraints.append(
                 AttributeConstraint(
-                    attribute_name='__item_count',
+                    attribute_name="__item_count",
                     constraint_type=ConstraintType.EQ,
-                    constraint_value=exact_count
+                    constraint_value=exact_count,
                 )
             )
         else:
             if min_count is not None:
                 self._count_constraints.append(
                     AttributeConstraint(
-                        attribute_name='__item_count',
+                        attribute_name="__item_count",
                         constraint_type=ConstraintType.GEQ,
-                        constraint_value=min_count
+                        constraint_value=min_count,
                     )
                 )
             if max_count is not None:
                 self._count_constraints.append(
                     AttributeConstraint(
-                        attribute_name='__item_count',
+                        attribute_name="__item_count",
                         constraint_type=ConstraintType.LEQ,
-                        constraint_value=max_count
+                        constraint_value=max_count,
                     )
                 )
 
@@ -105,7 +112,7 @@ class ConstraintSolver:
         *,
         attribute_name: str,
         constraint_type: ConstraintType,
-        constraint_value: int
+        constraint_value: int,
     ) -> ConstraintSolver:
         """
         Add a constraint to be applied to the entire solution. E.g., a constraint on the cost of all items chosen
@@ -126,11 +133,7 @@ class ConstraintSolver:
         return self
 
     def add_item_selection_constraint(
-        self,
-        *,
-        item_a_uri: URIRef,
-        item_b_uri: URIRef,
-        constraint_type: ConstraintType
+        self, *, item_a_uri: URIRef, item_b_uri: URIRef, constraint_type: ConstraintType
     ):
         """
         Require that candidates chosen in the final solution have some relationship based on the constraint, e.g.,
@@ -145,16 +148,12 @@ class ConstraintSolver:
             ItemConstraint(
                 item_a_uri=item_a_uri,
                 item_b_uri=item_b_uri,
-                constraint_type=constraint_type
+                constraint_type=constraint_type,
             )
         )
         return self
 
-    def add_required_item_selection(
-            self,
-            *,
-            target_uri: URIRef
-    ):
+    def add_required_item_selection(self, *, target_uri: URIRef):
         """
         Require that the final solution selects a candidate whose domain object has the target URI.
 
@@ -164,11 +163,7 @@ class ConstraintSolver:
         self._required_item_uris.append(target_uri)
         return self
 
-    def solve(
-            self,
-            *,
-            output_uri: URIRef
-    ) -> Optional[ConstraintSolution]:
+    def solve(self, *, output_uri: URIRef) -> Optional[ConstraintSolution]:
         """
         Perform integer programming to solve constraints and maximize an objective function based on the total scores
         applied to candidates. This function expects candidates that are the result of some recommendation pipeline
@@ -202,19 +197,32 @@ class ConstraintSolver:
         item_choices = tuple(item_choices)
 
         for section in self._sections:
-            section.setup_section_constraints(items=self._candidates, item_selection=item_choices, model=self._model)
-            attributes_of_interest = attributes_of_interest.union(section.attributes_of_interest)
+            section.setup_section_constraints(
+                items=self._candidates, item_selection=item_choices, model=self._model
+            )
+            attributes_of_interest = attributes_of_interest.union(
+                section.attributes_of_interest
+            )
 
         for oc in self._overall_item_constraints:
             attributes_of_interest.add(oc.attribute_name)
             ss = sum(
                 [
-                    int(round(rgetattr(self._candidates[i].domain_object, oc.attribute_name)*self._scaling))
+                    int(
+                        round(
+                            rgetattr(
+                                self._candidates[i].domain_object, oc.attribute_name
+                            )
+                            * self._scaling
+                        )
+                    )
                     * item_choices[i]
                     for i in range(candidate_count)
                 ]
             )
-            self._model.Add(oc.constraint_type(ss, int(round(oc.constraint_value*self._scaling))))
+            self._model.Add(
+                oc.constraint_type(ss, int(round(oc.constraint_value * self._scaling)))
+            )
 
         if self._count_constraints:
             item_count = sum([item_choices[i] for i in range(candidate_count)])
@@ -236,7 +244,8 @@ class ConstraintSolver:
             # e.g., we would prefer the combination of all items in a section to have some field value in a range,
             # so incorporate that into the score somehow?
             objective_terms.append(
-                int(round(self._candidates[i].total_score * self._scaling)) * item_choices[i]
+                int(round(self._candidates[i].total_score * self._scaling))
+                * item_choices[i]
             )
         self._model.Maximize(sum(objective_terms))
 
@@ -251,11 +260,11 @@ class ConstraintSolver:
         selected_candidates = []
         if status != cp_model.OPTIMAL and status != cp_model.FEASIBLE:
             # TODO what to do if no solution?
-            print('no optimal or feasible solution found.', status)
+            print("no optimal or feasible solution found.", status)
             return None
         else:
             # if status == cp_model.OPTIMAL:
-                # print('optimal solution found')
+            # print('optimal solution found')
 
             for i in range(len(item_choices)):
                 if self._solver.Value(item_choices[i]):
@@ -263,16 +272,21 @@ class ConstraintSolver:
                     selected_candidates.append(candidate)
 
                     for attr in overall_attributes.keys():
-                        overall_attributes[attr] += rgetattr(candidate.domain_object, attr)
-        section_assignments = [section.get_solution_assignments(solver=self._solver,
-                                                                items=self._candidates,
-                                                                )
-                               for section in self._sections]
+                        overall_attributes[attr] += rgetattr(
+                            candidate.domain_object, attr
+                        )
+        section_assignments = [
+            section.get_solution_assignments(
+                solver=self._solver,
+                items=self._candidates,
+            )
+            for section in self._sections
+        ]
 
         return ConstraintSolution(
             uri=output_uri,
             solution_section_sets=tuple(section_assignments),
-            overall_score=self._solver.ObjectiveValue()/self._scaling,
+            overall_score=self._solver.ObjectiveValue() / self._scaling,
             overall_attribute_values=overall_attributes,
-            items=tuple(selected_candidates)
+            items=tuple(selected_candidates),
         )
