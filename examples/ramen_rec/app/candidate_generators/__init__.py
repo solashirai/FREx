@@ -2,3 +2,4 @@ from .similar_ramen_candidate_generator import SimilarRamenCandidateGenerator
 from .match_eater_likes_ramen_candidate_generator import (
     MatchEaterLikesRamenCandidateGenerator,
 )
+from .ramen_meal_plan_candidate_generator import RamenMealPlanCandidateGenerator

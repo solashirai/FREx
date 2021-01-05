@@ -10,7 +10,7 @@ class LocalGraph(SparqlQueryable):
     LocalGraph should be used to store and access rdf graphs locally.
     """
 
-    def __init__(self, *, file_paths: Tuple[Path]):
+    def __init__(self, *, file_paths: Tuple[Path, ...]):
         self.graph = Graph()
         for file_path in file_paths:
             self.load_graph_file(file_path=file_path)

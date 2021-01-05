@@ -1,7 +1,10 @@
 from frex.models import Explanation
 from frex.pipelines import _Pipeline
 from frex.pipeline_stages.scorers import CandidateRanker
-from examples.ramen_rec.app import *
+from examples.ramen_rec.app.scorers import *
+from examples.ramen_rec.app.filters import *
+from examples.ramen_rec.app.candidate_generators import *
+from examples.ramen_rec.app.services import *
 from pathlib import Path
 
 

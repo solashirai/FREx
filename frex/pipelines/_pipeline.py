@@ -14,7 +14,7 @@ class _Pipeline(ABC):
     def __init__(
         self,
         *,
-        candidate_generators: Tuple[CandidateGenerator],
+        candidate_generators: Tuple[CandidateGenerator, ...],
         stages: Tuple[_PipelineStage, ...],
     ):
         self.generators = candidate_generators

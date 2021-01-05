@@ -1,8 +1,8 @@
 from typing import NamedTuple
-from frex.utils import ConstraintType
+from frex.models.constraints import ConstraintType
 
 
-class Constraint(NamedTuple):
+class AttributeConstraint(NamedTuple):
     """
     A namedtuple to store Constraints that will be applied in a constraint solver.
     """
