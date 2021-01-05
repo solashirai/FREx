@@ -164,7 +164,11 @@ class ConstraintSolver:
         self._required_item_uris.append(target_uri)
         return self
 
-    def solve(self) -> Optional[ConstraintSolution]:
+    def solve(
+            self,
+            *,
+            output_uri: URIRef
+    ) -> Optional[ConstraintSolution]:
         """
         Perform integer programming to solve constraints and maximize an objective function based on the total scores
         applied to candidates. This function expects candidates that are the result of some recommendation pipeline
@@ -177,6 +181,7 @@ class ConstraintSolver:
         (2) each candidate can only be a part of one section, (3) each section must have an exact number of
         candidates assigned to it, and (4) the order of sections does not matter.
 
+        :output_uri: The URI to attach to the output constraint solution
         :return:
         """
 
@@ -265,6 +270,7 @@ class ConstraintSolver:
                                for section in self._sections]
 
         return ConstraintSolution(
+            uri=output_uri,
             solution_section_sets=tuple(section_assignments),
             overall_score=self._solver.ObjectiveValue()/self._scaling,
             overall_attribute_values=overall_attributes,
