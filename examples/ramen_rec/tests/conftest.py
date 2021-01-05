@@ -144,7 +144,12 @@ def mealplan_pipe(
     graph_ramen_query_service
 ) -> RecommendMealPlanForEaterPipeline:
     return RecommendMealPlanForEaterPipeline(
-        vector_file=vector_file, ramen_query_service=graph_ramen_query_service
+        vector_file=vector_file, ramen_query_service=graph_ramen_query_service,
+        num_days = 2,
+        ramens_per_day = 3,
+        min_daily_rating = 7,
+        max_daily_price = 7,
+        max_total_price = 13
     )
 
 
