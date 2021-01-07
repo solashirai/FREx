@@ -23,12 +23,12 @@ class RecommendMealPlanForEaterPipeline(_Pipeline):
         max_daily_price: int = 7,
         max_total_price: int = 13,
     ):
-        self.ramen_candidate_pipe = RecommendForEaterPipeline(
-            vector_file=vector_file, ramen_query_service=ramen_query_service
-        )
         _Pipeline.__init__(
             self,
-            candidate_generators=(
+            stages=(
+                RecommendForEaterPipeline(
+                    vector_file=vector_file, ramen_query_service=ramen_query_service
+                ),
                 RamenMealPlanCandidateGenerator(
                     num_days=num_days,
                     ramens_per_day=ramens_per_day,
@@ -40,18 +40,4 @@ class RecommendMealPlanForEaterPipeline(_Pipeline):
                     ),
                 ),
             ),
-            stages=(),
-        )
-
-    def __call__(
-        self,
-        *,
-        candidates: Optional[Generator[Candidate, None, None]] = None,
-        context: Optional[object] = None,
-    ) -> Generator[Candidate, None, None]:
-        return super(RecommendMealPlanForEaterPipeline, self).__call__(
-            candidates=self.ramen_candidate_pipe(
-                candidates=candidates, context=context
-            ),
-            context=context,
         )

@@ -1,4 +1,4 @@
-from typing import Tuple, Generator
+from typing import Tuple, Generator, Any
 from frex.models import Explanation, Candidate
 from frex.pipeline_stages import _PipelineStage
 
@@ -10,7 +10,7 @@ class CandidateRanker(_PipelineStage):
     """
 
     def __call__(
-        self, *, candidates: Generator[Candidate, None, None]
+        self, *, candidates: Generator[Candidate, None, None], context: Any
     ) -> Generator[Candidate, None, None]:
         all_candidates = list(candidates)
 

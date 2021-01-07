@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Tuple, Generator, Optional
+from typing import Tuple, Generator, Any
 from frex.models import Explanation, Candidate
 from frex.pipeline_stages import _PipelineStage
 
@@ -23,7 +23,7 @@ class CandidateScorer(_PipelineStage):
         pass
 
     def __call__(
-        self, *, candidates: Generator[Candidate, None, None]
+        self, *, candidates: Generator[Candidate, None, None], context: Any
     ) -> Generator[Candidate, None, None]:
         for candidate in candidates:
             candidate.applied_explanations.append(self.scoring_explanation)

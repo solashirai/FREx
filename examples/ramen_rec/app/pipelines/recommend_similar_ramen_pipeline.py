@@ -18,7 +18,7 @@ class RecommendSimilarRamenPipeline(_Pipeline):
     ):
         _Pipeline.__init__(
             self,
-            candidate_generators=(
+            stages=(
                 SimilarRamenCandidateGenerator(
                     ramen_vector_file=vector_file.resolve(),
                     ramen_query_service=ramen_query_service,
@@ -26,8 +26,6 @@ class RecommendSimilarRamenPipeline(_Pipeline):
                         explanation_string=f"This ramen is identified as being similar to the target ramen."
                     ),
                 ),
-            ),
-            stages=(
                 SameBrandFilter(
                     filter_explanation=Explanation(
                         explanation_string="This ramen is from a different brand than the target ramen."
