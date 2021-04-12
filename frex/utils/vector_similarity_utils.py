@@ -38,6 +38,23 @@ class VectorSimilarityUtils:
             )
 
     @staticmethod
+    def jaccard_sim(
+        *, comparison_vector: np.array, comparison_matrix: np.array
+    ) -> np.array:
+        """
+        Return the jaccard similarity between a given vector and the rows of a matrix.
+
+        :param comparison_vector: The vector to serve as the source of comparison
+        :param comparison_matrix: A matrix containing rows with which the comparison_vector will be compared
+        :return: An array of jaccard similarities between the comparison_vector and each row of the comparison_matrix
+        """
+        vec_sum = np.sum(comparison_vector, axis=1)
+        mat_sum = np.sum(comparison_matrix, axis=1).T
+
+        overlap = comparison_vector.dot(comparison_matrix.T)
+        return overlap / (vec_sum + mat_sum - overlap)
+
+    @staticmethod
     def get_item_vector_similarity(
         *,
         target_item: Any,
