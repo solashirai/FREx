@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from typing import Tuple, Generator, Any
 from frex.models import Explanation, Candidate
-from frex.pipeline_stages import _PipelineStage
+from frex.pipeline_stages import PipelineStage
 
 
-class CandidateBoolScorer(_PipelineStage):
+class CandidateBoolScorer(PipelineStage):
     """
     CandidateBoolScorer is a scoring pipeline stage that scores based on whether or not the candidate matches some
     given condition. The score function for this class returns a bool indicating whether the condition was matched,

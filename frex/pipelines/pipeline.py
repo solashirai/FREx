@@ -2,20 +2,21 @@ from __future__ import annotations
 from abc import ABC
 from typing import Generator, Tuple, Optional, Union
 from frex.models import Candidate
-from frex.pipeline_stages import _PipelineStage, CandidateGenerator
+from frex.pipeline_stages import PipelineStage, CandidateGenerator
 from abc import ABC, abstractmethod
 
 
-class _Pipeline(ABC):
+class Pipeline:
     """
-    Pipelines should be implemented using _Pipeline, separately specifying candidate generator and
-    stages to pass all candidates through.
+    The base Pipeline class that will run a recommendation pipeline.
+
+    Custom Pipelines should be implemented by extending this base class.
     """
 
     def __init__(
         self,
         *,
-        stages: Tuple[Union[_PipelineStage, _Pipeline], ...],
+        stages: Tuple[Union[PipelineStage, Pipeline], ...],
     ):
         self.stages = stages
 

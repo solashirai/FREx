@@ -4,7 +4,11 @@ from frex.models import Candidate
 from abc import ABC, abstractmethod
 
 
-class _PipelineStage(ABC):
+class PipelineStage(ABC):
+    """
+    This is the base class for custom stages that will be run in a pipeline.
+    """
+
     @abstractmethod
     def __call__(
         self, *, candidates: Generator[Candidate, None, None], context: Any

@@ -1,6 +1,6 @@
 from frex.models import Explanation
 from frex.stores import LocalGraph
-from frex.pipelines import _Pipeline
+from frex.pipelines import Pipeline
 from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app import *
 from rdflib import URIRef
@@ -8,7 +8,7 @@ from typing import List
 import sys
 
 
-def run_and_display(*, pipe: _Pipeline, context):
+def run_and_display(*, pipe: Pipeline, context):
 
     print("Retrieving top 5 recommended ramens using demo pipeline...")
     print("")

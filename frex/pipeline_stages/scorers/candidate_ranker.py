@@ -1,9 +1,9 @@
 from typing import Tuple, Generator, Any
 from frex.models import Explanation, Candidate
-from frex.pipeline_stages import _PipelineStage
+from frex.pipeline_stages import PipelineStage
 
 
-class CandidateRanker(_PipelineStage):
+class CandidateRanker(PipelineStage):
     """
     CandidateRanker is a helper pipeline stage that will sort the current candidates.
     Sorting needs to collect all candidates coming in from the generator, so it should be used infrequently.

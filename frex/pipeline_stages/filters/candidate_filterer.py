@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from typing import Generator, Optional, Any
 from frex.models import Explanation, Candidate
-from frex.pipeline_stages import _PipelineStage
+from frex.pipeline_stages import PipelineStage
 
 
-class CandidateFilterer(_PipelineStage):
+class CandidateFilterer(PipelineStage):
     """
     CandidateFilterer should implement a filter function to determine which candidates to remove from consideration.
     filter(candidate) -> True will remove the candidate.

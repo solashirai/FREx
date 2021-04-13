@@ -2,10 +2,10 @@ from abc import abstractmethod
 from frex.models import Explanation
 from typing import Generator, Optional, Any
 from frex.models import Candidate
-from frex.pipeline_stages import _PipelineStage
+from frex.pipeline_stages import PipelineStage
 
 
-class CandidateGenerator(_PipelineStage):
+class CandidateGenerator(PipelineStage):
     """
     CandidateGenerator pipeline stages should implement logic in the __call__ method to generate domain-specific
     candidates for the current context.

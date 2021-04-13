@@ -1,10 +1,10 @@
 from abc import abstractmethod
 from typing import Tuple, Generator, Any
 from frex.models import Explanation, Candidate
-from frex.pipeline_stages import _PipelineStage
+from frex.pipeline_stages import PipelineStage
 
 
-class CandidateScorer(_PipelineStage):
+class CandidateScorer(PipelineStage):
     """
     CandidateScorer is a scoring pipeline stage that applies some score to candidates.
     """

@@ -1,5 +1,5 @@
 from frex.models import Explanation, Candidate
-from frex.pipelines import _Pipeline
+from frex.pipelines import Pipeline
 from examples.ramen_rec.app.pipelines import RecommendForEaterPipeline
 from examples.ramen_rec.app.candidate_generators import *
 from examples.ramen_rec.app.services import *
@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Generator, Optional
 
 
-class RecommendMealPlanForEaterPipeline(_Pipeline):
+class RecommendMealPlanForEaterPipeline(Pipeline):
     """
     A pipeline to recommend a 'meal plan' of ramens for a specific ramen eater.
     """
@@ -23,7 +23,7 @@ class RecommendMealPlanForEaterPipeline(_Pipeline):
         max_daily_price: int = 7,
         max_total_price: int = 13,
     ):
-        _Pipeline.__init__(
+        Pipeline.__init__(
             self,
             stages=(
                 RecommendForEaterPipeline(

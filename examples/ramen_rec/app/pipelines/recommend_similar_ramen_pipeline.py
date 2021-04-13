@@ -1,5 +1,5 @@
 from frex.models import Explanation
-from frex.pipelines import _Pipeline
+from frex.pipelines import Pipeline
 from frex.pipeline_stages.scorers import CandidateRanker
 from examples.ramen_rec.app.scorers import *
 from examples.ramen_rec.app.filters import *
@@ -8,7 +8,7 @@ from examples.ramen_rec.app.services import *
 from pathlib import Path
 
 
-class RecommendSimilarRamenPipeline(_Pipeline):
+class RecommendSimilarRamenPipeline(Pipeline):
     """
     A pipeline to recommend ramens similar to an input ramen context.
     """
@@ -16,7 +16,7 @@ class RecommendSimilarRamenPipeline(_Pipeline):
     def __init__(
         self, *, vector_file: Path, ramen_query_service: GraphRamenQueryService
     ):
-        _Pipeline.__init__(
+        Pipeline.__init__(
             self,
             stages=(
                 SimilarRamenCandidateGenerator(
