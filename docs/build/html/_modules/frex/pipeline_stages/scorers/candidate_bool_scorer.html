@@ -171,24 +171,39 @@
         <span class="n">failure_scoring_explanation</span><span class="p">:</span> <span class="n">Explanation</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param success_scoring_explanation: The explanation to add to the Candidate after applying the scoring function</span>
+<span class="sd">        if the score function indicates True.</span>
+<span class="sd">        :param failure_scoring_explanation: The explanation to add to the Candidate after applying the scoring function</span>
+<span class="sd">        if the score function indicates False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">success_scoring_explanation</span> <span class="o">=</span> <span class="n">success_scoring_explanation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">failure_scoring_explanation</span> <span class="o">=</span> <span class="n">failure_scoring_explanation</span>
 
 <div class="viewcode-block" id="CandidateBoolScorer.score"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.score">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">Candidate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        score should return True if the candidate matches some success condition. Regardless of whether the candidate</span>
-<span class="sd">        passes the success, the score function should also return a score to applied.</span>
+<span class="sd">        Apply a custom scoring function to the input candidate that also checks for the success of some condition.</span>
 
-<span class="sd">        :param candidate: A domain-specific candidate to score</span>
+<span class="sd">        :param candidate: A domain-specific candidate to apply the scoring function</span>
 <span class="sd">        :return: A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and</span>
 <span class="sd">        y is the score applied to the candidate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="CandidateBoolScorer.__call__"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For each of candidate being yielded by the Generator, apply a scoring function to the candidate and</span>
+<span class="sd">        yield it as output. Based on whether or not the scoring function passed some condition, different explanations</span>
+<span class="sd">        are applied.</span>
+
+<span class="sd">        :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</span>
+<span class="sd">        PipelineStage that is yielding candidates into the next stage.</span>
+<span class="sd">        :param context: The current context being used to execute the Pipeline.</span>
+<span class="sd">        :return: A Generator, yielding updated Candidate objects that have this stage&#39;s scoring function applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
             <span class="n">success</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">candidate</span><span class="o">=</span><span class="n">candidate</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
@@ -196,7 +211,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">candidate</span><span class="o">.</span><span class="n">applied_explanations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">failure_scoring_explanation</span><span class="p">)</span>
             <span class="n">candidate</span><span class="o">.</span><span class="n">applied_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="n">candidate</span></div>
+            <span class="k">yield</span> <span class="n">candidate</span></div></div>
 </pre></div>
 
            </div>

@@ -212,6 +212,24 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.pipeline_stages.pipeline_stage.</span></code><code class="sig-name descname"><span class="pre">PipelineStage</span></code><a class="reference internal" href="_modules/frex/pipeline_stages/pipeline_stage.html#PipelineStage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.pipeline_stage.PipelineStage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>This is the base class for custom stages that will be run in a pipeline.</p>
+<p>PipelineStages are callable classes which should take input candidates and context and yield out candidates.
+Candidates yielded by a PipelineStage might be entirely new (e.g., a generator stage generated new candidates) or
+they may be updated in some way (e.g., a scorer stage added a new score to an existing candidate that was passed
+in).</p>
+<dl class="py method">
+<dt id="frex.pipeline_stages.pipeline_stage.PipelineStage.__call__">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/pipeline_stages/pipeline_stage.html#PipelineStage.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.pipeline_stage.PipelineStage.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute some function to apply and yield new or updated candidates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>candidates</strong> – A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</p>
+</dd>
+</dl>
+<p>PipelineStage that is yielding candidates into the next stage.
+:param context: The current context being used to execute the Pipeline.
+:return: A Generator, yielding new Candidate objects.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

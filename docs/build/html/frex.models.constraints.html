@@ -404,6 +404,26 @@ domain objects are also stored, if they were relevant to solving constraints.</p
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">NEQ</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#frex.models.constraints.constraint_type.ConstraintType.NEQ" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="py method">
+<dt id="frex.models.constraints.constraint_type.ConstraintType.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/models/constraints/constraint_type.html#ConstraintType.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.models.constraints.constraint_type.ConstraintType.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Either returns an existing member, or creates a new enum class.</p>
+<p>This method is used both when an enum class is given a value to match
+to an enumeration member (i.e. Color(3)) and for the functional API
+(i.e. Color = Enum(‘Color’, names=’RED GREEN BLUE’)).</p>
+<p>When used for the functional API:</p>
+<p><cite>value</cite> will be the name of the new class.</p>
+<p><cite>names</cite> should be either a string of white-space/comma delimited names
+(values will start at <cite>start</cite>), or an iterator/mapping of name, value pairs.</p>
+<p><cite>module</cite> should be set to the module this class is being created in;
+if it is not set, an attempt to find that module will be made, but if
+it fails the class will not be picklable.</p>
+<p><cite>qualname</cite> should be set to the actual location this class can be found
+at in its module; by default it is set to the global scope.  If this is
+not correct, unpickling will fail in some circumstances.</p>
+<p><cite>type</cite>, if set, will be mixed in as the first base class.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>

@@ -158,20 +158,31 @@
 
 <div class="viewcode-block" id="CandidateRanker"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_ranker.CandidateRanker">[docs]</a><span class="k">class</span> <span class="nc">CandidateRanker</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CandidateRanker is a helper pipeline stage that will sort the current candidates.</span>
+<span class="sd">    CandidateRanker is a PipelineStage that will sort the current candidates. Sorting is performed based on the</span>
+<span class="sd">    total_score property of candidates, which sums up the applied_scores currently applied to the candidate.</span>
+
 <span class="sd">    Sorting needs to collect all candidates coming in from the generator, so it should be used infrequently.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="CandidateRanker.__call__"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_ranker.CandidateRanker.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Collect all candidates being yielded by an input Generator, sort them based on their total_score, and yield</span>
+<span class="sd">        the sorted candidates in descending order.</span>
+
+<span class="sd">        :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</span>
+<span class="sd">        PipelineStage that is yielding candidates into the next stage.</span>
+<span class="sd">        :param context: The current context being used to execute the Pipeline.</span>
+<span class="sd">        :return: A Generator, yielding Candidate objects in order based on their total_score property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">all_candidates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
 
         <span class="n">sorted_candidates</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
             <span class="n">all_candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">total_score</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">sorted_candidate</span> <span class="ow">in</span> <span class="n">sorted_candidates</span><span class="p">:</span>
-            <span class="k">yield</span> <span class="n">sorted_candidate</span></div>
+            <span class="k">yield</span> <span class="n">sorted_candidate</span></div></div>
 </pre></div>
 
            </div>

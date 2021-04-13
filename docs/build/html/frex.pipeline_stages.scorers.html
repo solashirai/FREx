@@ -190,13 +190,28 @@
 given condition. The score function for this class returns a bool indicating whether the condition was matched,
 and an appropriate explanation is attached to the candidate.</p>
 <dl class="py method">
-<dt id="frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.score">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_bool_scorer.html#CandidateBoolScorer.score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.score" title="Permalink to this definition">¶</a></dt>
-<dd><p>score should return True if the candidate matches some success condition. Regardless of whether the candidate
-passes the success, the score function should also return a score to applied.</p>
+<dt id="frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_bool_scorer.html#CandidateBoolScorer.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each of candidate being yielded by the Generator, apply a scoring function to the candidate and
+yield it as output. Based on whether or not the scoring function passed some condition, different explanations
+are applied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>candidate</strong> – A domain-specific candidate to score</p>
+<dd class="field-odd"><p><strong>candidates</strong> – A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</p>
+</dd>
+</dl>
+<p>PipelineStage that is yielding candidates into the next stage.
+:param context: The current context being used to execute the Pipeline.
+:return: A Generator, yielding updated Candidate objects that have this stage’s scoring function applied.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.score">
+<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_bool_scorer.html#CandidateBoolScorer.score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_bool_scorer.CandidateBoolScorer.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a custom scoring function to the input candidate that also checks for the success of some condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>candidate</strong> – A domain-specific candidate to apply the scoring function</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and</p>
@@ -214,8 +229,24 @@ passes the success, the score function should also return a score to applied.</p
 <dt id="frex.pipeline_stages.scorers.candidate_ranker.CandidateRanker">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.pipeline_stages.scorers.candidate_ranker.</span></code><code class="sig-name descname"><span class="pre">CandidateRanker</span></code><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_ranker.html#CandidateRanker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_ranker.CandidateRanker" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="frex.pipeline_stages.html#frex.pipeline_stages.pipeline_stage.PipelineStage" title="frex.pipeline_stages.pipeline_stage.PipelineStage"><code class="xref py py-class docutils literal notranslate"><span class="pre">frex.pipeline_stages.pipeline_stage.PipelineStage</span></code></a></p>
-<p>CandidateRanker is a helper pipeline stage that will sort the current candidates.
-Sorting needs to collect all candidates coming in from the generator, so it should be used infrequently.</p>
+<p>CandidateRanker is a PipelineStage that will sort the current candidates. Sorting is performed based on the
+total_score property of candidates, which sums up the applied_scores currently applied to the candidate.</p>
+<p>Sorting needs to collect all candidates coming in from the generator, so it should be used infrequently.</p>
+<dl class="py method">
+<dt id="frex.pipeline_stages.scorers.candidate_ranker.CandidateRanker.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_ranker.html#CandidateRanker.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_ranker.CandidateRanker.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect all candidates being yielded by an input Generator, sort them based on their total_score, and yield
+the sorted candidates in descending order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>candidates</strong> – A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</p>
+</dd>
+</dl>
+<p>PipelineStage that is yielding candidates into the next stage.
+:param context: The current context being used to execute the Pipeline.
+:return: A Generator, yielding Candidate objects in order based on their total_score property.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -225,17 +256,35 @@ Sorting needs to collect all candidates coming in from the generator, so it shou
 <dt id="frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.pipeline_stages.scorers.candidate_scorer.</span></code><code class="sig-name descname"><span class="pre">CandidateScorer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scoring_explanation</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="frex.models.html#frex.models.explanation.Explanation" title="frex.models.explanation.Explanation"><span class="pre">frex.models.explanation.Explanation</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_scorer.html#CandidateScorer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="frex.pipeline_stages.html#frex.pipeline_stages.pipeline_stage.PipelineStage" title="frex.pipeline_stages.pipeline_stage.PipelineStage"><code class="xref py py-class docutils literal notranslate"><span class="pre">frex.pipeline_stages.pipeline_stage.PipelineStage</span></code></a></p>
-<p>CandidateScorer is a scoring pipeline stage that applies some score to candidates.</p>
+<p>CandidateScorer is a PipelineStage that applies some score to candidates. The scoring function must be defined
+in the particular application that is utilizing FREx.</p>
+<p>A new CandidateScorer class can be minimally defined by creating a new subclass of CandidateScorer
+and defining the score() function.</p>
+<dl class="py method">
+<dt id="frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer.__call__">
+<code class="sig-name descname"><span class="pre">__call__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">,</span> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_scorer.html#CandidateScorer.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each of candidate being yielded by the Generator, apply a scoring function to the candidate and
+yield it as output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>candidates</strong> – A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</p>
+</dd>
+</dl>
+<p>PipelineStage that is yielding candidates into the next stage.
+:param context: The current context being used to execute the Pipeline.
+:return: A Generator, yielding updated Candidate objects that have this stage’s scoring function applied.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt id="frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer.score">
 <em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">score</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">float</span><a class="reference internal" href="_modules/frex/pipeline_stages/scorers/candidate_scorer.html#CandidateScorer.score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer.score" title="Permalink to this definition">¶</a></dt>
-<dd><p>Score a candidate</p>
+<dd><p>Apply a custom scoring function to the input candidate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>candidate</strong> – A domain-specific candidate</p>
+<dd class="field-odd"><p><strong>candidate</strong> – A domain-specific candidate to apply the scoring function</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Some score applied to the candidate based on the implemented scoring function.</p>
+<dd class="field-even"><p>A score applied to be applied the candidate based on the implemented scoring function.</p>
 </dd>
 </dl>
 </dd></dl>

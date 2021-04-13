@@ -159,29 +159,45 @@
 
 <div class="viewcode-block" id="CandidateScorer"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer">[docs]</a><span class="k">class</span> <span class="nc">CandidateScorer</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CandidateScorer is a scoring pipeline stage that applies some score to candidates.</span>
+<span class="sd">    CandidateScorer is a PipelineStage that applies some score to candidates. The scoring function must be defined</span>
+<span class="sd">    in the particular application that is utilizing FREx.</span>
+
+<span class="sd">    A new CandidateScorer class can be minimally defined by creating a new subclass of CandidateScorer</span>
+<span class="sd">    and defining the score() function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">scoring_explanation</span><span class="p">:</span> <span class="n">Explanation</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param scoring_explanation: The explanation to add to the Candidate after applying the scoring function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scoring_explanation</span> <span class="o">=</span> <span class="n">scoring_explanation</span>
 
 <div class="viewcode-block" id="CandidateScorer.score"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer.score">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">Candidate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Score a candidate</span>
+<span class="sd">        Apply a custom scoring function to the input candidate.</span>
 
-<span class="sd">        :param candidate: A domain-specific candidate</span>
-<span class="sd">        :return: Some score applied to the candidate based on the implemented scoring function.</span>
+<span class="sd">        :param candidate: A domain-specific candidate to apply the scoring function</span>
+<span class="sd">        :return: A score applied to be applied the candidate based on the implemented scoring function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="CandidateScorer.__call__"><a class="viewcode-back" href="../../../../frex.pipeline_stages.scorers.html#frex.pipeline_stages.scorers.candidate_scorer.CandidateScorer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For each of candidate being yielded by the Generator, apply a scoring function to the candidate and</span>
+<span class="sd">        yield it as output.</span>
+
+<span class="sd">        :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</span>
+<span class="sd">        PipelineStage that is yielding candidates into the next stage.</span>
+<span class="sd">        :param context: The current context being used to execute the Pipeline.</span>
+<span class="sd">        :return: A Generator, yielding updated Candidate objects that have this stage&#39;s scoring function applied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
             <span class="n">candidate</span><span class="o">.</span><span class="n">applied_explanations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scoring_explanation</span><span class="p">)</span>
             <span class="n">candidate</span><span class="o">.</span><span class="n">applied_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">candidate</span><span class="o">=</span><span class="n">candidate</span><span class="p">))</span>
-            <span class="k">yield</span> <span class="n">candidate</span></div>
+            <span class="k">yield</span> <span class="n">candidate</span></div></div>
 </pre></div>
 
            </div>

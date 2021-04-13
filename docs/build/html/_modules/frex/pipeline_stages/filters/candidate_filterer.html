@@ -159,35 +159,54 @@
 
 <div class="viewcode-block" id="CandidateFilterer"><a class="viewcode-back" href="../../../../frex.pipeline_stages.filters.html#frex.pipeline_stages.filters.candidate_filterer.CandidateFilterer">[docs]</a><span class="k">class</span> <span class="nc">CandidateFilterer</span><span class="p">(</span><span class="n">PipelineStage</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    CandidateFilterer should implement a filter function to determine which candidates to remove from consideration.</span>
-<span class="sd">    filter(candidate) -&gt; True will remove the candidate.</span>
+<span class="sd">    CandidateFilterer is a PipelineStage that determines whether input candidates should be removed from consideration</span>
+<span class="sd">    or continue on through the FREx Pipeline.</span>
+
+<span class="sd">    A new CandidateFilterer class can be minimally defined by creating a new subclass of CandidateFilterer and</span>
+<span class="sd">    defining the filter() function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">filter_explanation</span><span class="p">:</span> <span class="n">Explanation</span><span class="p">,</span> <span class="n">filter_score</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
     <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param filter_explanation: The explanation to add to the Candidate if it passes the filter function.</span>
+<span class="sd">        :param filter_score: The score to apply to the candidate if it passes the filter. This is 0 by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_explanation</span> <span class="o">=</span> <span class="n">filter_explanation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filter_score</span> <span class="o">=</span> <span class="n">filter_score</span>
 
 <div class="viewcode-block" id="CandidateFilterer.filter"><a class="viewcode-back" href="../../../../frex.pipeline_stages.filters.html#frex.pipeline_stages.filters.candidate_filterer.CandidateFilterer.filter">[docs]</a>    <span class="nd">@abstractmethod</span>
     <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidate</span><span class="p">:</span> <span class="n">Candidate</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The filter should return True when the candidate that is passed in should be removed from</span>
-<span class="sd">        consideration as a candidate.</span>
+<span class="sd">        A filter to determine whether or not the current candidate is suitable to move on through the Pipeline.</span>
+<span class="sd">        This function should return True when the candidate should be removed and False when it should continue on.</span>
 
 <span class="sd">        :param candidate: A domain-specific candidate to filter</span>
 <span class="sd">        :return: True if the candidate should be removed, False if it should be kept and passed on to later stages.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+<div class="viewcode-block" id="CandidateFilterer.__call__"><a class="viewcode-back" href="../../../../frex.pipeline_stages.filters.html#frex.pipeline_stages.filters.candidate_filterer.CandidateFilterer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">context</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        For each of candidate being yielded by the Generator, apply a filtering function to decide whether or not</span>
+<span class="sd">        to yield the candidate forward to the next PipelineStage.</span>
+
+
+
+<span class="sd">        :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</span>
+<span class="sd">        PipelineStage that is yielding candidates into the next stage.</span>
+<span class="sd">        :param context: The current context being used to execute the Pipeline.</span>
+<span class="sd">        :return: A Generator, yielding updated Candidate objects that have not been caught by this stage&#39;s filtering</span>
+<span class="sd">         function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">candidate</span><span class="o">=</span><span class="n">candidate</span><span class="p">):</span>
                 <span class="n">candidate</span><span class="o">.</span><span class="n">applied_explanations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_explanation</span><span class="p">)</span>
                 <span class="n">candidate</span><span class="o">.</span><span class="n">applied_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_score</span><span class="p">)</span>
-                <span class="k">yield</span> <span class="n">candidate</span></div>
+                <span class="k">yield</span> <span class="n">candidate</span></div></div>
 </pre></div>
 
            </div>
