@@ -3,12 +3,12 @@ from dataclasses_json import dataclass_json
 
 
 @dataclass_json
-@dataclass(frozen=True)
+@dataclass
 class Explanation:
     """
-    An Explanation currently simply consists of a string.
-    More complex explanation types may be integrated into the framework at a later point, if it makes sense to use
-    them in a general way.
+    An Explanation in its most simple form consists of a string.
+
+    More complex explanations can be defined by subclassing this Explanation class.
     """
 
     explanation_string: str

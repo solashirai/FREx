@@ -66,7 +66,7 @@ class RamenMealPlanCandidateGenerator(CandidateGenerator):
 
         CandidateGenerator.__init__(self, **kwargs)
 
-    def __call__(
+    def generate(
         self,
         *,
         candidates: Generator[Candidate, None, None] = None,

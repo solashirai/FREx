@@ -7,7 +7,7 @@ from rdflib import URIRef
 @dataclass(frozen=True)
 class DomainObject:
     """
-    DomainObject classes should be able to point to some uri that identifies them.
+    DomainObject is the base class for objects related to a recommendation application that have some URI.
     """
 
     uri: URIRef
