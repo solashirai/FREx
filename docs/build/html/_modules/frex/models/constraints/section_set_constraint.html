@@ -1,0 +1,738 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>frex.models.constraints.section_set_constraint &mdash; FREx 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> FREx
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../frex.html">FReX package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">FREx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>frex.models.constraints.section_set_constraint</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for frex.models.constraints.section_set_constraint</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Set</span>
+<span class="kn">from</span> <span class="nn">frex.models.constraints</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ConstraintType</span><span class="p">,</span>
+    <span class="n">AttributeConstraint</span><span class="p">,</span>
+    <span class="n">SectionAssignmentConstraint</span><span class="p">,</span>
+    <span class="n">SectionConstraintHierarchy</span><span class="p">,</span>
+    <span class="n">ItemConstraint</span><span class="p">,</span>
+    <span class="n">ConstraintSolutionSectionSet</span><span class="p">,</span>
+    <span class="n">ConstraintSolutionSection</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">frex.utils.common</span> <span class="kn">import</span> <span class="n">rgetattr</span>
+<span class="kn">from</span> <span class="nn">frex.models</span> <span class="kn">import</span> <span class="n">DomainObject</span><span class="p">,</span> <span class="n">Candidate</span>
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">ortools.sat.python</span> <span class="kn">import</span> <span class="n">cp_model</span>
+<span class="kn">from</span> <span class="nn">ortools.sat.python.cp_model</span> <span class="kn">import</span> <span class="n">IntVar</span>
+
+
+<div class="viewcode-block" id="SectionSetConstraint"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint">[docs]</a><span class="k">class</span> <span class="nc">SectionSetConstraint</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A solution section represents some grouping of the items chosen for the solution, used to</span>
+<span class="sd">    group together the items to fulfill some goal.</span>
+<span class="sd">    An example of the use solution sections would be for a course recommender system. One solution section would handle</span>
+<span class="sd">    how to assign various courses to fulfill graduation requirements. A second solution section would be used to choose</span>
+<span class="sd">    which courses are assigned to which semester.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">scaling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DomainObject</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_targeted_section_constraints</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeConstraint</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_constraint_hierarchies</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SectionConstraintHierarchy</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_enforcement_bools</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assignment_count_constraint</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeConstraint</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+
+        <span class="k">def</span> <span class="nf">always_true</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
+            <span class="k">lambda</span><span class="p">:</span> <span class="n">always_true</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_invalid_assignment</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_constraints</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SectionAssignmentConstraint</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_item_ordering_constraints</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ItemConstraint</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_required_item_assignments</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">URIRef</span><span class="p">,</span> <span class="n">URIRef</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># this dict will store variables used to assign items to each section in the optimization solution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># store attribute names that might be relevant to the solution that is produced</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attributes_of_interest</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># used to convert from floats to ints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span> <span class="o">=</span> <span class="n">scaling</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attributes_of_interest</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Getter for the attributes of interest property</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes_of_interest</span>
+
+<div class="viewcode-block" id="SectionSetConstraint.set_sections"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.set_sections">[docs]</a>    <span class="k">def</span> <span class="nf">set_sections</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sections</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">DomainObject</span><span class="p">,</span> <span class="o">...</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the sections that items will be assigned to.</span>
+<span class="sd">        For example, in a course recommender system, these sections could be a tuple of semesters (assign each class to</span>
+<span class="sd">        a semester) or a tuple of graduation requirements (assign each class to one or more requirement).</span>
+
+<span class="sd">        :param sections: A tuple of domain objects that concrete instances of &#39;sections&#39; to which items should be assigned</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span> <span class="o">=</span> <span class="n">sections</span>
+        <span class="c1"># keep a dictionary relating the domain object&#39;s URI to its index that is used for constraint solving purposes</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">section</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sections</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">section</span><span class="o">.</span><span class="n">uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.set_section_assignment_filter"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.set_section_assignment_filter">[docs]</a>    <span class="k">def</span> <span class="nf">set_section_assignment_filter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">target_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">filter_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a filter for sections to determine whether or not each item is allowed to be assigned to it.</span>
+<span class="sd">        If no filter is specified for a given section, we assume all items are allowed to be assigned.</span>
+
+<span class="sd">        :param target_uri: The URI of the section to set this filter for</span>
+<span class="sd">        :param filter_function: The filter function that takes anything as input and produces a bool indicating whether</span>
+<span class="sd">        that item is allowed to be assigned to the target section</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">target_uri</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">filter_function</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.allow_invalid_assignment_to_section"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.allow_invalid_assignment_to_section">[docs]</a>    <span class="k">def</span> <span class="nf">allow_invalid_assignment_to_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">target_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Indicate that a section is allowed to have &#39;invalid&#39; items (i.e., items that would return False by the section&#39;s</span>
+<span class="sd">        assignment filter) assigned to it. This can increase the time it takes to find a solution, but can allow uses</span>
+<span class="sd">        like having a &#39;restriction&#39; between sections.</span>
+
+<span class="sd">        :param target_uri: The URI of the section to allow invalid assignments for</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allow_invalid_assignment</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">target_uri</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.add_section_constraint"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.add_section_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_section_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">constraint_type</span><span class="p">:</span> <span class="n">ConstraintType</span><span class="p">,</span>
+        <span class="n">constraint_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">target_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">URIRef</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a constraint to be applied to each section solution. E.g., a constraint on the cost of all items chosen</span>
+<span class="sd">        within each given section.</span>
+<span class="sd">        If no target uri is specified, we assume all sections have this constraint</span>
+
+<span class="sd">        :param attribute_name: The domain_object&#39;s attribute to apply the constraint to</span>
+<span class="sd">        :param constraint_type: The type of constraint - i.e. ==, &lt;=, or &gt;=</span>
+<span class="sd">        :param constraint_value: The value to constraint the solution to</span>
+<span class="sd">        :param target_uri: The target URI of the section that this constraint should apply to. If none, all sections</span>
+<span class="sd">        will have the constraint applied.</span>
+<span class="sd">        :return: self, with a new Constraint added to the section_constraints list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">target_uri</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_targeted_section_constraints</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">AttributeConstraint</span><span class="p">(</span>
+                        <span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">,</span>
+                        <span class="n">constraint_type</span><span class="o">=</span><span class="n">constraint_type</span><span class="p">,</span>
+                        <span class="n">constraint_value</span><span class="o">=</span><span class="n">constraint_value</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_targeted_section_constraints</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">target_uri</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">AttributeConstraint</span><span class="p">(</span>
+                    <span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">,</span>
+                    <span class="n">constraint_type</span><span class="o">=</span><span class="n">constraint_type</span><span class="p">,</span>
+                    <span class="n">constraint_value</span><span class="o">=</span><span class="n">constraint_value</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.add_hierarchical_section_constraint"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.add_hierarchical_section_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_hierarchical_section_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">hierarchy</span><span class="p">:</span> <span class="n">SectionConstraintHierarchy</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add constraints based on a hierarchy of logical AND/OR operators that should be enforced.</span>
+<span class="sd">        if a hierarchy is set like this, all sections by default will use the hierarchy to determine whether</span>
+<span class="sd">        or not to enforce its various constraints.</span>
+
+<span class="sd">        :param hierarchy: A SectionConstraintHierarchy of sections that will be applied for the solution sections.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_constraint_hierarchies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hierarchy</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_recursive_enforcement_booleans</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">cp_model</span><span class="p">,</span>
+        <span class="n">parent_bools</span><span class="p">,</span>  <span class="c1"># WHAT TYPE IS THIS? List[???]</span>
+        <span class="n">hierarchy</span><span class="p">:</span> <span class="n">SectionConstraintHierarchy</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursively add boolean variables to establish relationships among sections.</span>
+<span class="sd">        This primarily is used to handle setup for logical AND/OR operators between sections, which can be applicable</span>
+<span class="sd">        to situations like graduation requirements (where some requirements require all of their sub-requirements to be</span>
+<span class="sd">        fulfilled, or how some can be fulfilled by fulfilling any 1 of its sub-requirements).</span>
+
+<span class="sd">        :param model: The cp_model that is being set up</span>
+<span class="sd">        :param parent_bools: The boolean variables that were applied to the parent section that called this function.</span>
+<span class="sd">        :param hierarchy: The SectionConstraintHierarchy to be recursively working through to add boolean variables</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_enforcement_bools</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">hierarchy</span><span class="o">.</span><span class="n">root_uri</span><span class="p">]]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="n">parent_bools</span>
+        <span class="p">)</span>
+
+        <span class="n">nested_and_bools</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">next_level</span> <span class="ow">in</span> <span class="n">hierarchy</span><span class="o">.</span><span class="n">dependency_and</span><span class="p">:</span>
+            <span class="n">new_and_bool</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NewBoolVar</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">nested_and_bools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_and_bool</span><span class="p">)</span>
+
+            <span class="n">next_level_bools</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_and_bool</span><span class="p">]</span>
+            <span class="n">next_level_bools</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parent_bools</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_recursive_enforcement_booleans</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">parent_bools</span><span class="o">=</span><span class="n">next_level_bools</span><span class="p">,</span> <span class="n">hierarchy</span><span class="o">=</span><span class="n">next_level</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">nested_and_bools</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">nested_and_bools</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">nested_and_bools</span><span class="p">))</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span>
+                <span class="n">parent_bools</span>
+            <span class="p">)</span>
+
+        <span class="n">nested_or_bools</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">next_level</span> <span class="ow">in</span> <span class="n">hierarchy</span><span class="o">.</span><span class="n">dependency_or</span><span class="p">:</span>
+            <span class="n">new_or_bool</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NewBoolVar</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">nested_or_bools</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_or_bool</span><span class="p">)</span>
+
+            <span class="n">next_level_bools</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_or_bool</span><span class="p">]</span>
+            <span class="n">next_level_bools</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">parent_bools</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_recursive_enforcement_booleans</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">parent_bools</span><span class="o">=</span><span class="n">next_level_bools</span><span class="p">,</span> <span class="n">hierarchy</span><span class="o">=</span><span class="n">next_level</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">nested_or_bools</span><span class="p">:</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">nested_or_bools</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span><span class="n">parent_bools</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SectionSetConstraint.add_section_assignment_constraint"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.add_section_assignment_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_section_assignment_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">section_a_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span>
+        <span class="n">section_b_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span>
+        <span class="n">constraint_type</span><span class="p">:</span> <span class="n">ConstraintType</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add constraints on how items are assigned to different sections.</span>
+<span class="sd">        The main use of this type of constraint is to apply constraints on whether items can be assigned to multiple</span>
+<span class="sd">        sections, or forcing items to be applied to multiple sections.</span>
+<span class="sd">        Some uses include enforcing that item assignments for different graduation requirements are unique (i.e.,</span>
+<span class="sd">        for requirements that both can be fulfilled by some class but the class can&#39;t count for both).</span>
+
+<span class="sd">        :param section_a_uri: The URI of a section to apply this constraint</span>
+<span class="sd">        :param section_b_uri: Another URI of a section to apply this constraint</span>
+<span class="sd">        :param constraint_type: The type of constraint to be applying on the items assigned to section A and B.</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">SectionAssignmentConstraint</span><span class="p">(</span>
+                <span class="n">constraint_type</span><span class="o">=</span><span class="n">constraint_type</span><span class="p">,</span>
+                <span class="n">section_a_uri</span><span class="o">=</span><span class="n">section_a_uri</span><span class="p">,</span>
+                <span class="n">section_b_uri</span><span class="o">=</span><span class="n">section_b_uri</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.add_item_ordering_dependence_constraint"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.add_item_ordering_dependence_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_item_ordering_dependence_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">independent_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span>
+        <span class="n">dependent_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span>
+        <span class="n">constraint_type</span><span class="p">:</span> <span class="n">ConstraintType</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a constraint that a particular item is assigned to a section before/after/together with another item.</span>
+<span class="sd">        This type of constraint assumes that the section ordering is meaningful and correlate to some temporal</span>
+<span class="sd">        sequence (e.g., each section is a day in the week, ordered Mon/Tues/..., and a constraint is added to</span>
+<span class="sd">        make sure the &#39;order&#39; of item a comes before item b).</span>
+<span class="sd">        The selection of the item specified by the dependent_uri requires this constraint to be satisfied, while</span>
+<span class="sd">        the independent_uri item can be successfully selected even if the dependent_uri is not selected.</span>
+
+<span class="sd">        :param independent_uri: The URI of the item that can be selected independently of this constraint</span>
+<span class="sd">        :param dependent_uri: The URI of the item whose ordering must adhere to this constraint</span>
+<span class="sd">        :param constraint_type: The type of constraint to apply to the ordering</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_item_ordering_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">ItemConstraint</span><span class="p">(</span>
+                <span class="n">constraint_type</span><span class="o">=</span><span class="n">constraint_type</span><span class="p">,</span>
+                <span class="n">item_a_uri</span><span class="o">=</span><span class="n">independent_uri</span><span class="p">,</span>
+                <span class="n">item_b_uri</span><span class="o">=</span><span class="n">dependent_uri</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.add_section_count_constraint"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.add_section_count_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_section_count_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exact_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target_uri</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">URIRef</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set constraints on the number of items assigned to sections.</span>
+<span class="sd">        If no target URI is specified, it is assumed that the count constraint applies to all sections.</span>
+<span class="sd">        This function will check for an exact count first, and if it exists it will only create a constraint for making</span>
+<span class="sd">        sure the number of items assigned to the target section is equal to that quantity. Otherwise, both a min</span>
+<span class="sd">        and max count of items assigned to a section can be specified.</span>
+
+<span class="sd">        :param min_count: The minimum number of items to assign to the target section</span>
+<span class="sd">        :param max_count: The maximum number of items to assign to the target section</span>
+<span class="sd">        :param exact_count: An exact number of items to assign to the target section</span>
+<span class="sd">        :param target_uri: The uri of the section to apply this constraint to, if any</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># check exact count first.</span>
+        <span class="k">if</span> <span class="n">exact_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">AttributeConstraint</span><span class="p">(</span>
+                    <span class="n">attribute_name</span><span class="o">=</span><span class="s2">&quot;__item_count&quot;</span><span class="p">,</span>
+                    <span class="n">constraint_type</span><span class="o">=</span><span class="n">ConstraintType</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+                    <span class="n">constraint_value</span><span class="o">=</span><span class="n">exact_count</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">AttributeConstraint</span><span class="p">(</span>
+                        <span class="n">attribute_name</span><span class="o">=</span><span class="s2">&quot;__item_count&quot;</span><span class="p">,</span>
+                        <span class="n">constraint_type</span><span class="o">=</span><span class="n">ConstraintType</span><span class="o">.</span><span class="n">GEQ</span><span class="p">,</span>
+                        <span class="n">constraint_value</span><span class="o">=</span><span class="n">min_count</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">AttributeConstraint</span><span class="p">(</span>
+                        <span class="n">attribute_name</span><span class="o">=</span><span class="s2">&quot;__item_count&quot;</span><span class="p">,</span>
+                        <span class="n">constraint_type</span><span class="o">=</span><span class="n">ConstraintType</span><span class="o">.</span><span class="n">LEQ</span><span class="p">,</span>
+                        <span class="n">constraint_value</span><span class="o">=</span><span class="n">max_count</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">target_uri</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_assignment_count_constraint</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">target_uri</span><span class="p">]]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">constraints</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_assignment_count_constraint</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.add_required_item_assignment"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.add_required_item_assignment">[docs]</a>    <span class="k">def</span> <span class="nf">add_required_item_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">section_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">item_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a requirement that the given item is assigned to the target section.</span>
+
+<span class="sd">        :param section_uri: The URI of the section to assign the item to</span>
+<span class="sd">        :param item_uri: The URI of the item that must be assigned to the target section</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_required_item_assignments</span><span class="p">[</span><span class="n">item_uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">section_uri</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.setup_section_constraints"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.setup_section_constraints">[docs]</a>    <span class="k">def</span> <span class="nf">setup_section_constraints</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">items</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">item_selection</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">IntVar</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">cp_model</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the various constraints applied to this solution section into a matrix form to feed into the</span>
+<span class="sd">        constraint solver.</span>
+
+<span class="sd">        :param items: The candidate items being used to assign into the solution</span>
+<span class="sd">        :param item_selection: Variables manipulated by the solver to determine whether or not each item is chosen</span>
+<span class="sd">        :param model: The constraint solver model</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">item_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">item_selection</span><span class="p">)</span>
+        <span class="n">section_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">)</span>
+        <span class="n">item_uri_to_index</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span>
+            <span class="n">URIRef</span><span class="p">,</span> <span class="nb">int</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># temporary dictionary to store item indices for convenience</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">item_count</span><span class="p">):</span>
+            <span class="n">this_item_assignment_vars</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="o">.</span><span class="n">uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+            <span class="k">for</span> <span class="n">section_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NewIntVar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">this_item_assignment_vars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">section_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allow_invalid_assignment</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span>
+                        <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">[</span><span class="n">section_index</span><span class="p">](</span>
+                            <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="o">.</span><span class="n">uri</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required_item_assignments</span><span class="p">:</span>
+                <span class="n">target_section_uri</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_required_item_assignments</span><span class="p">[</span>
+                    <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="o">.</span><span class="n">uri</span>
+                <span class="p">]</span>
+                <span class="k">for</span> <span class="n">section_index</span><span class="p">,</span> <span class="n">section</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">uri</span> <span class="o">==</span> <span class="n">target_section_uri</span><span class="p">:</span>
+                        <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># ensure that each item is assigned to at least 1 section, if it is selected</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">AddMaxEquality</span><span class="p">(</span><span class="n">item_selection</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">this_item_assignment_vars</span><span class="p">)</span>
+
+        <span class="c1"># set up boolean operators among sections, which will be used to choose whether or not to enforce</span>
+        <span class="c1"># various constraints on each solution section</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_constraint_hierarchies</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">hierarchy</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_constraint_hierarchies</span><span class="p">:</span>
+                <span class="n">top_level_bool</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NewBoolVar</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">top_level_bool</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_recursive_enforcement_booleans</span><span class="p">(</span>
+                    <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">parent_bools</span><span class="o">=</span><span class="p">[</span><span class="n">top_level_bool</span><span class="p">],</span> <span class="n">hierarchy</span><span class="o">=</span><span class="n">hierarchy</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">section_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">):</span>
+            <span class="n">section_bools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_enforcement_bools</span><span class="p">[</span><span class="n">section_index</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assignment_count_constraint</span><span class="p">[</span><span class="n">section_index</span><span class="p">]:</span>
+                <span class="n">section_assignment_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">[</span><span class="n">section_index</span><span class="p">](</span>
+                            <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span>
+                        <span class="p">)</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">item_count</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                    <span class="n">ac</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span><span class="n">section_assignment_sum</span><span class="p">,</span> <span class="n">ac</span><span class="o">.</span><span class="n">constraint_value</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span><span class="n">section_bools</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">ac</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_targeted_section_constraints</span><span class="p">[</span><span class="n">section_index</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_attributes_of_interest</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ac</span><span class="o">.</span><span class="n">attribute_name</span><span class="p">)</span>
+                <span class="n">ss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="nb">int</span><span class="p">(</span>
+                            <span class="nb">round</span><span class="p">(</span>
+                                <span class="n">rgetattr</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="p">,</span> <span class="n">ac</span><span class="o">.</span><span class="n">attribute_name</span><span class="p">)</span>
+                                <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">[</span><span class="n">section_index</span><span class="p">](</span>
+                            <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span>
+                        <span class="p">)</span>
+                        <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">section_index</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">item_count</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                    <span class="n">ac</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span>
+                        <span class="n">ss</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">ac</span><span class="o">.</span><span class="n">constraint_value</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span><span class="p">))</span>
+                    <span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span><span class="n">section_bools</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">sac</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_constraints</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">item_count</span><span class="p">):</span>
+                <span class="c1"># ignore at-most-1 constraints if the item isn&#39;t actually allowed to be assigned to both, to save time.</span>
+                <span class="k">if</span> <span class="n">sac</span><span class="o">.</span><span class="n">constraint_type</span> <span class="o">==</span> <span class="n">ConstraintType</span><span class="o">.</span><span class="n">AM1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">[</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">sac</span><span class="o">.</span><span class="n">section_a_uri</span><span class="p">]</span>
+                        <span class="p">](</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="p">)</span>
+                        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_section_assignment_filter</span><span class="p">[</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">sac</span><span class="o">.</span><span class="n">section_b_uri</span><span class="p">]</span>
+                        <span class="p">](</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="k">continue</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                    <span class="n">sac</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span>
+                            <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">sac</span><span class="o">.</span><span class="n">section_a_uri</span><span class="p">]</span>
+                        <span class="p">],</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span>
+                            <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_uri_to_index</span><span class="p">[</span><span class="n">sac</span><span class="o">.</span><span class="n">section_b_uri</span><span class="p">]</span>
+                        <span class="p">],</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ioc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_item_ordering_constraints</span><span class="p">:</span>
+            <span class="c1"># multiply the index of each section by the item assignment value to enforce item ordering</span>
+            <span class="c1"># 1 is added to the index to avoid the edge case around sections with index 0.</span>
+            <span class="c1"># the extra addition of the (j+2) term ensures that the item specified at item_a_uri can be freely selected</span>
+            <span class="c1"># while the selection of item_b_uri will require item_a to be selected in the appropriate order.</span>
+            <span class="c1"># this assumes each item is only assigned to a single section</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                <span class="n">ioc</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span>
+                    <span class="nb">sum</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">],</span> <span class="n">j</span><span class="p">]</span>
+                            <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">)</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">]]</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="n">section_count</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+                    <span class="nb">sum</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">],</span> <span class="n">j</span><span class="p">]</span>
+                            <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">)</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="o">+</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">]]</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="n">section_count</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="SectionSetConstraint.get_solution_assignments"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.get_solution_assignments">[docs]</a>    <span class="k">def</span> <span class="nf">get_solution_assignments</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">CpSolver</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConstraintSolutionSectionSet</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Using a solver that has already solved for the overall constraints, create a constraint solution section set</span>
+<span class="sd">        that captures all the sections, the items assigned to each section, and the scores/attribute values associated</span>
+<span class="sd">        with those assignments</span>
+
+<span class="sd">        :param solver: A constraint solver, which has already been run to obtain a solution</span>
+<span class="sd">        :param items: A tuple of candidates that was used by the solver to derive the solution</span>
+<span class="sd">        :return: A ConstraintSolutionSectionSet object capturing the relevant information for this set of sections</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section_scores</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">]</span>
+        <span class="n">section_attribute_values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes_of_interest</span><span class="p">}</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span>
+        <span class="p">]</span>
+        <span class="n">section_items</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]):</span>
+                    <span class="n">section_items</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">section_scores</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">total_score</span>
+                    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes_of_interest</span><span class="p">:</span>
+                        <span class="n">section_attribute_values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">attr</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rgetattr</span><span class="p">(</span>
+                            <span class="n">items</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="p">,</span> <span class="n">attr</span>
+                        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ConstraintSolutionSectionSet</span><span class="p">(</span>
+            <span class="n">sections</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span>
+                <span class="n">ConstraintSolutionSection</span><span class="p">(</span>
+                    <span class="n">section_object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                    <span class="n">section_score</span><span class="o">=</span><span class="n">section_scores</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                    <span class="n">section_attribute_values</span><span class="o">=</span><span class="n">section_attribute_values</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                    <span class="n">section_candidates</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">section_items</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Sola Shirai.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

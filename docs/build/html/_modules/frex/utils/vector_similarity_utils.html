@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>frex.utils.vector_similarity_utils &mdash; FREx 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> FREx
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../frex.html">FReX package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">FREx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>frex.utils.vector_similarity_utils</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for frex.utils.vector_similarity_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Generator</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span><span class="p">,</span> <span class="n">lil_matrix</span>
+
+
+<div class="viewcode-block" id="VectorSimilarityUtils"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.vector_similarity_utils.VectorSimilarityUtils">[docs]</a><span class="k">class</span> <span class="nc">VectorSimilarityUtils</span><span class="p">:</span>
+<div class="viewcode-block" id="VectorSimilarityUtils.sparse_l2_norm"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.vector_similarity_utils.VectorSimilarityUtils.sparse_l2_norm">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sparse_l2_norm</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">matrix</span><span class="p">:</span> <span class="n">csr_matrix</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the l2 norm of an input csr sparse matrix.</span>
+<span class="sd">        This is significantly faster and less memory intensive than simply passing the matrix to numpy.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">matrix</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VectorSimilarityUtils.cosine_sim"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.vector_similarity_utils.VectorSimilarityUtils.cosine_sim">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cosine_sim</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span> <span class="n">comparison_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">comparison_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the cosine similarity between a given vector and the rows of a matrix.</span>
+
+<span class="sd">        :param comparison_vector: The vector to serve as the source of comparison</span>
+<span class="sd">        :param comparison_matrix: A matrix containing rows with which the comparison_vector will be compared</span>
+<span class="sd">        :return: An array of cosine similarities between the comparison_vector and each row of the comparison_matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparison_vector</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">):</span>
+            <span class="c1"># sparse matrices seem to be very slow or require a ton of memory to call np.linalg.norm, so</span>
+            <span class="c1"># compute using csr_matrix functions here.</span>
+            <span class="k">return</span> <span class="n">comparison_vector</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">comparison_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">VectorSimilarityUtils</span><span class="o">.</span><span class="n">sparse_l2_norm</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">comparison_vector</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+                    <span class="n">VectorSimilarityUtils</span><span class="o">.</span><span class="n">sparse_l2_norm</span><span class="p">(</span><span class="n">matrix</span><span class="o">=</span><span class="n">comparison_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">comparison_vector</span><span class="p">,</span> <span class="n">comparison_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">comparison_vector</span><span class="p">)</span>
+                <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">comparison_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="VectorSimilarityUtils.jaccard_sim"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.vector_similarity_utils.VectorSimilarityUtils.jaccard_sim">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">jaccard_sim</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span> <span class="n">comparison_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">comparison_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the jaccard similarity between a given vector and the rows of a matrix.</span>
+
+<span class="sd">        :param comparison_vector: The vector to serve as the source of comparison</span>
+<span class="sd">        :param comparison_matrix: A matrix containing rows with which the comparison_vector will be compared</span>
+<span class="sd">        :return: An array of jaccard similarities between the comparison_vector and each row of the comparison_matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vec_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">comparison_vector</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mat_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">comparison_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">overlap</span> <span class="o">=</span> <span class="n">comparison_vector</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">comparison_matrix</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">overlap</span> <span class="o">/</span> <span class="p">(</span><span class="n">vec_sum</span> <span class="o">+</span> <span class="n">mat_sum</span> <span class="o">-</span> <span class="n">overlap</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="VectorSimilarityUtils.get_item_vector_similarity"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.vector_similarity_utils.VectorSimilarityUtils.get_item_vector_similarity">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_item_vector_similarity</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">target_item</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="n">target_vector</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">comparison_items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+        <span class="n">comparison_contents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a tuple of comparison_items and their corresponding vectors into a matrix and return a list of</span>
+<span class="sd">        items and scores.</span>
+<span class="sd">        The shape of item content vectors is expected to be (1, N) for each item.</span>
+<span class="sd">        The target item and its vector should not be contained in comparison_items or comparison_contents.</span>
+
+<span class="sd">        :param target_item: The item to get similarities for. currently unused.</span>
+<span class="sd">        :param target_vector: A vector representing the target_item.</span>
+<span class="sd">        :param comparison_items: A list of other items to compare the target_item with.</span>
+<span class="sd">        :param comparison_contents: A list of vectors that represent each item in comparison_items</span>
+<span class="sd">        :return: A list of tuples (x, y) where x is an item and y is the similarity of that item and the target_item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ind_to_item</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">content_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">comparison_items</span><span class="p">),</span> <span class="n">target_vector</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comparison_contents</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">csr_matrix</span><span class="p">):</span>
+            <span class="n">content_matrix</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">(</span><span class="n">content_matrix</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item_ind</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">comparison_items</span><span class="p">):</span>
+            <span class="n">ind_to_item</span><span class="p">[</span><span class="n">item_ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+            <span class="n">content_matrix</span><span class="p">[</span><span class="n">item_ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">comparison_contents</span><span class="p">[</span><span class="n">item_ind</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content_matrix</span><span class="p">,</span> <span class="n">lil_matrix</span><span class="p">):</span>
+            <span class="n">content_matrix</span> <span class="o">=</span> <span class="n">content_matrix</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+        <span class="n">cosine_sims</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">VectorSimilarityUtils</span><span class="o">.</span><span class="n">cosine_sim</span><span class="p">(</span>
+            <span class="n">comparison_vector</span><span class="o">=</span><span class="n">target_vector</span><span class="p">,</span> <span class="n">comparison_matrix</span><span class="o">=</span><span class="n">content_matrix</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">comparison_items</span><span class="p">,</span> <span class="n">cosine_sims</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="VectorSimilarityUtils.get_top_n_candidates"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.vector_similarity_utils.VectorSimilarityUtils.get_top_n_candidates">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_top_n_candidates</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span> <span class="n">candidate_score_dict</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">]],</span> <span class="n">top_n</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the top N candidates out of a list of tuples, where the second index of the tuple is the item&#39;s score.</span>
+<span class="sd">        This score should typically be something like a similarity score, e.g. what comes out of the</span>
+<span class="sd">        get_item_vector_similarity function.</span>
+
+<span class="sd">        :param candidate_score_dict: A list of tuples (x, y) where x is an item and y is some score for that item</span>
+<span class="sd">        :param top_n: The number of items to return</span>
+<span class="sd">        :return: A list of the top N items from candidate_score_dict in descending order</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sorted_uris</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="n">candidate_score_dict</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">sorted_uris</span><span class="p">[:</span><span class="n">top_n</span><span class="p">]</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Sola Shirai.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

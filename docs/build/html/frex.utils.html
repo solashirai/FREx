@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>frex.utils package &mdash; FREx 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="frex.stores package" href="frex.stores.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> FREx
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="frex.html">FReX package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="frex.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="frex.models.html">frex.models package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frex.pipeline_stages.html">frex.pipeline_stages package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frex.pipelines.html">frex.pipelines package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frex.stores.html">frex.stores package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">frex.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-frex.utils.common">frex.utils.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-frex.utils.constraint_solver">frex.utils.constraint_solver module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-frex.utils.vector_similarity_utils">frex.utils.vector_similarity_utils module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-frex.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="frex.html#module-frex">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">FREx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="frex.html">FReX package</a> &raquo;</li>
+        
+      <li>frex.utils package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/frex.utils.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frex-utils-package">
+<h1>frex.utils package<a class="headerlink" href="#frex-utils-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-frex.utils.common">
+<span id="frex-utils-common-module"></span><h2>frex.utils.common module<a class="headerlink" href="#module-frex.utils.common" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="frex.utils.common.rgetattr">
+<code class="sig-prename descclassname"><span class="pre">frex.utils.common.</span></code><code class="sig-name descname"><span class="pre">rgetattr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/common.html#rgetattr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.common.rgetattr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get an attribute of an object, allowing for the target attribute to be an attribute of some sub-object.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-frex.utils.constraint_solver">
+<span id="frex-utils-constraint-solver-module"></span><h2>frex.utils.constraint_solver module<a class="headerlink" href="#module-frex.utils.constraint_solver" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="frex.utils.constraint_solver.ConstraintSolver">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.utils.constraint_solver.</span></code><code class="sig-name descname"><span class="pre">ConstraintSolver</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to perform constraint solving to produce a final solution of items using constraints on the overall
+set of items.</p>
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.add_item_selection_constraint">
+<code class="sig-name descname"><span class="pre">add_item_selection_constraint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_a_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.term.URIRef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_b_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.term.URIRef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="frex.models.constraints.html#frex.models.constraints.constraint_type.ConstraintType" title="frex.models.constraints.constraint_type.ConstraintType"><span class="pre">frex.models.constraints.constraint_type.ConstraintType</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.add_item_selection_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.add_item_selection_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require that candidates chosen in the final solution have some relationship based on the constraint, e.g.,
+EQ to ensure either both item_a and item_b are selected/not selected, or LEQ to ensure that if item_a is
+selected then item_b must also be selected.
+:param item_a_uri: The domain object’s URI of the first item
+:param item_b_uri: The domain object’s URI of the second item
+:param constraint_type: The type of constraint to apply for how the final items are selected
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.add_overall_count_constraint">
+<code class="sig-name descname"><span class="pre">add_overall_count_constraint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_count</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_count</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exact_count</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.add_overall_count_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.add_overall_count_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set constraints on the total number of items chosen for the solution.
+This function will check for an exact count first, and if it exists it will only create a constraint for making
+sure the number of items assigned to the target section is equal to that quantity. Otherwise, both a min
+and max count of items assigned to a section can be specified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min_count</strong> – The minimum number of items to assign to the target section</p></li>
+<li><p><strong>max_count</strong> – The maximum number of items to assign to the target section</p></li>
+<li><p><strong>exact_count</strong> – An exact number of items to assign to the target section</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.add_overall_item_constraint">
+<code class="sig-name descname"><span class="pre">add_overall_item_constraint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="frex.models.constraints.html#frex.models.constraints.constraint_type.ConstraintType" title="frex.models.constraints.constraint_type.ConstraintType"><span class="pre">frex.models.constraints.constraint_type.ConstraintType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#frex.utils.constraint_solver.ConstraintSolver" title="frex.utils.constraint_solver.ConstraintSolver"><span class="pre">frex.utils.constraint_solver.ConstraintSolver</span></a><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.add_overall_item_constraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.add_overall_item_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a constraint to be applied to the entire solution. E.g., a constraint on the cost of all items chosen
+across all sections of the solution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>attribute_name</strong> – The domain_object’s attribute to apply the constraint to</p></li>
+<li><p><strong>constraint_type</strong> – The type of constraint - i.e. ==, &lt;=, or &gt;=</p></li>
+<li><p><strong>constraint_value</strong> – The value to constraint the solution to</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self, with a new Constraint added to the overall_constraints list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.add_required_item_selection">
+<code class="sig-name descname"><span class="pre">add_required_item_selection</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.term.URIRef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.add_required_item_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.add_required_item_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Require that the final solution selects a candidate whose domain object has the target URI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target_uri</strong> – the URI of the item that must be included in the final solution</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.set_candidates">
+<code class="sig-name descname"><span class="pre">set_candidates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidates</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.html#frex.models.candidate.Candidate" title="frex.models.candidate.Candidate"><span class="pre">frex.models.candidate.Candidate</span></a><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.set_candidates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.set_candidates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the candidates that will be used to produce the solution.
+Candidates are expected to be produced as the output of some pipeline, which handles scoring.
+The solver will not handle any sort of scoring for the candidates, but rather it will produce an optimized
+solution based on the Candidates’ total_score (which should be computed by a pipeline) and other constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>candidates</strong> – A tuple of Candidate objects, with corresponding domain_objects and scores</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self, with an updated list of candidates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.set_section_set_constraints">
+<code class="sig-name descname"><span class="pre">set_section_set_constraints</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">section_sets</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint" title="frex.models.constraints.section_set_constraint.SectionSetConstraint"><span class="pre">frex.models.constraints.section_set_constraint.SectionSetConstraint</span></a><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.set_section_set_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.set_section_set_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set all the SectionSetConstraints that need to be solved to produce a valid solution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>section_sets</strong> – A tuple of SectionSetConstraints that will be applied to the solution</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.constraint_solver.ConstraintSolver.solve">
+<code class="sig-name descname"><span class="pre">solve</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.term.URIRef</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.models.constraints.html#frex.models.constraints.constraint_solution.ConstraintSolution" title="frex.models.constraints.constraint_solution.ConstraintSolution"><span class="pre">frex.models.constraints.constraint_solution.ConstraintSolution</span></a><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/utils/constraint_solver.html#ConstraintSolver.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.constraint_solver.ConstraintSolver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform integer programming to solve constraints and maximize an objective function based on the total scores
+applied to candidates. This function expects candidates that are the result of some recommendation pipeline
+(i.e., candidates have scores, and problematic candidates have already been filtered out).</p>
+<p>This will produce outputs assigning candidates to ‘sections’. A section can be thought of as e.g. a day in
+a meal plan, or a semester in a student’s plan-of-study.</p>
+<p>Currently assumes that (1) the objective function is always to maximize the total score of the final output,
+(2) each candidate can only be a part of one section, (3) each section must have an exact number of
+candidates assigned to it, and (4) the order of sections does not matter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Output_uri</dt>
+<dd class="field-odd"><p>The URI to attach to the output constraint solution</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-frex.utils.vector_similarity_utils">
+<span id="frex-utils-vector-similarity-utils-module"></span><h2>frex.utils.vector_similarity_utils module<a class="headerlink" href="#module-frex.utils.vector_similarity_utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="frex.utils.vector_similarity_utils.VectorSimilarityUtils">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.utils.vector_similarity_utils.</span></code><code class="sig-name descname"><span class="pre">VectorSimilarityUtils</span></code><a class="reference internal" href="_modules/frex/utils/vector_similarity_utils.html#VectorSimilarityUtils"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.vector_similarity_utils.VectorSimilarityUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="frex.utils.vector_similarity_utils.VectorSimilarityUtils.cosine_sim">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">cosine_sim</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparison_vector</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparison_matrix</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.array</span><a class="reference internal" href="_modules/frex/utils/vector_similarity_utils.html#VectorSimilarityUtils.cosine_sim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.vector_similarity_utils.VectorSimilarityUtils.cosine_sim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the cosine similarity between a given vector and the rows of a matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comparison_vector</strong> – The vector to serve as the source of comparison</p></li>
+<li><p><strong>comparison_matrix</strong> – A matrix containing rows with which the comparison_vector will be compared</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array of cosine similarities between the comparison_vector and each row of the comparison_matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.vector_similarity_utils.VectorSimilarityUtils.get_item_vector_similarity">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_item_vector_similarity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_item</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_vector</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparison_items</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparison_contents</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.array</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/utils/vector_similarity_utils.html#VectorSimilarityUtils.get_item_vector_similarity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.vector_similarity_utils.VectorSimilarityUtils.get_item_vector_similarity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a tuple of comparison_items and their corresponding vectors into a matrix and return a list of
+items and scores.
+The shape of item content vectors is expected to be (1, N) for each item.
+The target item and its vector should not be contained in comparison_items or comparison_contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_item</strong> – The item to get similarities for. currently unused.</p></li>
+<li><p><strong>target_vector</strong> – A vector representing the target_item.</p></li>
+<li><p><strong>comparison_items</strong> – A list of other items to compare the target_item with.</p></li>
+<li><p><strong>comparison_contents</strong> – A list of vectors that represent each item in comparison_items</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of tuples (x, y) where x is an item and y is the similarity of that item and the target_item</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.vector_similarity_utils.VectorSimilarityUtils.get_top_n_candidates">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">get_top_n_candidates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">candidate_score_dict</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_n</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><a class="reference internal" href="_modules/frex/utils/vector_similarity_utils.html#VectorSimilarityUtils.get_top_n_candidates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.vector_similarity_utils.VectorSimilarityUtils.get_top_n_candidates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the top N candidates out of a list of tuples, where the second index of the tuple is the item’s score.
+This score should typically be something like a similarity score, e.g. what comes out of the
+get_item_vector_similarity function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candidate_score_dict</strong> – A list of tuples (x, y) where x is an item and y is some score for that item</p></li>
+<li><p><strong>top_n</strong> – The number of items to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of the top N items from candidate_score_dict in descending order</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.vector_similarity_utils.VectorSimilarityUtils.jaccard_sim">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">jaccard_sim</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparison_vector</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comparison_matrix</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.array</span><a class="reference internal" href="_modules/frex/utils/vector_similarity_utils.html#VectorSimilarityUtils.jaccard_sim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.vector_similarity_utils.VectorSimilarityUtils.jaccard_sim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the jaccard similarity between a given vector and the rows of a matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>comparison_vector</strong> – The vector to serve as the source of comparison</p></li>
+<li><p><strong>comparison_matrix</strong> – A matrix containing rows with which the comparison_vector will be compared</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array of jaccard similarities between the comparison_vector and each row of the comparison_matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="frex.utils.vector_similarity_utils.VectorSimilarityUtils.sparse_l2_norm">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">sparse_l2_norm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">scipy.sparse.csr.csr_matrix</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">numpy.array</span><a class="reference internal" href="_modules/frex/utils/vector_similarity_utils.html#VectorSimilarityUtils.sparse_l2_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.utils.vector_similarity_utils.VectorSimilarityUtils.sparse_l2_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the l2 norm of an input csr sparse matrix.
+This is significantly faster and less memory intensive than simply passing the matrix to numpy.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-frex.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-frex.utils" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="frex.stores.html" class="btn btn-neutral float-left" title="frex.stores package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Sola Shirai.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

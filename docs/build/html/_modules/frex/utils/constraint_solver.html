@@ -1,0 +1,491 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>frex.utils.constraint_solver &mdash; FREx 1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> FREx
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../frex.html">FReX package</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">FREx</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>frex.utils.constraint_solver</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for frex.utils.constraint_solver</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span> <span class="nn">ortools.sat.python</span> <span class="kn">import</span> <span class="n">cp_model</span>
+<span class="kn">from</span> <span class="nn">frex.models</span> <span class="kn">import</span> <span class="n">Candidate</span><span class="p">,</span> <span class="n">ConstraintSolutionSection</span><span class="p">,</span> <span class="n">ConstraintSolution</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">frex.utils.common</span> <span class="kn">import</span> <span class="n">rgetattr</span>
+<span class="kn">from</span> <span class="nn">frex.models.constraints</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ConstraintType</span><span class="p">,</span>
+    <span class="n">AttributeConstraint</span><span class="p">,</span>
+    <span class="n">SectionSetConstraint</span><span class="p">,</span>
+    <span class="n">ItemConstraint</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">rdflib</span> <span class="kn">import</span> <span class="n">URIRef</span>
+
+
+<div class="viewcode-block" id="ConstraintSolver"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver">[docs]</a><span class="k">class</span> <span class="nc">ConstraintSolver</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class to perform constraint solving to produce a final solution of items using constraints on the overall</span>
+<span class="sd">    set of items.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">scaling</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">CpModel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">CpSolver</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">SectionSetConstraint</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span> <span class="o">=</span> <span class="n">scaling</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overall_item_constraints</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AttributeConstraint</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_item_selection_constraints</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ItemConstraint</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count_constraints</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_required_item_uris</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ConstraintSolver.set_candidates"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.set_candidates">[docs]</a>    <span class="k">def</span> <span class="nf">set_candidates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">candidates</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="o">...</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the candidates that will be used to produce the solution.</span>
+<span class="sd">        Candidates are expected to be produced as the output of some pipeline, which handles scoring.</span>
+<span class="sd">        The solver will not handle any sort of scoring for the candidates, but rather it will produce an optimized</span>
+<span class="sd">        solution based on the Candidates&#39; total_score (which should be computed by a pipeline) and other constraints.</span>
+
+<span class="sd">        :param candidates: A tuple of Candidate objects, with corresponding domain_objects and scores</span>
+<span class="sd">        :return: self, with an updated list of candidates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span> <span class="o">=</span> <span class="n">candidates</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConstraintSolver.set_section_set_constraints"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.set_section_set_constraints">[docs]</a>    <span class="k">def</span> <span class="nf">set_section_set_constraints</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">section_sets</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">SectionSetConstraint</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set all the SectionSetConstraints that need to be solved to produce a valid solution.</span>
+
+<span class="sd">        :param section_sets: A tuple of SectionSetConstraints that will be applied to the solution</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span> <span class="o">=</span> <span class="n">section_sets</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConstraintSolver.add_overall_count_constraint"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.add_overall_count_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_overall_count_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">min_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">exact_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set constraints on the total number of items chosen for the solution.</span>
+<span class="sd">        This function will check for an exact count first, and if it exists it will only create a constraint for making</span>
+<span class="sd">        sure the number of items assigned to the target section is equal to that quantity. Otherwise, both a min</span>
+<span class="sd">        and max count of items assigned to a section can be specified.</span>
+
+<span class="sd">        :param min_count: The minimum number of items to assign to the target section</span>
+<span class="sd">        :param max_count: The maximum number of items to assign to the target section</span>
+<span class="sd">        :param exact_count: An exact number of items to assign to the target section</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># check exact count first.</span>
+        <span class="k">if</span> <span class="n">exact_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_count_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">AttributeConstraint</span><span class="p">(</span>
+                    <span class="n">attribute_name</span><span class="o">=</span><span class="s2">&quot;__item_count&quot;</span><span class="p">,</span>
+                    <span class="n">constraint_type</span><span class="o">=</span><span class="n">ConstraintType</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span>
+                    <span class="n">constraint_value</span><span class="o">=</span><span class="n">exact_count</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_count_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">AttributeConstraint</span><span class="p">(</span>
+                        <span class="n">attribute_name</span><span class="o">=</span><span class="s2">&quot;__item_count&quot;</span><span class="p">,</span>
+                        <span class="n">constraint_type</span><span class="o">=</span><span class="n">ConstraintType</span><span class="o">.</span><span class="n">GEQ</span><span class="p">,</span>
+                        <span class="n">constraint_value</span><span class="o">=</span><span class="n">min_count</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">max_count</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_count_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">AttributeConstraint</span><span class="p">(</span>
+                        <span class="n">attribute_name</span><span class="o">=</span><span class="s2">&quot;__item_count&quot;</span><span class="p">,</span>
+                        <span class="n">constraint_type</span><span class="o">=</span><span class="n">ConstraintType</span><span class="o">.</span><span class="n">LEQ</span><span class="p">,</span>
+                        <span class="n">constraint_value</span><span class="o">=</span><span class="n">max_count</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConstraintSolver.add_overall_item_constraint"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.add_overall_item_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_overall_item_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">attribute_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">constraint_type</span><span class="p">:</span> <span class="n">ConstraintType</span><span class="p">,</span>
+        <span class="n">constraint_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ConstraintSolver</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a constraint to be applied to the entire solution. E.g., a constraint on the cost of all items chosen</span>
+<span class="sd">        across all sections of the solution.</span>
+
+<span class="sd">        :param attribute_name: The domain_object&#39;s attribute to apply the constraint to</span>
+<span class="sd">        :param constraint_type: The type of constraint - i.e. ==, &lt;=, or &gt;=</span>
+<span class="sd">        :param constraint_value: The value to constraint the solution to</span>
+<span class="sd">        :return: self, with a new Constraint added to the overall_constraints list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overall_item_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">AttributeConstraint</span><span class="p">(</span>
+                <span class="n">attribute_name</span><span class="o">=</span><span class="n">attribute_name</span><span class="p">,</span>
+                <span class="n">constraint_type</span><span class="o">=</span><span class="n">constraint_type</span><span class="p">,</span>
+                <span class="n">constraint_value</span><span class="o">=</span><span class="n">constraint_value</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConstraintSolver.add_item_selection_constraint"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.add_item_selection_constraint">[docs]</a>    <span class="k">def</span> <span class="nf">add_item_selection_constraint</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">item_a_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">item_b_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">,</span> <span class="n">constraint_type</span><span class="p">:</span> <span class="n">ConstraintType</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Require that candidates chosen in the final solution have some relationship based on the constraint, e.g.,</span>
+<span class="sd">        EQ to ensure either both item_a and item_b are selected/not selected, or LEQ to ensure that if item_a is</span>
+<span class="sd">        selected then item_b must also be selected.</span>
+<span class="sd">        :param item_a_uri: The domain object&#39;s URI of the first item</span>
+<span class="sd">        :param item_b_uri: The domain object&#39;s URI of the second item</span>
+<span class="sd">        :param constraint_type: The type of constraint to apply for how the final items are selected</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_item_selection_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">ItemConstraint</span><span class="p">(</span>
+                <span class="n">item_a_uri</span><span class="o">=</span><span class="n">item_a_uri</span><span class="p">,</span>
+                <span class="n">item_b_uri</span><span class="o">=</span><span class="n">item_b_uri</span><span class="p">,</span>
+                <span class="n">constraint_type</span><span class="o">=</span><span class="n">constraint_type</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConstraintSolver.add_required_item_selection"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.add_required_item_selection">[docs]</a>    <span class="k">def</span> <span class="nf">add_required_item_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">target_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Require that the final solution selects a candidate whose domain object has the target URI.</span>
+
+<span class="sd">        :param target_uri: the URI of the item that must be included in the final solution</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_required_item_uris</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_uri</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConstraintSolver.solve"><a class="viewcode-back" href="../../../frex.utils.html#frex.utils.constraint_solver.ConstraintSolver.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">output_uri</span><span class="p">:</span> <span class="n">URIRef</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ConstraintSolution</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform integer programming to solve constraints and maximize an objective function based on the total scores</span>
+<span class="sd">        applied to candidates. This function expects candidates that are the result of some recommendation pipeline</span>
+<span class="sd">        (i.e., candidates have scores, and problematic candidates have already been filtered out).</span>
+
+<span class="sd">        This will produce outputs assigning candidates to &#39;sections&#39;. A section can be thought of as e.g. a day in</span>
+<span class="sd">        a meal plan, or a semester in a student&#39;s plan-of-study.</span>
+
+<span class="sd">        Currently assumes that (1) the objective function is always to maximize the total score of the final output,</span>
+<span class="sd">        (2) each candidate can only be a part of one section, (3) each section must have an exact number of</span>
+<span class="sd">        candidates assigned to it, and (4) the order of sections does not matter.</span>
+
+<span class="sd">        :output_uri: The URI to attach to the output constraint solution</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">required_item_uris</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_required_item_uris</span><span class="p">)</span>
+
+        <span class="n">candidate_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">)</span>
+        <span class="n">dom_obj_uri_to_ind</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">URIRef</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># keep track of attributes that have constraints applied, to be able to show relevant results in the solution</span>
+        <span class="n">attributes_of_interest</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="n">item_choices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">candidate_count</span><span class="p">):</span>
+            <span class="n">dom_obj_uri_to_ind</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="o">.</span><span class="n">uri</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">item_choices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">NewIntVar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="o">.</span><span class="n">uri</span> <span class="ow">in</span> <span class="n">required_item_uris</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">item_choices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">item_choices</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">item_choices</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">:</span>
+            <span class="n">section</span><span class="o">.</span><span class="n">setup_section_constraints</span><span class="p">(</span>
+                <span class="n">items</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">,</span> <span class="n">item_selection</span><span class="o">=</span><span class="n">item_choices</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span>
+            <span class="p">)</span>
+            <span class="n">attributes_of_interest</span> <span class="o">=</span> <span class="n">attributes_of_interest</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+                <span class="n">section</span><span class="o">.</span><span class="n">attributes_of_interest</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">oc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overall_item_constraints</span><span class="p">:</span>
+            <span class="n">attributes_of_interest</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">oc</span><span class="o">.</span><span class="n">attribute_name</span><span class="p">)</span>
+            <span class="n">ss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="nb">int</span><span class="p">(</span>
+                        <span class="nb">round</span><span class="p">(</span>
+                            <span class="n">rgetattr</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">domain_object</span><span class="p">,</span> <span class="n">oc</span><span class="o">.</span><span class="n">attribute_name</span>
+                            <span class="p">)</span>
+                            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                    <span class="o">*</span> <span class="n">item_choices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">candidate_count</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                <span class="n">oc</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">oc</span><span class="o">.</span><span class="n">constraint_value</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span><span class="p">)))</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_constraints</span><span class="p">:</span>
+            <span class="n">item_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">item_choices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">candidate_count</span><span class="p">)])</span>
+            <span class="k">for</span> <span class="n">cc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_constraints</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span><span class="n">item_count</span><span class="p">,</span> <span class="n">cc</span><span class="o">.</span><span class="n">constraint_value</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">isc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_item_selection_constraints</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                <span class="n">isc</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span>
+                    <span class="n">item_choices</span><span class="p">[</span><span class="n">dom_obj_uri_to_ind</span><span class="p">[</span><span class="n">isc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">]],</span>
+                    <span class="n">item_choices</span><span class="p">[</span><span class="n">dom_obj_uri_to_ind</span><span class="p">[</span><span class="n">isc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">]],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="c1"># maximize score</span>
+        <span class="n">objective_terms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">candidate_count</span><span class="p">):</span>
+            <span class="c1"># in the future, maybe incorporate more into this objective function</span>
+            <span class="c1"># e.g., we would prefer the combination of all items in a section to have some field value in a range,</span>
+            <span class="c1"># so incorporate that into the score somehow?</span>
+            <span class="n">objective_terms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">total_score</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">item_choices</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">Maximize</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">objective_terms</span><span class="p">))</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">Solve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">OPTIMAL</span> <span class="ow">and</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">FEASIBLE</span><span class="p">:</span>
+            <span class="c1"># possibly to revisit, if in the future it makes more sense to raise an exception than return None</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">overall_attributes</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes_of_interest</span><span class="p">}</span>
+
+        <span class="n">selected_candidates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">OPTIMAL</span> <span class="ow">and</span> <span class="n">status</span> <span class="o">!=</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">FEASIBLE</span><span class="p">:</span>
+            <span class="c1"># TODO what to do if no solution?</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;no optimal or feasible solution found.&quot;</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if status == cp_model.OPTIMAL:</span>
+            <span class="c1"># print(&#39;optimal solution found&#39;)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item_choices</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">Value</span><span class="p">(</span><span class="n">item_choices</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                    <span class="n">candidate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="n">selected_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">overall_attributes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">overall_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">+=</span> <span class="n">rgetattr</span><span class="p">(</span>
+                            <span class="n">candidate</span><span class="o">.</span><span class="n">domain_object</span><span class="p">,</span> <span class="n">attr</span>
+                        <span class="p">)</span>
+        <span class="n">section_assignments</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">section</span><span class="o">.</span><span class="n">get_solution_assignments</span><span class="p">(</span>
+                <span class="n">solver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="p">,</span>
+                <span class="n">items</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_candidates</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">ConstraintSolution</span><span class="p">(</span>
+            <span class="n">uri</span><span class="o">=</span><span class="n">output_uri</span><span class="p">,</span>
+            <span class="n">solution_section_sets</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">section_assignments</span><span class="p">),</span>
+            <span class="n">overall_score</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">ObjectiveValue</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scaling</span><span class="p">,</span>
+            <span class="n">overall_attribute_values</span><span class="o">=</span><span class="n">overall_attributes</span><span class="p">,</span>
+            <span class="n">items</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">selected_candidates</span><span class="p">),</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Sola Shirai.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
