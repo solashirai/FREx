@@ -4,10 +4,10 @@ frex.pipelines package
 Submodules
 ----------
 
-frex.pipelines.basic\_pipeline module
--------------------------------------
+frex.pipelines.pipeline module
+------------------------------
 
-.. automodule:: frex.pipelines.basic_pipeline
+.. automodule:: frex.pipelines.pipeline
    :members:
    :undoc-members:
    :show-inheritance:

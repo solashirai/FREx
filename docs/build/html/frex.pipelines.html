@@ -86,13 +86,13 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="frex.html">FReX package</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="frex.html">frex package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="frex.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="frex.models.html">frex.models package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="frex.pipeline_stages.html">frex.pipeline_stages package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">frex.pipelines package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#frex-pipelines-basic-pipeline-module">frex.pipelines.basic_pipeline module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-frex.pipelines.pipeline">frex.pipelines.pipeline module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-frex.pipelines">Module contents</a></li>
 </ul>
 </li>
@@ -151,7 +151,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="frex.html">FReX package</a> &raquo;</li>
+          <li><a href="frex.html">frex package</a> &raquo;</li>
         
       <li>frex.pipelines package</li>
     
@@ -177,8 +177,16 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="frex-pipelines-basic-pipeline-module">
-<h2>frex.pipelines.basic_pipeline module<a class="headerlink" href="#frex-pipelines-basic-pipeline-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-frex.pipelines.pipeline">
+<span id="frex-pipelines-pipeline-module"></span><h2>frex.pipelines.pipeline module<a class="headerlink" href="#module-frex.pipelines.pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="frex.pipelines.pipeline.Pipeline">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.pipelines.pipeline.</span></code><code class="sig-name descname"><span class="pre">Pipeline</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stages</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="frex.pipeline_stages.html#frex.pipeline_stages.pipeline_stage.PipelineStage" title="frex.pipeline_stages.pipeline_stage.PipelineStage"><span class="pre">frex.pipeline_stages.pipeline_stage.PipelineStage</span></a><span class="p"><span class="pre">,</span> </span><a class="reference internal" href="#frex.pipelines.pipeline.Pipeline" title="frex.pipelines.pipeline.Pipeline"><span class="pre">frex.pipelines.pipeline.Pipeline</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/pipelines/pipeline.html#Pipeline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.pipelines.pipeline.Pipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The base Pipeline class that will run a recommendation pipeline.</p>
+<p>Custom Pipelines should be implemented by extending this base class.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-frex.pipelines">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-frex.pipelines" title="Permalink to this headline">¶</a></h2>

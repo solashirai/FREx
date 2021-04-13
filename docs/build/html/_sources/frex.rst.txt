@@ -1,4 +1,4 @@
-FReX package
+frex package
 ============
 
 Subpackages
