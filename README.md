@@ -9,6 +9,7 @@ You can use FREx by installing it via pip
 ```bash
 $ pip install git+https://github.com/solashirai/FREx@master#egg=frex
 ```
+Note that one of the requirements, [ortools](https://pypi.org/project/ortools/), might require you to be using a 64-bit installation of Python. If you see installation errors related to ortools, consider swapping to a 64-bit Python (if you were using 32-bit) or checking that your pip is upgraded.
 
 You will now be able to use FREx in your project like any other Python package, with `import frex`.
 
