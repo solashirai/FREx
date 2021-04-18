@@ -476,30 +476,37 @@ class SectionSetConstraint:
             # while the selection of item_b_uri will require item_a to be selected in the appropriate order.
             # this assumes each item is only assigned to a single section
             constraint_content = ioc.constraint_type(
-                    sum(
-                        [
-                            self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]
-                            * (j + 1)
-                            for j in range(section_count)
-                        ]
-                    )
-                    + item_selection[item_uri_to_index[ioc.item_b_uri]]
-                    * (section_count + 2),
-                    sum(
-                        [
-                            self._item_assignments[item_uri_to_index[ioc.item_b_uri], j]
-                            * (j + 1)
-                            for j in range(section_count)
-                        ]
-                    )
-                    + item_selection[item_uri_to_index[ioc.item_a_uri]]
-                    * (section_count + 2),
+                sum(
+                    [
+                        self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]
+                        * (j + 1)
+                        for j in range(section_count)
+                    ]
                 )
-            if ioc.constraint_type == ConstraintType.LESS or ioc.constraint_type == ConstraintType.GRTR:
+                + item_selection[item_uri_to_index[ioc.item_b_uri]]
+                * (section_count + 2),
+                sum(
+                    [
+                        self._item_assignments[item_uri_to_index[ioc.item_b_uri], j]
+                        * (j + 1)
+                        for j in range(section_count)
+                    ]
+                )
+                + item_selection[item_uri_to_index[ioc.item_a_uri]]
+                * (section_count + 2),
+            )
+            if (
+                ioc.constraint_type == ConstraintType.LESS
+                or ioc.constraint_type == ConstraintType.GRTR
+            ):
                 cond_or_zero = model.NewBoolVar("")
                 model.Add(constraint_content).OnlyEnforceIf(cond_or_zero)
-                model.Add(item_selection[item_uri_to_index[ioc.item_b_uri]] == 1).OnlyEnforceIf(cond_or_zero)
-                model.Add(item_selection[item_uri_to_index[ioc.item_b_uri]] == 0).OnlyEnforceIf(cond_or_zero.Not())
+                model.Add(
+                    item_selection[item_uri_to_index[ioc.item_b_uri]] == 1
+                ).OnlyEnforceIf(cond_or_zero)
+                model.Add(
+                    item_selection[item_uri_to_index[ioc.item_b_uri]] == 0
+                ).OnlyEnforceIf(cond_or_zero.Not())
             else:
                 model.Add(constraint_content)
 
