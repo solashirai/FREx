@@ -19,4 +19,4 @@ More documentation about the project is available [here](https://tetherless-worl
 
 The main classes and modules can be found in the frex/ directory. A toy example demonstrating the use of frex can be seen in the [examples/ramen_rec](https://github.com/solashirai/ExplainableRecommenderFramework/tree/master/examples/ramen_rec) directory.
 
-Documentation generated using [Sphinx](https://www.sphinx-doc.org/en/master/) can be found at [https://solashirai.github.io/ExplainableRecommenderFramework](https://solashirai.github.io/ExplainableRecommenderFramework).
+Documentation generated using [Sphinx](https://www.sphinx-doc.org/en/master/) can be found at [https://solashirai.github.io/FREx](https://solashirai.github.io/FREx).
