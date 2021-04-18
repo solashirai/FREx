@@ -475,8 +475,7 @@ class SectionSetConstraint:
             # the extra addition of the (j+2) term ensures that the item specified at item_a_uri can be freely selected
             # while the selection of item_b_uri will require item_a to be selected in the appropriate order.
             # this assumes each item is only assigned to a single section
-            model.Add(
-                ioc.constraint_type(
+            constraint_content = ioc.constraint_type(
                     sum(
                         [
                             self._item_assignments[item_uri_to_index[ioc.item_a_uri], j]
@@ -496,7 +495,13 @@ class SectionSetConstraint:
                     + item_selection[item_uri_to_index[ioc.item_a_uri]]
                     * (section_count + 2),
                 )
-            )
+            if ioc.constraint_type == ConstraintType.LESS or ioc.constraint_type == ConstraintType.GRTR:
+                cond_or_zero = model.NewBoolVar("")
+                model.Add(constraint_content).OnlyEnforceIf(cond_or_zero)
+                model.Add(item_selection[item_uri_to_index[ioc.item_b_uri]] == 1).OnlyEnforceIf(cond_or_zero)
+                model.Add(item_selection[item_uri_to_index[ioc.item_b_uri]] == 0).OnlyEnforceIf(cond_or_zero.Not())
+            else:
+                model.Add(constraint_content)
 
     def get_solution_assignments(
         self, *, solver: cp_model.CpSolver, items: Tuple[Candidate, ...]

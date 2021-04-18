@@ -15,8 +15,16 @@ class ConstraintType(Enum):
         return x <= y
 
     @staticmethod
+    def __less(x, y):
+        return x < y
+
+    @staticmethod
     def __geq(x, y):
         return x >= y
+
+    @staticmethod
+    def __grtr(x, y):
+        return x > y
 
     @staticmethod
     def __neq(x, y):
@@ -32,7 +40,9 @@ class ConstraintType(Enum):
 
     EQ = __eq
     LEQ = __leq
+    LESS = __less
     GEQ = __geq
+    GRTR = __grtr
     NEQ = __neq
     AM1 = __am1
     EX1 = __ex1
