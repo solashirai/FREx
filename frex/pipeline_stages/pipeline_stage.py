@@ -22,7 +22,7 @@ class PipelineStage(ABC):
         Execute some function to apply and yield new or updated candidates.
 
         :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
-        PipelineStage that is yielding candidates into the next stage.
+            PipelineStage that is yielding candidates into the next stage.
         :param context: The current context being used to execute the Pipeline.
         :return: A Generator, yielding new Candidate objects.
         """

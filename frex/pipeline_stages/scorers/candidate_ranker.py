@@ -19,7 +19,7 @@ class CandidateRanker(PipelineStage):
         the sorted candidates in descending order.
 
         :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
-        PipelineStage that is yielding candidates into the next stage.
+            PipelineStage that is yielding candidates into the next stage.
         :param context: The current context being used to execute the Pipeline.
         :return: A Generator, yielding Candidate objects in order based on their total_score property.
         """

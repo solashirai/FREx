@@ -222,12 +222,16 @@ in).</p>
 <dd><p>Execute some function to apply and yield new or updated candidates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>candidates</strong> – A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>candidates</strong> – A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
+PipelineStage that is yielding candidates into the next stage.</p></li>
+<li><p><strong>context</strong> – The current context being used to execute the Pipeline.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Generator, yielding new Candidate objects.</p>
 </dd>
 </dl>
-<p>PipelineStage that is yielding candidates into the next stage.
-:param context: The current context being used to execute the Pipeline.
-:return: A Generator, yielding new Candidate objects.</p>
 </dd></dl>
 
 </dd></dl>

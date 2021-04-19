@@ -35,7 +35,7 @@ class CandidateGenerator(PipelineStage):
         Apply a custom function to generate and yield new candidates to pass through a FREx Pipeline.
 
         :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
-        PipelineStage that is yielding candidates into the next stage.
+            PipelineStage that is yielding candidates into the next stage.
         :param context: The current context being used to execute the Pipeline.
         :return: A Generator, yielding newly generated Candidate objects.
         """

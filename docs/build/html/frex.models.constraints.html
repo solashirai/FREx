@@ -189,6 +189,7 @@
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.models.constraints.attribute_constraint.</span></code><code class="sig-name descname"><span class="pre">AttributeConstraint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attribute_name</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#frex.models.constraints.constraint_type.ConstraintType" title="frex.models.constraints.constraint_type.ConstraintType"><span class="pre">frex.models.constraints.constraint_type.ConstraintType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">constraint_value</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/models/constraints/attribute_constraint.html#AttributeConstraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.models.constraints.attribute_constraint.AttributeConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>A namedtuple to store Constraints that will be applied in a constraint solver.</p>
+<p>Create new instance of AttributeConstraint(attribute_name, constraint_type, constraint_value)</p>
 <dl class="py attribute">
 <dt id="frex.models.constraints.attribute_constraint.AttributeConstraint.attribute_name">
 <code class="sig-name descname"><span class="pre">attribute_name</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#frex.models.constraints.attribute_constraint.AttributeConstraint.attribute_name" title="Permalink to this definition">¶</a></dt>
@@ -395,8 +396,18 @@ domain objects are also stored, if they were relevant to solving constraints.</p
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="frex.models.constraints.constraint_type.ConstraintType.GRTR">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">GRTR</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#frex.models.constraints.constraint_type.ConstraintType.GRTR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="frex.models.constraints.constraint_type.ConstraintType.LEQ">
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">LEQ</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#frex.models.constraints.constraint_type.ConstraintType.LEQ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="frex.models.constraints.constraint_type.ConstraintType.LESS">
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">LESS</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#frex.models.constraints.constraint_type.ConstraintType.LESS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -434,6 +445,7 @@ not correct, unpickling will fail in some circumstances.</p>
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.models.constraints.item_constraint.</span></code><code class="sig-name descname"><span class="pre">ItemConstraint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">constraint_type</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><a class="reference internal" href="#frex.models.constraints.constraint_type.ConstraintType" title="frex.models.constraints.constraint_type.ConstraintType"><span class="pre">frex.models.constraints.constraint_type.ConstraintType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_a_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.term.URIRef</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_b_uri</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.term.URIRef</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/models/constraints/item_constraint.html#ItemConstraint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.models.constraints.item_constraint.ItemConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p>A namedtuple to store Constraints over how items are assigned/selected.</p>
+<p>Create new instance of ItemConstraint(constraint_type, item_a_uri, item_b_uri)</p>
 <dl class="py attribute">
 <dt id="frex.models.constraints.item_constraint.ItemConstraint.constraint_type">
 <code class="sig-name descname"><span class="pre">constraint_type</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#frex.models.constraints.constraint_type.ConstraintType" title="frex.models.constraints.constraint_type.ConstraintType"><span class="pre">frex.models.constraints.constraint_type.ConstraintType</span></a></em><a class="headerlink" href="#frex.models.constraints.item_constraint.ItemConstraint.constraint_type" title="Permalink to this definition">¶</a></dt>
@@ -464,6 +476,7 @@ not correct, unpickling will fail in some circumstances.</p>
 <p>A namedtuple to store Constraints over how items are assigned to sections.
 The constraints will be applied to all items in each section. e.g., if the constraint type if EQ,
 then for section_a and section_b, all item assignments must be equal.</p>
+<p>Create new instance of SectionAssignmentConstraint(constraint_type, section_a_uri, section_b_uri)</p>
 <dl class="py attribute">
 <dt id="frex.models.constraints.section_assignment_constraint.SectionAssignmentConstraint.constraint_type">
 <code class="sig-name descname"><span class="pre">constraint_type</span></code><em class="property"><span class="pre">:</span> <a class="reference internal" href="#frex.models.constraints.constraint_type.ConstraintType" title="frex.models.constraints.constraint_type.ConstraintType"><span class="pre">frex.models.constraints.constraint_type.ConstraintType</span></a></em><a class="headerlink" href="#frex.models.constraints.section_assignment_constraint.SectionAssignmentConstraint.constraint_type" title="Permalink to this definition">¶</a></dt>

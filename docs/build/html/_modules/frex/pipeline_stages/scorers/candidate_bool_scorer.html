@@ -173,9 +173,9 @@
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param success_scoring_explanation: The explanation to add to the Candidate after applying the scoring function</span>
-<span class="sd">        if the score function indicates True.</span>
+<span class="sd">            if the score function indicates True.</span>
 <span class="sd">        :param failure_scoring_explanation: The explanation to add to the Candidate after applying the scoring function</span>
-<span class="sd">        if the score function indicates False.</span>
+<span class="sd">            if the score function indicates False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">success_scoring_explanation</span> <span class="o">=</span> <span class="n">success_scoring_explanation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">failure_scoring_explanation</span> <span class="o">=</span> <span class="n">failure_scoring_explanation</span>
@@ -186,8 +186,8 @@
 <span class="sd">        Apply a custom scoring function to the input candidate that also checks for the success of some condition.</span>
 
 <span class="sd">        :param candidate: A domain-specific candidate to apply the scoring function</span>
-<span class="sd">        :return: A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and</span>
-<span class="sd">        y is the score applied to the candidate.</span>
+<span class="sd">        :return: A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and y</span>
+<span class="sd">            is the score applied to the candidate.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
@@ -200,7 +200,7 @@
 <span class="sd">        are applied.</span>
 
 <span class="sd">        :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</span>
-<span class="sd">        PipelineStage that is yielding candidates into the next stage.</span>
+<span class="sd">            PipelineStage that is yielding candidates into the next stage.</span>
 <span class="sd">        :param context: The current context being used to execute the Pipeline.</span>
 <span class="sd">        :return: A Generator, yielding updated Candidate objects that have this stage&#39;s scoring function applied.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

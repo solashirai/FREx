@@ -37,7 +37,7 @@ class CandidateScorer(PipelineStage):
         yield it as output.
 
         :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
-        PipelineStage that is yielding candidates into the next stage.
+            PipelineStage that is yielding candidates into the next stage.
         :param context: The current context being used to execute the Pipeline.
         :return: A Generator, yielding updated Candidate objects that have this stage's scoring function applied.
         """

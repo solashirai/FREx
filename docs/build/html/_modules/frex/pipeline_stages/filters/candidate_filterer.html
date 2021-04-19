@@ -194,13 +194,11 @@
 <span class="sd">        For each of candidate being yielded by the Generator, apply a filtering function to decide whether or not</span>
 <span class="sd">        to yield the candidate forward to the next PipelineStage.</span>
 
-
-
 <span class="sd">        :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another</span>
-<span class="sd">        PipelineStage that is yielding candidates into the next stage.</span>
+<span class="sd">            PipelineStage that is yielding candidates into the next stage.</span>
 <span class="sd">        :param context: The current context being used to execute the Pipeline.</span>
-<span class="sd">        :return: A Generator, yielding updated Candidate objects that have not been caught by this stage&#39;s filtering</span>
-<span class="sd">         function.</span>
+<span class="sd">        :return: A Generator, yielding updated Candidate objects that have not been caught by this stage&#39;s</span>
+<span class="sd">            filtering function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">candidate</span><span class="o">=</span><span class="n">candidate</span><span class="p">):</span>

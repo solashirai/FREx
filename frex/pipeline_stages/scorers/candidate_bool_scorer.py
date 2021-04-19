@@ -20,9 +20,9 @@ class CandidateBoolScorer(PipelineStage):
     ):
         """
         :param success_scoring_explanation: The explanation to add to the Candidate after applying the scoring function
-        if the score function indicates True.
+            if the score function indicates True.
         :param failure_scoring_explanation: The explanation to add to the Candidate after applying the scoring function
-        if the score function indicates False.
+            if the score function indicates False.
         """
         self.success_scoring_explanation = success_scoring_explanation
         self.failure_scoring_explanation = failure_scoring_explanation
@@ -33,8 +33,8 @@ class CandidateBoolScorer(PipelineStage):
         Apply a custom scoring function to the input candidate that also checks for the success of some condition.
 
         :param candidate: A domain-specific candidate to apply the scoring function
-        :return: A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and
-        y is the score applied to the candidate.
+        :return: A tuple (x, y) where x is a boolean indicating whether the candidate passed some condition and y
+            is the score applied to the candidate.
         """
         pass
 
@@ -47,7 +47,7 @@ class CandidateBoolScorer(PipelineStage):
         are applied.
 
         :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
-        PipelineStage that is yielding candidates into the next stage.
+            PipelineStage that is yielding candidates into the next stage.
         :param context: The current context being used to execute the Pipeline.
         :return: A Generator, yielding updated Candidate objects that have this stage's scoring function applied.
         """

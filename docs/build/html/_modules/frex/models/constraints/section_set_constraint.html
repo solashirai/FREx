@@ -628,28 +628,40 @@
             <span class="c1"># the extra addition of the (j+2) term ensures that the item specified at item_a_uri can be freely selected</span>
             <span class="c1"># while the selection of item_b_uri will require item_a to be selected in the appropriate order.</span>
             <span class="c1"># this assumes each item is only assigned to a single section</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
-                <span class="n">ioc</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span>
-                    <span class="nb">sum</span><span class="p">(</span>
-                        <span class="p">[</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">],</span> <span class="n">j</span><span class="p">]</span>
-                            <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">)</span>
-                        <span class="p">]</span>
-                    <span class="p">)</span>
-                    <span class="o">+</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">]]</span>
-                    <span class="o">*</span> <span class="p">(</span><span class="n">section_count</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
-                    <span class="nb">sum</span><span class="p">(</span>
-                        <span class="p">[</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">],</span> <span class="n">j</span><span class="p">]</span>
-                            <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">)</span>
-                        <span class="p">]</span>
-                    <span class="p">)</span>
-                    <span class="o">+</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">]]</span>
-                    <span class="o">*</span> <span class="p">(</span><span class="n">section_count</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">constraint_content</span> <span class="o">=</span> <span class="n">ioc</span><span class="o">.</span><span class="n">constraint_type</span><span class="p">(</span>
+                <span class="nb">sum</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">],</span> <span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">)</span>
+                    <span class="p">]</span>
                 <span class="p">)</span>
-            <span class="p">)</span></div>
+                <span class="o">+</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">]]</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">section_count</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+                <span class="nb">sum</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_item_assignments</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">],</span> <span class="n">j</span><span class="p">]</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_count</span><span class="p">)</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="o">+</span> <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_a_uri</span><span class="p">]]</span>
+                <span class="o">*</span> <span class="p">(</span><span class="n">section_count</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">ioc</span><span class="o">.</span><span class="n">constraint_type</span> <span class="o">==</span> <span class="n">ConstraintType</span><span class="o">.</span><span class="n">LESS</span>
+                <span class="ow">or</span> <span class="n">ioc</span><span class="o">.</span><span class="n">constraint_type</span> <span class="o">==</span> <span class="n">ConstraintType</span><span class="o">.</span><span class="n">GRTR</span>
+            <span class="p">):</span>
+                <span class="n">cond_or_zero</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">NewBoolVar</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">constraint_content</span><span class="p">)</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span><span class="n">cond_or_zero</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                    <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span><span class="n">cond_or_zero</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span>
+                    <span class="n">item_selection</span><span class="p">[</span><span class="n">item_uri_to_index</span><span class="p">[</span><span class="n">ioc</span><span class="o">.</span><span class="n">item_b_uri</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">0</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">OnlyEnforceIf</span><span class="p">(</span><span class="n">cond_or_zero</span><span class="o">.</span><span class="n">Not</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">constraint_content</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SectionSetConstraint.get_solution_assignments"><a class="viewcode-back" href="../../../../frex.models.constraints.html#frex.models.constraints.section_set_constraint.SectionSetConstraint.get_solution_assignments">[docs]</a>    <span class="k">def</span> <span class="nf">get_solution_assignments</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">solver</span><span class="p">:</span> <span class="n">cp_model</span><span class="o">.</span><span class="n">CpSolver</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Candidate</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>

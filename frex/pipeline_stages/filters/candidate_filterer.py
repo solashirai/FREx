@@ -41,13 +41,11 @@ class CandidateFilterer(PipelineStage):
         For each of candidate being yielded by the Generator, apply a filtering function to decide whether or not
         to yield the candidate forward to the next PipelineStage.
 
-
-
         :param candidates: A Generator yielding candidates. In the setup of a FREx Pipeline, this is typically another
-        PipelineStage that is yielding candidates into the next stage.
+            PipelineStage that is yielding candidates into the next stage.
         :param context: The current context being used to execute the Pipeline.
-        :return: A Generator, yielding updated Candidate objects that have not been caught by this stage's filtering
-         function.
+        :return: A Generator, yielding updated Candidate objects that have not been caught by this stage's
+            filtering function.
         """
         for candidate in candidates:
             if not self.filter(candidate=candidate):
