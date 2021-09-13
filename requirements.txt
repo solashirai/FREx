@@ -6,3 +6,4 @@ scipy==1.5.2
 SPARQLWrapper==1.8.5
 ortools==8.0.8283
 requests==2.24.0
+owlready2==0.34
