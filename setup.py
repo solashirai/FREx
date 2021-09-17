@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="frex",
-    version="1.0",
+    version="1.1",
     description="Package for Explainable Recommender Framework.",
     url="git@github.com:solashirai/ExplainableRecommenderFramework.git",
     author="Sola S.D. Shirai",
