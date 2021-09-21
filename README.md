@@ -3,7 +3,7 @@ FREx (the **F**ramework for **R**ecommendations with **Ex**planations) is a Pyth
 
 ## Usage
 
-FREx is developed for Python 3.8
+FREx is developed for Python 3.8+
 
 You can use FREx by installing it via pip
 ```bash
