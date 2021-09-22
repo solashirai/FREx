@@ -77,6 +77,8 @@ class DomainKgQueryService(_GraphQueryService):
         try:
             for prop_uri_key, prop_name in object_type.prop_to_uri.items():
                 vals = [v.value for v in self.cache_graph.objects(target_uri, prop_uri_key)]
+                if not vals:
+                    continue
                 if len(vals) == 1:
                     vals = vals[0]
                 else:
