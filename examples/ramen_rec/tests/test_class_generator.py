@@ -4,10 +4,10 @@ from pathlib import Path
 
 def test_class_generation(
 ):
-    test_onto = 'examples/ramen_rec/data/cr.nt'
+    test_onto = 'examples/ramen_rec/data/test_courserec_onto.owl'
     test_onto = str(Path(test_onto).resolve())
     # test_onto = "https://raw.githubusercontent.com/tetherless-world/ontology-engineering/course-recommender/oe2020/course-recommender/course-recommender.rdf"
-    test_onto = "https://raw.githubusercontent.com/tetherless-world/explanation-ontology/master/Ontologies/explanation-ontology.owl"
+    # test_onto = "https://raw.githubusercontent.com/tetherless-world/explanation-ontology/master/Ontologies/explanation-ontology.owl"
     test_dir_name = 'test_models/'
     Path(test_dir_name).mkdir(parents=True, exist_ok=True)
     test_dir = Path(test_dir_name).resolve()
