@@ -107,13 +107,13 @@ class ClassGenerator:
         return properties
 
     def populate_template(self, *, name: str,
-                          subclasses: List[owlready2.ThingClass],
+                          supclasses: List[owlready2.ThingClass],
                           properties: List[Tuple[str, Any, str]]) -> str:
         write_string = f"from {str(self.save_dir.name).replace('/', '.')} import *\n"
         write_string += BASIC_CLASS_TEMPLATE
         write_string += f"class {name}(DomainObject"
-        for sc in subclasses:
-            write_string += f",{str(sc.name)}"
+        for sc in supclasses:
+            write_string += f", {str(sc.name)}"
         write_string += "):"
 
         property_to_uri_dict = {}
@@ -132,12 +132,14 @@ class ClassGenerator:
         for k,v in property_to_uri_dict.items():
             write_string += f"        URIRef(\"{v}\"): '{k}',\n"
         write_string += "    }\n"
+        for sup_cls in supclasses:
+            write_string += f"    prop_to_uri.update({str(sup_cls.name)}.prop_to_uri)\n"
         return write_string
 
     def convert_to_py_class(self, c: owlready2.ThingClass) -> str:
         subclasses = self.get_subclasses(c)
         properties = self.get_property_names_and_types(c)
-        write_string = self.populate_template(name=str(c.name), subclasses=subclasses, properties=properties)
+        write_string = self.populate_template(name=str(c.name), supclasses=subclasses, properties=properties)
 
         return write_string
 
