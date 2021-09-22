@@ -12,6 +12,7 @@ from dataclasses_json import dataclass_json
 from rdflib import URIRef
 from frex.models import DomainObject
 
+
 @dataclass_json
 @dataclass(frozen=True)
 """
@@ -41,14 +42,8 @@ class ClassGenerator:
                 file_name = self.to_snake_case(c.name)+".py"
                 file_to_class[file_name] = str(c.name)
 
-            with open((self.save_dir / file_name).resolve(), 'w') as f:
-                f.write(python_rep_string)
-            # print(file_name)
-            # print(python_rep_string)
-            # print("+++++++++++++++++++++++++++++++++++")
-            # testnum -= 1
-            # if testnum <= 0:
-            #     break
+                with open((self.save_dir / file_name).resolve(), 'w') as f:
+                    f.write(python_rep_string)
         init_file_contents = ""
         for k,v in file_to_class.items():
             init_file_contents += f"from .{k[:-3]} import {v}\n"
@@ -62,40 +57,49 @@ class ClassGenerator:
                 subclasses.append(subcl)
         return subclasses
 
+    def add_restriction(self, *, p: owlready2.class_construct.Restriction, properties: List):
+        # if a namespace isn't properly specified, the property is just a string instead of having a namespace.
+        if isinstance(p.property, str):
+            prop_name = p.property.split("/")[-1]
+            prop_iri = str(p.property)
+        else:
+            prop_name = p.property.name
+            prop_iri = str(p.property.iri)
+        # TODO: currently only supporting str and int data types
+        if p.value == str:
+            prop_type = "str"
+        elif p.value == int:
+            prop_type = "int"
+        else:
+            prop_type = "URIRef"
+        # only does not necessarily mean the property exists, so add a default value (None) for the property
+        if p.type == owlready2.ONLY or p.cardinality == 0:
+            properties.append((prop_name, prop_type + " = None", prop_iri))
+        elif p.type == owlready2.SOME or p.cardinality == 1:
+            # add new properties to the beginning to ensure that properties with default values are at the end
+            # dataclasses require that fields with default values are left to the end.
+            properties.insert(0, (prop_name, prop_type, prop_iri))
+        else:
+            print(p, 'NOT FULLY IMPLEMENTED YET', type(p), 'NOT FULLY IMPLEMENTED YET', p.type)
+
     def get_property_names_and_types(self, c: owlready2.ThingClass) -> List[Tuple[str, Any, str]]:
         properties = []
         for p in c.is_a+c.equivalent_to:
             if isinstance(p, owlready2.class_construct.Restriction):
-                # if a namespace isn't properly specified, the property is just a string instead of having a namespace.
-                if isinstance(p.property, str):
-                    prop_name = p.property.split("/")[-1]
-                    prop_iri = str(p.property)
-                else:
-                    prop_name = p.property.name
-                    prop_iri = str(p.property.iri)
-                # TODO: currently only supporting str and int data types
-                if p.value == str:
-                    prop_type = "str"
-                elif p.value == int:
-                    prop_type = "int"
-                else:
-                    prop_type="URIRef"
-                # only does not necessarily mean the property exists, so add a default value (None) for the property
-                if p.type == owlready2.ONLY or p.cardinality == 0:
-                    properties.append((prop_name, prop_type+" = None", prop_iri))
-                elif p.type == owlready2.SOME or p.cardinality == 1:
-                    # add new properties to the beginning to ensure that properties with default values are at the end
-                    # dataclasses require that fields with default values are left to the end.
-                    properties.insert(0, (prop_name, prop_type, prop_iri))
-                else:
-                    print(p, 'NOT FULLY IMPLEMENTED YET',  type(p), 'NOT FULLY IMPLEMENTED YET', p.type)
+                self.add_restriction(p=p, properties=properties)
             elif isinstance(p, owlready2.class_construct.And):
+                # for AND clauses, we'll just make the cardinality larger. since python's duck-typing doesn't really
+                # enforce stuff stricly anyways, I'm erring on the side of under-specifying certain constraints.
+
                 # print(f'2 {p.property}, {p.value}, {type(p)}, {p.property.iri}')
                 # properties.append((p.property.name, "URIRef", str(p.property.iri)))
                 print(f'333 {p.is_a}') # --------- {p.property} ============ {p.value}')
 
                 for v in p.is_a:
-                     print(f'4444 {type(v)} {v}')
+                    if isinstance(v, owlready2.class_construct.Restriction):
+                        self.add_restriction(p=v, properties=properties)
+                    print(f'4444 {type(v)} {v}')
+                    print(v.property)
                 # TODO: Or
                 # TODO: OneOf
                 # TODO: finish implementing AND fully
