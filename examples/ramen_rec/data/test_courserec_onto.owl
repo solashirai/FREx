@@ -1,0 +1,1439 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/"
+     xml:base="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/"
+     xmlns:sm="http://www.omg.org/techprocess/ab/SpecificationMetadata/"
+     xmlns:dct="http://purl.org/dc/terms/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:lcc-cr="https://www.omg.org/spec/LCC/Countries/CountryRepresentation/"
+     xmlns:lcc-lr="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/"
+     xmlns:crs-rec="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender#"
+     xmlns:Analytics="https://spec.edmcouncil.org/fibo/ontology/FND/Utilities/Analytics/">
+    <owl:Ontology rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/">
+        <owl:versionIRI rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/20201205/course-recommender/"/>
+        <owl:imports rdf:resource="https://www.omg.org/spec/LCC/Countries/CountryRepresentation/"/>
+        <owl:imports rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/"/>
+        <dct:abstract>This ontology provides a means to capture relevant information about university courses, gradation requirements,
+		and schedules to enable course recommendation services.</dct:abstract>
+        <dct:creator>Jacob Shomstein</dct:creator>
+        <dct:creator>Kelly Fellenzer</dct:creator>
+        <dct:creator>Owen Xie</dct:creator>
+        <dct:creator>Sola Shirai</dct:creator>
+        <dct:license rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://opensource.org/licenses/MIT</dct:license>
+        <dct:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">2020-12-05T23:59:59</dct:modified>
+        <dct:publisher>Course Recommender Team</dct:publisher>
+        <sm:copyright>Copyright (c) 2020 Kelly Fellenzer, Jacom Shomstein, Sola Shirai, and Owen Xie</sm:copyright>
+        <sm:dependsOn rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://spec.edmcouncil.org/fibo/ontology/BE/</sm:dependsOn>
+        <sm:dependsOn rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://spec.edmcouncil.org/fibo/ontology/FND/</sm:dependsOn>
+        <sm:dependsOn rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">https://www.omg.org/spec/LCC/</sm:dependsOn>
+        <rdfs:label>Course Recommender Ontology</rdfs:label>
+        <rdfs:seeAlso rdf:resource="https://course-recommender--rpi-ontology-engineering.netlify.app/oe2020/course-recommender/gettinginvolved"/>
+        <owl:priorVersion rdf:resource="https://raw.githubusercontent.com/tetherless-world/ontology-engineering/c1f81cfa0aa06d352e5ce331d98c28fee0f8c7ae/oe2020/course-recommender/course-recommender.rdf"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/terms/publisher -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.org/dc/terms/publisher"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/advises -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/advises">
+        <owl:inverseOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasAdvisor"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Advisor"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>advises</rdfs:label>
+        <skos:definition>is the curriculum advisor of</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/belongsTo -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/belongsTo">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Discipline"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>belongs to</rdfs:label>
+        <skos:definition>the discipline that this topic area is a part of</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/canShareCreditsWith -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/canShareCreditsWith">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>can share credits with</rdfs:label>
+        <skos:definition>a requirement that can be fulfilled using credits applied to this requirement</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasAdvisor -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasAdvisor">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Advisor"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has advisor</rdfs:label>
+        <skos:definition>has a curriculum advisor</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCompletedCourse -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCompletedCourse">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has completed course</rdfs:label>
+        <skos:definition>a course that has been completed and earned a satisfactory grade</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCorequisite -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCorequisite">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has corequisite</rdfs:label>
+        <skos:definition>a course the student is required to be registered for alongside this course</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseCode -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseCode">
+        <rdfs:subPropertyOf rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/hasDenotation"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has course code</rdfs:label>
+        <skos:definition>has a unique number to identify the specific course in Self-Service Information System</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseCodeRestriction -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseCodeRestriction">
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCodeRestriction"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has course code restriction</rdfs:label>
+        <skos:definition>a course code restriction on courses that can be applied to this requirement</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCrossListing -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCrossListing">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#SymmetricProperty"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has cross listing</rdfs:label>
+        <skos:definition>is course alias of</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDayOfWeek -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDayOfWeek">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule"/>
+        <rdfs:range rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/DatesAndTimes/BusinessDates/DayOfWeek"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has day of week</rdfs:label>
+        <skos:definition>the recurring days in a working week when a scheduled course section is scheduled to meet</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartment -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartment">
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has department</rdfs:label>
+        <skos:definition>belongs to a specific academic department</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartmentCode -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartmentCode">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/DepartmentCode"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasInstructor -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasInstructor">
+        <owl:inverseOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/teaches"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Professor"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has instructor</rdfs:label>
+        <skos:definition>has an academic faculty member to teach the course content</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasInterest -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasInterest">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has interest</rdfs:label>
+        <skos:definition>has an interest in a topic area</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasOngoingCourse -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasOngoingCourse">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has ongoing course</rdfs:label>
+        <skos:definition>has an ongoing scheduled course section in which the student is enrolled</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedCourse -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedCourse">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has planned course</rdfs:label>
+        <skos:definition>has a course section that the student is intending to register for in the future</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedDegree -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedDegree">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Degree"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has planned degree</rdfs:label>
+        <skos:definition>has a degree whose requirements the plan of study is intended to fully fulfill</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedMajor -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedMajor">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Major"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has planned major</rdfs:label>
+        <skos:definition>has a major for which the plan of study is intended to fully fulfill requirements</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRecommendedPrerequisite -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRecommendedPrerequisite">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has recommended prerequisite</rdfs:label>
+        <skos:definition>a prerequisite course that is suggested to be completed before registering for this course</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRegisteredStudent -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRegisteredStudent">
+        <owl:inverseOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/registeredIn"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+        <dct:source>http://sis.rpi.edu/</dct:source>
+        <rdfs:label>has registered student</rdfs:label>
+        <skos:definition>has a student who is registered to this scheduled course section</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRequiredPrerequisite -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRequiredPrerequisite">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has required prerequisite</rdfs:label>
+        <skos:definition>the specified courses required to be completed before a student is eligible to take this course</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRequirement -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRequirement">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Degree"/>
+                    <rdf:Description rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has requirement</rdfs:label>
+        <skos:definition>has a requirement that must be fulfilled to earn the degree</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRestriction -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRestriction">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has restriction</rdfs:label>
+        <skos:definition>a requirement that acts as a restriction on this requirement</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSchedule -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSchedule">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has schedule</rdfs:label>
+        <skos:definition>has a regular schedule during the work week in which the course takes place</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasScheduledOffering -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasScheduledOffering">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/SemesterSchedule"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has scheduled offering</rdfs:label>
+        <skos:definition>has a semester during which the course is intended to be offered in regular intervals</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSemester -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSemester">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/SemesterSchedule"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has semester</rdfs:label>
+        <skos:definition>has a semester schedule during which the course is intended to take place</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasStudyPlan -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasStudyPlan">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has plan of study</rdfs:label>
+        <skos:definition>has a plan of study leading to graduation</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSubRequirement -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSubRequirement">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has sub requirement</rdfs:label>
+        <skos:definition>a requirement that must be fulfilled in order for this requirement to be fulfilled</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasTopic -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasTopic">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has topic</rdfs:label>
+        <skos:definition>has a subject of discussion</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isCourseSectionOf -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isCourseSectionOf">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>is course section of</rdfs:label>
+        <skos:definition>a course that this individual is a section of</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isFulfilledBy -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isFulfilledBy">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>is fulfilled by</rdfs:label>
+        <skos:definition>a requirement that can be fulfilled to satisfy this requirement</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isSubTopicOf -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isSubTopicOf">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>is sub topic of</rdfs:label>
+        <skos:definition>a related topic area that subsumes this topic area</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/registeredIn -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/registeredIn">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>registered in</rdfs:label>
+        <skos:definition>a scheduled course section in which this student is currently formally enrolled and participating in</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/teaches -->
+
+    <owl:ObjectProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/teaches">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Professor"/>
+        <rdfs:range rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>teaches</rdfs:label>
+        <skos:definition>a scheduled course section that this professor is the instructor of</skos:definition>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasClassYear -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasClassYear">
+        <rdfs:domain>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+                    <rdf:Description rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+                </owl:unionOf>
+            </owl:Class>
+        </rdfs:domain>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has class year</rdfs:label>
+        <skos:definition>the academic year when the student will complete their plan of study</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseRegistrationNumber -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseRegistrationNumber">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has course registration number</rdfs:label>
+        <skos:definition>the course registration number a student can use to register for the scheduled course section</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCredits -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCredits">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has credits</rdfs:label>
+        <skos:definition>the number of credits associated with completing the course</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartmentCode -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartmentCode"/>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDescription -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDescription">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has description</rdfs:label>
+        <skos:definition>the description of the individual</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasEndTime -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasEndTime">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has end time</rdfs:label>
+        <skos:definition>the time of day at which a scheduled course section is scheduled to end</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasLevel -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasLevel">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has level</rdfs:label>
+        <skos:definition>the associated difficulty level of the course code</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasName -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasName">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>has name</rdfs:label>
+        <skos:definition>the name of the individual</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSpecialTag -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSpecialTag">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has special tag</rdfs:label>
+        <skos:definition>special tags associated with this course which are used to fulfill certain requirements</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasStartTime -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasStartTime">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has start time</rdfs:label>
+        <skos:definition>the time of the day at which a scheduled course section is scheduled to begin</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasTerm -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasTerm">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicSchedule"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has term</rdfs:label>
+        <skos:definition>the term that the academic schedule covers</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidCourseCodeTag -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidCourseCodeTag">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has valid course code tag</rdfs:label>
+        <skos:definition>a course code tag string that is allowed by this course code restriction</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidDepartmentCodeTag -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidDepartmentCodeTag">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has valid department code tag</rdfs:label>
+        <skos:definition>a department code tag string for courses that are allowed by this course code restriction</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidLevelMax -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidLevelMax">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has valid level max</rdfs:label>
+        <skos:definition>the maximum level of a course that is allowed by this course code restriction</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidLevelMin -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidLevelMin">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has valid level min</rdfs:label>
+        <skos:definition>the minimum level of a course that is allowed by this course code restriction</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidSpecialTag -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidSpecialTag">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>has valid special tag</rdfs:label>
+        <skos:definition>valid special tags of courses that can fulfill a course restriction</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasYear -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasYear">
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has year</rdfs:label>
+        <skos:definition>the year associated with a particular schedule</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/requiresCredits -->
+
+    <owl:DatatypeProperty rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/requiresCredits">
+        <rdfs:domain rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>requires credits</rdfs:label>
+        <skos:definition>the number of credits required to satisfy this requirement</skos:definition>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Parties/OrganizationMember -->
+
+    <owl:Class rdf:about="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Parties/OrganizationMember"/>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicSchedule -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicSchedule">
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/DatesAndTimes/FinancialDates/Schedule"/>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>academic schedule</rdfs:label>
+        <skos:definition>list of events and deadlines of importance to students covering the period of the university&apos;s academic year</skos:definition>
+
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Advisor -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Advisor">
+        <rdfs:subClassOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/FacultyMember"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/advises"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>advisor</rdfs:label>
+        <skos:definition>faculty member tasked to work with students to develop educational plans, explain requirements and rules surrounding graduation, discuss and monitor academic progress, and provide general guidance</skos:definition>
+
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartment"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasScheduledOffering"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/SemesterSchedule"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasTopic"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCorequisite"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRecommendedPrerequisite"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRequiredPrerequisite"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseCode"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCredits"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDescription"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasName"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>course</rdfs:label>
+        <skos:definition>unit of teaching, usually an individual subject, that typically lasts one academic semester, is led by one or more instructors, and has a fixed roster of students</skos:definition>
+        <skos:example>&apos;Ontology Engineering&apos; is a type of course which is offered at RPI. An individual course like ontology engineering should be persistent, and each new offering of the course
+		 across different years or semesters should point to the persistent ontology engineering individual.</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCode">
+        <rdfs:subClassOf rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/CodeElement"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartmentCode"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/DepartmentCode"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/denotes"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasLevel"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/hasTag"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>course code</rdfs:label>
+        <skos:definition>a short course identifier with information about subject and course level in form of SUBJ-1111</skos:definition>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCodeRestriction -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCodeRestriction">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSpecialTag"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidCourseCodeTag"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidDepartmentCodeTag"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidLevelMax"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasValidLevelMin"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>course code restriction</rdfs:label>
+        <skos:definition>a class that captures and represents restrictions on courses that can be applied to fulfill requirements through the use of course codes</skos:definition>
+        <skos:example>The Humanities, Arts, and Social Sciences (HASS) core requirement is a common requirement for all majors at RPI.
+		The HASS requirement has sub requirements, with varying required courses themselves, that must be fulfilled in order to fulfill the HASS requirement.
+		For example, one sub requirement is that at least 6 credits of social sciences courses must be taken.
+		Sub requirments can share credits, for example the social sciences sub requirement may be applied to the integrative pathway sub requirement.
+		The HASS requirement also has restrictions on the number of courses that may be applied to it, only allowing 2 courses at the 1000 level.</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule">
+        <rdfs:subClassOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicSchedule"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDayOfWeek"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/DatesAndTimes/BusinessDates/DayOfWeek"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasEndTime"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasStartTime"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>course schedule</rdfs:label>
+        <skos:definition>a list of important dates and meeting times relevant to a specific section of a course</skos:definition>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSemester"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/SemesterSchedule"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isCourseSectionOf"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Course"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>course section</rdfs:label>
+        <skos:definition>a unique sections of a larger class commonly held during seperate times</skos:definition>
+        <skos:example xml:lang="en">Section 01 of CSCI-4340 for Fall 2020 Semester</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Degree -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Degree">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartment"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRequirement"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>degree</rdfs:label>
+        <skos:definition>qualification (or certification) awarded to students upon successful completion of a course of study in higher education</skos:definition>
+        <skos:example xml:lang="en">Bachelor of Science Degree in Computer Science</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department">
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/BE/LegalEntities/FormalBusinessOrganizations/OrganizationalSubUnit"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Countries/CountryRepresentation/isPartOf"/>
+                <owl:someValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Roles/playsRole"/>
+                        <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/University"/>
+                    </owl:Restriction>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>department</rdfs:label>
+        <skos:definition>division of a university or school faculty devoted to a particular academic discipline</skos:definition>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/DepartmentCode -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/DepartmentCode">
+        <rdfs:subClassOf rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/CodeElement"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/denotes"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/hasTag"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>department code</rdfs:label>
+        <skos:definition>a short identifier for departments</skos:definition>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Discipline -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Discipline">
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>discipline</rdfs:label>
+        <skos:definition>branch of knowledge, taught and researched as a part of higher education</skos:definition>
+        <skos:example xml:lang="en">Computer Science (CSCI) Discipline</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/EducationalInstitution -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/EducationalInstitution">
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/BE/FunctionalEntities/FunctionalEntities/FunctionalBusinessEntity"/>
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/BE/OwnershipAndControl/Executives/AuthorizingParty"/>
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/ProductsAndServices/ProductsAndServices/ServiceProvider"/>
+        <rdfs:label>educational institution</rdfs:label>
+        <skos:definition>institution where people gain an education, providing a variety of learning environments and spaces</skos:definition>
+
+
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/FacultyMember -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/FacultyMember">
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/BE/OwnershipAndControl/Executives/AuthorizedParty"/>
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Parties/OrganizationMember"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Roles/isPlayedBy"/>
+                <owl:someValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/isMemberOf"/>
+                        <owl:someValuesFrom>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Roles/playsRole"/>
+                                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/University"/>
+                            </owl:Restriction>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartment"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label>faculty member</rdfs:label>
+        <skos:definition>party employed by a college or district to conduct classroom or teaching activities or who is otherwise considered by the college to be a member of faculty</skos:definition>
+
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Major -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Major">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartment"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>major</rdfs:label>
+        <skos:definition>academic discipline to which an undergraduate student formally commits</skos:definition>
+        <skos:example xml:lang="en">Computer Science Major</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy">
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/GoalsAndObjectives/Objectives/Strategy"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedDegree"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Degree"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasPlannedMajor"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Department"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCompletedCourse"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasOngoingCourse"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasClassYear"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>plan of study</rdfs:label>
+        <skos:definition>area of study composed of major, minors, and concentrations within a program</skos:definition>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Professor -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Professor">
+        <rdfs:subClassOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/FacultyMember"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/teaches"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>professor</rdfs:label>
+        <skos:definition>teacher of the highest rank in a college or university</skos:definition>
+
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/canShareCreditsWith"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRestriction"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSubRequirement"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/isFulfilledBy"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Requirement"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseCodeRestriction"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseCodeRestriction"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/requiresCredits"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>requirement</rdfs:label>
+        <skos:definition>conditions in an academic major that must be met in order to satisfy degree completion by graduation</skos:definition>
+        <skos:example xml:lang="en">Depth Requirement: Requires completion of two courses in the same Subject Code; one of which is above 1000 level</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/ScheduledCourseSection">
+        <rdfs:subClassOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSection"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasInstructor"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Professor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasRegisteredStudent"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasSchedule"/>
+                <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minQualifiedCardinality>
+                <owl:onClass rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/CourseSchedule"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasCourseRegistrationNumber"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>Course Recommender Team</dct:source>
+        <rdfs:label>scheduled course section</rdfs:label>
+        <skos:definition>a course section that has been assigned a concrete time and place of meeting as well as an instructor</skos:definition>
+        <skos:example>The Ontology Engineering course, offered in Fall 2020 and instructed by Professor Deborah L. McGuinness, is an instance of a ScheduledCourseSection.</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/SemesterSchedule -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/SemesterSchedule">
+        <rdfs:subClassOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicSchedule"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasTerm"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasYear"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>semester schedule</rdfs:label>
+        <skos:definition>the selected courses a student will complete in the upcoming future semester in order to complete their degree within a four-year plan</skos:definition>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Student">
+        <rdfs:subClassOf rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Parties/PartyInRole"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FBC/FunctionalEntities/RegistrationAuthorities/isRegisteredBy"/>
+                <owl:someValuesFrom rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FBC/FunctionalEntities/RegistrationAuthorities/Registrar"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasAdvisor"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Advisor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasInterest"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasStudyPlan"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/PlanOfStudy"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Relations/Relations/hasIdentity"/>
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onClass rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/AgentsAndPeople/People/Person"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasClassYear"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>student</rdfs:label>
+        <skos:definition>person who is formally registered at an educational institution to partake in academic courses with the purpose of acquiring a degree</skos:definition>
+
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/TopicArea">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/belongsTo"/>
+                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Discipline"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>topic area</rdfs:label>
+        <skos:definition>subject of disussion in a course or field of study</skos:definition>
+        <skos:example xml:lang="en">Topic Area: Artificial Intelligence</skos:example>
+    </owl:Class>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/University -->
+
+    <owl:Class rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/University">
+        <rdfs:subClassOf rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/EducationalInstitution"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Roles/isPlayedBy"/>
+                <owl:someValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="https://www.omg.org/spec/LCC/Languages/LanguageRepresentation/hasMember"/>
+                        <owl:someValuesFrom>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/Parties/Roles/playsRole"/>
+                                <owl:someValuesFrom rdf:resource="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/FacultyMember"/>
+                            </owl:Restriction>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:label>university</rdfs:label>
+        <skos:definition>educational institution designed for instruction, examination, or both, of students in many branches of advanced learning, conferring degrees in various faculties, and often embodying colleges and similar institutions</skos:definition>
+
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicYear -->
+
+    <owl:NamedIndividual rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/AcademicYear">
+        <rdf:type rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/DatesAndTimes/FinancialDates/CalendarPeriod"/>
+        <rdfs:label>academic year</rdfs:label>
+        <skos:definition>calendar period during which students attend school or university, typically starting at the end of August and concluding near the end of May the following calendar year</skos:definition>
+
+    </owl:NamedIndividual>
+    
+
+
+    <!-- https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Semester -->
+
+    <owl:NamedIndividual rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/Semester">
+        <rdf:type rdf:resource="https://spec.edmcouncil.org/fibo/ontology/FND/DatesAndTimes/FinancialDates/CalendarPeriod"/>
+        <rdfs:label>semester</rdfs:label>
+        <skos:definition>18-week period of instruction into which an academic year is often divided</skos:definition>
+
+    </owl:NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description rdf:about="https://tw.rpi.edu/ontology-engineering/oe2020/course-recommender/hasDepartmentCode">
+        <skos:definition>the associated department of the course code</skos:definition>
+        <dct:source>http://catalog.rpi.edu/</dct:source>
+        <rdfs:label>has department code</rdfs:label>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.9.2019-02-01T07:24:44Z) https://github.com/owlcs/owlapi -->
+
