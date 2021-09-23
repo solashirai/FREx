@@ -76,10 +76,13 @@ class DomainKgQueryService(_GraphQueryService):
         properties_dict = {"uri": target_uri}
         try:
             for prop_uri_key, prop_name in object_type.prop_to_uri.items():
+                # any property that isn't found in the query result is just set to None.
+                # this isn't the most elegant solution, since some properties perhaps should be "required"
+                # in the results, but this is a compromise to let the automatic code generation work more smoothly.
                 vals = [v.value for v in self.cache_graph.objects(target_uri, prop_uri_key)]
                 if not vals:
-                    continue
-                if len(vals) == 1:
+                    vals = None
+                elif len(vals) == 1:
                     vals = vals[0]
                 else:
                     vals = frozenset(vals)
