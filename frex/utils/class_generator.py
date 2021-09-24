@@ -30,27 +30,49 @@ class ClassGenerator:
         return name.lower()
 
     def generate(self):
-        file_to_class = {}
+        class_to_file = {}
+        file_deps = {}
+        init_order = []
         for c in self.onto.classes():
             if isinstance(c, owlready2.ThingClass):
-                python_rep_string = self.convert_to_py_class(c)
-                file_name = self.to_snake_case(c.name)+".py"
-                file_to_class[file_name] = str(c.name)
+                python_rep_string, super_cl = self.convert_to_py_class(c)
+                file_name = self.to_snake_case(c.name)
+                class_to_file[str(c.name)] = file_name
+                file_deps[c.name] = super_cl
 
-                with open((self.save_dir / file_name).resolve(), 'w') as f:
+                with open((self.save_dir / f"{file_name}.py").resolve(), 'w') as f:
                     f.write(python_rep_string)
+
+        # go through the dependencies of classes to make sure that the init file has them imported in
+        # an order that wont cause a circular import error
+        while True:
+            found_change = False
+            if len(init_order) == len(class_to_file):
+                break
+            for class_name, class_deps in file_deps.items():
+                print(class_name, class_deps)
+                if class_name in init_order:
+                    continue
+                if set(class_deps).issubset(init_order):
+                    init_order.append(class_name)
+                    found_change = True
+            if not found_change:
+                print("WARINING: a circular import probably exists in your object models. "
+                      "Offending classes, and their subclasses, will not be included in the init file.")
+                break
+
         init_file_contents = ""
-        for k,v in file_to_class.items():
-            init_file_contents += f"from .{k[:-3]} import {v}\n"
+        for class_name in init_order:
+            init_file_contents += f"from .{class_to_file[class_name]} import {class_name}\n"
         with open((self.save_dir / "__init__.py").resolve(), 'w') as f:
             f.write(init_file_contents)
 
-    def get_subclasses(self, c: owlready2.ThingClass) -> List[owlready2.ThingClass]:
-        subclasses = []
+    def get_superclass_names(self, c: owlready2.ThingClass) -> List[str]:
+        superclasses = []
         for subcl in c.is_a:
             if isinstance(subcl, owlready2.ThingClass) and subcl in self.onto.classes():
-                subclasses.append(subcl)
-        return subclasses
+                superclasses.append(subcl)
+        return [str(sc.name) for sc in superclasses]
 
     def add_restriction(self, *, p: owlready2.class_construct.Restriction, properties: List):
         # if a namespace isn't properly specified, the property is just a string instead of having a namespace.
@@ -88,14 +110,17 @@ class ClassGenerator:
         return properties
 
     def populate_template(self, *, name: str,
-                          supclasses: List[owlready2.ThingClass],
+                          superclasses: List[str],
                           properties: List[Tuple[str, Any, str]]) -> str:
-        write_string = f"from {str(self.save_dir.name).replace('/', '.')} import *\n"
+        write_string = ""
+        if superclasses:
+            import_str = ", ".join(superclasses)
+            write_string = f"from {str(self.save_dir.name).replace('/', '.')} import {import_str}\n"
         write_string += BASIC_CLASS_TEMPLATE
-        write_string += f"class {name}(DomainObject"
-        for sc in supclasses:
-            write_string += f", {str(sc.name)}"
-        write_string += "):"
+        write_string += f"class {name}("
+        for sc in superclasses:
+            write_string += f"{sc}, "
+        write_string += "DomainObject):"
 
         property_to_uri_dict = {}
 
@@ -119,16 +144,16 @@ class ClassGenerator:
         for k,v in property_to_uri_dict.items():
             write_string += f"        URIRef(\"{v}\"): '{k}',\n"
         write_string += "    }\n"
-        for sup_cls in supclasses:
-            write_string += f"    prop_to_uri.update({str(sup_cls.name)}.prop_to_uri)\n"
+        for sup_cls in superclasses:
+            write_string += f"    prop_to_uri.update({sup_cls}.prop_to_uri)\n"
         return write_string
 
-    def convert_to_py_class(self, c: owlready2.ThingClass) -> str:
-        subclasses = self.get_subclasses(c)
+    def convert_to_py_class(self, c: owlready2.ThingClass) -> Tuple[str, List[str]]:
+        superclasses = self.get_superclass_names(c)
         properties = self.get_property_names_and_types(c)
-        write_string = self.populate_template(name=str(c.name), supclasses=subclasses, properties=properties)
+        write_string = self.populate_template(name=str(c.name), superclasses=superclasses, properties=properties)
 
-        return write_string
+        return write_string, superclasses
 
 
 if __name__ == "__main__":

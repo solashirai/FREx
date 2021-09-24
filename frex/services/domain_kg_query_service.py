@@ -79,7 +79,8 @@ class DomainKgQueryService(_GraphQueryService):
                 # any property that isn't found in the query result is just set to None.
                 # this isn't the most elegant solution, since some properties perhaps should be "required"
                 # in the results, but this is a compromise to let the automatic code generation work more smoothly.
-                vals = [v.value for v in self.cache_graph.objects(target_uri, prop_uri_key)]
+                vals = [v.value if not isinstance(v, URIRef) else v
+                        for v in self.cache_graph.objects(target_uri, prop_uri_key)]
                 if not vals:
                     vals = None
                 elif len(vals) == 1:
