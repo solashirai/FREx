@@ -1,8 +1,9 @@
 dataclasses-json==0.5.2
 numpy==1.19.1
 pytest==6.0.1
-rdflib==5.0.0
+rdflib==6.0.1
 scipy==1.5.2
 SPARQLWrapper==1.8.5
 ortools==8.0.8283
 requests==2.24.0
+owlready2==0.34

@@ -12,7 +12,7 @@ class RequestResultCache(ResultCache):
 
     def __init__(self, *, result: Result):
         # Per HTTP request ResultsCache
-        self.cache_graph = Graph().parse(data=result.serialize(format="xml"))
+        self.cache_graph = Graph().parse(data=result.serialize(format="ttl"))
 
     def get_graph(self) -> Graph:
         """
