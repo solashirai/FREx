@@ -29,16 +29,9 @@ class ClassGenerator:
     this utility will simply add a type hint of "URIRef". This implementation is partially based on the fact that some
     restrictions on property ranges in owl are difficult to parse in a meaningful way, and partially based on
     the fact that we can't necessarily guarantee that a user would want to fully parse through the URIs that a
-    given property points to.
-
-    A specific example of why someone might not want to do this is
-    e.g., (:personA, :hasSibling, :personB). If, when querying the kg and converting to python objects, the personA
-    object needs to parse the result of hasSibling, and personB in turn has the hasSibling relation to personA, a
-    loop will occur in trying to query for the necessary data. While it is possible to avoid this kind of simple error,
-    it's not necessarily feasible to make an implementation of a querying service that can anticipate all possible
-    cyclic issues in the data.
-    For this reason, the generated code will just assume that a dataclass' property points to a URI instead of
-    another object. e.g., class Person: hasSibling: URIRef rather than class Person: hasSibling: Person
+    given property points to. Trying to re-query and convert results to objects might also result in cycles if
+    URIs point to each other for certain properties, to simply stopping at a point that a property refers to a URI
+    simplifies the process.
     """
     def __init__(self, *, onto_file: str, save_dir: Path):
         self.onto = get_ontology(f'file://{onto_file}').load()
