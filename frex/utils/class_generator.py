@@ -74,7 +74,6 @@ class ClassGenerator:
             if len(init_order) == len(class_to_file):
                 break
             for class_name, class_deps in file_deps.items():
-                print(class_name, class_deps)
                 if class_name in init_order:
                     continue
                 if set(class_deps).issubset(init_order):
