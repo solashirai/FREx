@@ -27,10 +27,10 @@ class Ramen(DomainObject):
     # are implemented - this simply serves as an example / enabling unit testing, since testing code generation
     # isn't trivial.
     prop_to_uri = {
-        RDFS["label"]: 'label',
-        RamenUtils.ramen_onto_ns["brand"]: 'brand',
-        RamenUtils.ramen_onto_ns["country"]: 'country',
-        RamenUtils.ramen_onto_ns["style"]: 'style',
-        RamenUtils.ramen_onto_ns["rating"]: 'rating',
-        RamenUtils.ramen_onto_ns["price"]: 'price'
+        RDFS["label"]: "label",
+        RamenUtils.ramen_onto_ns["brand"]: "brand",
+        RamenUtils.ramen_onto_ns["country"]: "country",
+        RamenUtils.ramen_onto_ns["style"]: "style",
+        RamenUtils.ramen_onto_ns["rating"]: "rating",
+        RamenUtils.ramen_onto_ns["price"]: "price",
     }

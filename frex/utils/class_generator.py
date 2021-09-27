@@ -33,14 +33,15 @@ class ClassGenerator:
     URIs point to each other for certain properties, to simply stopping at a point that a property refers to a URI
     simplifies the process.
     """
+
     def __init__(self, *, onto_file: str, save_dir: Path):
-        self.onto = get_ontology(f'file://{onto_file}').load()
+        self.onto = get_ontology(f"file://{onto_file}").load()
         self.save_dir = save_dir
 
     def to_snake_case(self, name: str) -> str:
-        name = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', name)
-        name = re.sub('__([A-Z])', r'_\1', name)
-        name = re.sub('([a-z0-9])([A-Z])', r'\1_\2', name)
+        name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+        name = re.sub("__([A-Z])", r"_\1", name)
+        name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name)
         return name.lower()
 
     def generate_classes(self):
@@ -57,7 +58,7 @@ class ClassGenerator:
                 class_to_file[str(c.name)] = file_name
                 file_deps[c.name] = super_cl
 
-                with open((self.save_dir / f"{file_name}.py").resolve(), 'w') as f:
+                with open((self.save_dir / f"{file_name}.py").resolve(), "w") as f:
                     f.write(python_rep_string)
 
         # go through the dependencies of classes to make sure that the init file has them imported in
@@ -73,14 +74,18 @@ class ClassGenerator:
                     init_order.append(class_name)
                     found_change = True
             if not found_change:
-                print("WARINING: a circular import probably exists in your object models. "
-                      "Offending classes, and their subclasses, will not be included in the init file.")
+                print(
+                    "WARINING: a circular import probably exists in your object models. "
+                    "Offending classes, and their subclasses, will not be included in the init file."
+                )
                 break
 
         init_file_contents = ""
         for class_name in init_order:
-            init_file_contents += f"from .{class_to_file[class_name]} import {class_name}\n"
-        with open((self.save_dir / "__init__.py").resolve(), 'w') as f:
+            init_file_contents += (
+                f"from .{class_to_file[class_name]} import {class_name}\n"
+            )
+        with open((self.save_dir / "__init__.py").resolve(), "w") as f:
             f.write(init_file_contents)
 
     def get_superclass_names(self, c: owlready2.ThingClass) -> List[str]:
@@ -97,7 +102,9 @@ class ClassGenerator:
                 superclasses.append(subcl)
         return [str(sc.name) for sc in superclasses]
 
-    def add_restriction(self, *, p: owlready2.class_construct.Restriction, properties: List):
+    def add_restriction(
+        self, *, p: owlready2.class_construct.Restriction, properties: List
+    ):
         """
         Add properties based on owl restrictions. Restrictions should correspond to class
         restrictions in owl, such as requiring some property be filled for a class to be valid.
@@ -139,7 +146,9 @@ class ClassGenerator:
             else:
                 self.get_inner_restrictions(p=v, properties=properties)
 
-    def get_property_names_and_types(self, c: owlready2.ThingClass) -> List[Tuple[str, Any, str]]:
+    def get_property_names_and_types(
+        self, c: owlready2.ThingClass
+    ) -> List[Tuple[str, Any, str]]:
         """
         For the target owl class, extract the property names and types that the class should have.
         These properties are based on owl restrictions that define the class.
@@ -148,7 +157,7 @@ class ClassGenerator:
         :return: A list of tuples, ordered as (prop_name, prop_type, prop_iri).
         """
         properties = []
-        for p in c.is_a+c.equivalent_to:
+        for p in c.is_a + c.equivalent_to:
             if isinstance(p, owlready2.class_construct.Restriction):
                 self.add_restriction(p=p, properties=properties)
             elif isinstance(p, owlready2.class_construct.LogicalClassConstruct):
@@ -157,9 +166,13 @@ class ClassGenerator:
 
         return properties
 
-    def populate_template(self, *, name: str,
-                          superclasses: List[str],
-                          properties: List[Tuple[str, Any, str]]) -> str:
+    def populate_template(
+        self,
+        *,
+        name: str,
+        superclasses: List[str],
+        properties: List[Tuple[str, Any, str]],
+    ) -> str:
         """
         Populate a template for producing generated python dataclasses.
         The current template is based on implementations in python 3.8 - in future versions, some minor details
@@ -222,21 +235,39 @@ class ClassGenerator:
         """
         superclasses = self.get_superclass_names(c)
         properties = self.get_property_names_and_types(c)
-        write_string = self.populate_template(name=str(c.name), superclasses=superclasses, properties=properties)
+        write_string = self.populate_template(
+            name=str(c.name), superclasses=superclasses, properties=properties
+        )
 
         return write_string, superclasses
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Specify an ontology, either from the web or stored locally, "
-                                                 "to use to generate Python classes.")
-    parser.add_argument('--onto', type=str, help='The URL or local directory for the target ontology')
-    parser.add_argument('--local', dest='onto_local', action='store_true',
-                        help='Specify that the onto string refers to a local directory (default true)')
-    parser.add_argument('--remote', dest='onto_local', action='store_false',
-                        help='Specify that the onto string refers to a URL.')
+    parser = argparse.ArgumentParser(
+        description="Specify an ontology, either from the web or stored locally, "
+        "to use to generate Python classes."
+    )
+    parser.add_argument(
+        "--onto", type=str, help="The URL or local directory for the target ontology"
+    )
+    parser.add_argument(
+        "--local",
+        dest="onto_local",
+        action="store_true",
+        help="Specify that the onto string refers to a local directory (default true)",
+    )
+    parser.add_argument(
+        "--remote",
+        dest="onto_local",
+        action="store_false",
+        help="Specify that the onto string refers to a URL.",
+    )
     parser.set_defaults(onto_local=True)
-    parser.add_argument('--save_dir', type=str, help='The directory to save the generated Python classes')
+    parser.add_argument(
+        "--save_dir",
+        type=str,
+        help="The directory to save the generated Python classes",
+    )
     args = parser.parse_args()
 
     onto_file = args.onto
