@@ -1,4 +1,5 @@
 import pytest
+import rdflib
 from rdflib import Namespace, URIRef
 from examples.ramen_rec.app import *
 from frex.stores import LocalGraph

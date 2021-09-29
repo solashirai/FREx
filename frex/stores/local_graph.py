@@ -22,11 +22,7 @@ class LocalGraph(SparqlQueryable):
         :param file_path: the path to the file containing the RDF graph to load.
         :return: None
         """
-        self.__parse_ttl_file(file_path=file_path)
-
-    def __parse_ttl_file(self, *, file_path: Path) -> None:
-
-        return self.graph.parse(str(file_path), format="ttl")
+        self.graph.parse(file_path)
 
     def query(self, *, sparql: str) -> Result:
         """
