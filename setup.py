@@ -16,6 +16,7 @@ setup(
         "sklearn",
         "SPARQLWrapper",
         "ortools",
-        "requests"
+        "requests",
+        "owlready2"
     ]
 )
