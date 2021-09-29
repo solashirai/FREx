@@ -10,6 +10,7 @@ Subpackages
    frex.models
    frex.pipeline_stages
    frex.pipelines
+   frex.services
    frex.stores
    frex.utils
 

@@ -20,3 +20,11 @@ More documentation about the project is available [here](https://tetherless-worl
 The main classes and modules can be found in the frex/ directory. A toy example demonstrating the use of frex can be seen in the [examples/ramen_rec](https://github.com/solashirai/ExplainableRecommenderFramework/tree/master/examples/ramen_rec) directory.
 
 Documentation generated using [Sphinx](https://www.sphinx-doc.org/en/master/) can be found at [https://solashirai.github.io/FREx](https://solashirai.github.io/FREx).
+
+<!--
+For updating or re-generating Sphinx documentation:
+1. Go into the docs/ folder
+2. run sphinx-apidoc -o source ../frex to generate .rst files. use -f option to force if needed,
+but careful if you've made any manual changes to the rst files
+3. run make html source build
+-->

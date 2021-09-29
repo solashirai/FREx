@@ -4,6 +4,14 @@ frex.utils package
 Submodules
 ----------
 
+frex.utils.class\_generator module
+----------------------------------
+
+.. automodule:: frex.utils.class_generator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 frex.utils.common module
 ------------------------
 

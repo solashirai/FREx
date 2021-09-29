@@ -8,6 +8,7 @@ Subpackages
    :maxdepth: 4
 
    frex.models.constraints
+   frex.models.explanation_types
 
 Submodules
 ----------

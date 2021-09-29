@@ -1,70 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>frex.stores package &mdash; FREx 1 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>frex.stores package &mdash; FREx 1.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="frex.utils package" href="frex.utils.html" />
-    <link rel="prev" title="frex.pipelines package" href="frex.pipelines.html" /> 
+    <link rel="prev" title="frex.services.exceptions package" href="frex.services.exceptions.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> FREx
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -72,25 +36,15 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="frex.html">frex package</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="frex.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="frex.models.html">frex.models package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="frex.pipeline_stages.html">frex.pipeline_stages package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="frex.pipelines.html">frex.pipelines package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frex.services.html">frex.services package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">frex.stores package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-frex.stores.local_graph">frex.stores.local_graph module</a></li>
@@ -109,88 +63,46 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">FREx</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="frex.html">frex package</a> &raquo;</li>
-        
       <li>frex.stores package</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/frex.stores.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="frex-stores-package">
-<h1>frex.stores package<a class="headerlink" href="#frex-stores-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-frex.stores.local_graph">
-<span id="frex-stores-local-graph-module"></span><h2>frex.stores.local_graph module<a class="headerlink" href="#module-frex.stores.local_graph" title="Permalink to this headline">¶</a></h2>
+             
+  <section id="frex-stores-package">
+<h1>frex.stores package<a class="headerlink" href="#frex-stores-package" title="Permalink to this headline"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-frex.stores.local_graph">
+<span id="frex-stores-local-graph-module"></span><h2>frex.stores.local_graph module<a class="headerlink" href="#module-frex.stores.local_graph" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="frex.stores.local_graph.LocalGraph">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.stores.local_graph.</span></code><code class="sig-name descname"><span class="pre">LocalGraph</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_paths</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">…</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.local_graph.LocalGraph">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">frex.stores.local_graph.</span></span><span class="sig-name descname"><span class="pre">LocalGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_paths</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">,</span> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#frex.stores.sparql_queryable.SparqlQueryable" title="frex.stores.sparql_queryable.SparqlQueryable"><code class="xref py py-class docutils literal notranslate"><span class="pre">frex.stores.sparql_queryable.SparqlQueryable</span></code></a></p>
 <p>LocalGraph should be used to store and access rdf graphs locally.</p>
 <dl class="py method">
-<dt id="frex.stores.local_graph.LocalGraph.get_graph">
-<code class="sig-name descname"><span class="pre">get_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.graph.Graph</span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph.get_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph.get_graph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.local_graph.LocalGraph.get_graph">
+<span class="sig-name descname"><span class="pre">get_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.graph.Graph</span></span></span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph.get_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph.get_graph" title="Permalink to this definition"></a></dt>
 <dd><p>Get the local Graph object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -200,8 +112,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="frex.stores.local_graph.LocalGraph.load_graph_file">
-<code class="sig-name descname"><span class="pre">load_graph_file</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph.load_graph_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph.load_graph_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.local_graph.LocalGraph.load_graph_file">
+<span class="sig-name descname"><span class="pre">load_graph_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">pathlib.Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph.load_graph_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph.load_graph_file" title="Permalink to this definition"></a></dt>
 <dd><p>Load a piece of an RDF graph from a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -214,8 +126,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="frex.stores.local_graph.LocalGraph.query">
-<code class="sig-name descname"><span class="pre">query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.query.Result</span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph.query" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.local_graph.LocalGraph.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.query.Result</span></span></span><a class="reference internal" href="_modules/frex/stores/local_graph.html#LocalGraph.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.local_graph.LocalGraph.query" title="Permalink to this definition"></a></dt>
 <dd><p>Query the local graph object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -229,17 +141,17 @@
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-frex.stores.remote_graph">
-<span id="frex-stores-remote-graph-module"></span><h2>frex.stores.remote_graph module<a class="headerlink" href="#module-frex.stores.remote_graph" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-frex.stores.remote_graph">
+<span id="frex-stores-remote-graph-module"></span><h2>frex.stores.remote_graph module<a class="headerlink" href="#module-frex.stores.remote_graph" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="frex.stores.remote_graph.RemoteGraph">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.stores.remote_graph.</span></code><code class="sig-name descname"><span class="pre">RemoteGraph</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/remote_graph.html#RemoteGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.remote_graph.RemoteGraph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.remote_graph.RemoteGraph">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">frex.stores.remote_graph.</span></span><span class="sig-name descname"><span class="pre">RemoteGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/remote_graph.html#RemoteGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.remote_graph.RemoteGraph" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#frex.stores.sparql_queryable.SparqlQueryable" title="frex.stores.sparql_queryable.SparqlQueryable"><code class="xref py py-class docutils literal notranslate"><span class="pre">frex.stores.sparql_queryable.SparqlQueryable</span></code></a></p>
 <p>RemoteGraph is used for accessing remote SPARQL endpoints.</p>
 <dl class="py method">
-<dt id="frex.stores.remote_graph.RemoteGraph.query">
-<code class="sig-name descname"><span class="pre">query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.query.Result</span><a class="reference internal" href="_modules/frex/stores/remote_graph.html#RemoteGraph.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.remote_graph.RemoteGraph.query" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.remote_graph.RemoteGraph.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.query.Result</span></span></span><a class="reference internal" href="_modules/frex/stores/remote_graph.html#RemoteGraph.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.remote_graph.RemoteGraph.query" title="Permalink to this definition"></a></dt>
 <dd><p>Query the remote graph using the API endpoint.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -253,19 +165,19 @@
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-frex.stores.request_result_cache">
-<span id="frex-stores-request-result-cache-module"></span><h2>frex.stores.request_result_cache module<a class="headerlink" href="#module-frex.stores.request_result_cache" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-frex.stores.request_result_cache">
+<span id="frex-stores-request-result-cache-module"></span><h2>frex.stores.request_result_cache module<a class="headerlink" href="#module-frex.stores.request_result_cache" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="frex.stores.request_result_cache.RequestResultCache">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.stores.request_result_cache.</span></code><code class="sig-name descname"><span class="pre">RequestResultCache</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.query.Result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/request_result_cache.html#RequestResultCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.request_result_cache.RequestResultCache" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.request_result_cache.RequestResultCache">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">frex.stores.request_result_cache.</span></span><span class="sig-name descname"><span class="pre">RequestResultCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">rdflib.query.Result</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/frex/stores/request_result_cache.html#RequestResultCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.request_result_cache.RequestResultCache" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#frex.stores.result_cache.ResultCache" title="frex.stores.result_cache.ResultCache"><code class="xref py py-class docutils literal notranslate"><span class="pre">frex.stores.result_cache.ResultCache</span></code></a></p>
 <p>RequestResultCache stores a local graph whose contents are the result of a query to some sparql queryable.
 After a single call to the graph containing relevant data, the contents of RequestResultCache should be used
 by the system for the remaining data formatting and retrieval functions.</p>
 <dl class="py method">
-<dt id="frex.stores.request_result_cache.RequestResultCache.get_graph">
-<code class="sig-name descname"><span class="pre">get_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.graph.Graph</span><a class="reference internal" href="_modules/frex/stores/request_result_cache.html#RequestResultCache.get_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.request_result_cache.RequestResultCache.get_graph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.request_result_cache.RequestResultCache.get_graph">
+<span class="sig-name descname"><span class="pre">get_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.graph.Graph</span></span></span><a class="reference internal" href="_modules/frex/stores/request_result_cache.html#RequestResultCache.get_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.request_result_cache.RequestResultCache.get_graph" title="Permalink to this definition"></a></dt>
 <dd><p>Get the local Graph object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -275,8 +187,8 @@ by the system for the remaining data formatting and retrieval functions.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="frex.stores.request_result_cache.RequestResultCache.query">
-<code class="sig-name descname"><span class="pre">query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.query.Result</span><a class="reference internal" href="_modules/frex/stores/request_result_cache.html#RequestResultCache.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.request_result_cache.RequestResultCache.query" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.request_result_cache.RequestResultCache.query">
+<span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.query.Result</span></span></span><a class="reference internal" href="_modules/frex/stores/request_result_cache.html#RequestResultCache.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.request_result_cache.RequestResultCache.query" title="Permalink to this definition"></a></dt>
 <dd><p>Query the local graph object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,16 +202,16 @@ by the system for the remaining data formatting and retrieval functions.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-frex.stores.result_cache">
-<span id="frex-stores-result-cache-module"></span><h2>frex.stores.result_cache module<a class="headerlink" href="#module-frex.stores.result_cache" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-frex.stores.result_cache">
+<span id="frex-stores-result-cache-module"></span><h2>frex.stores.result_cache module<a class="headerlink" href="#module-frex.stores.result_cache" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="frex.stores.result_cache.ResultCache">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.stores.result_cache.</span></code><code class="sig-name descname"><span class="pre">ResultCache</span></code><a class="reference internal" href="_modules/frex/stores/result_cache.html#ResultCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.result_cache.ResultCache" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.result_cache.ResultCache">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">frex.stores.result_cache.</span></span><span class="sig-name descname"><span class="pre">ResultCache</span></span><a class="reference internal" href="_modules/frex/stores/result_cache.html#ResultCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.result_cache.ResultCache" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#frex.stores.sparql_queryable.SparqlQueryable" title="frex.stores.sparql_queryable.SparqlQueryable"><code class="xref py py-class docutils literal notranslate"><span class="pre">frex.stores.sparql_queryable.SparqlQueryable</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py method">
-<dt id="frex.stores.result_cache.ResultCache.get_graph">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">get_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.graph.Graph</span><a class="reference internal" href="_modules/frex/stores/result_cache.html#ResultCache.get_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.result_cache.ResultCache.get_graph" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.result_cache.ResultCache.get_graph">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">get_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.graph.Graph</span></span></span><a class="reference internal" href="_modules/frex/stores/result_cache.html#ResultCache.get_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.result_cache.ResultCache.get_graph" title="Permalink to this definition"></a></dt>
 <dd><p>Get the local Graph object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -310,17 +222,17 @@ by the system for the remaining data formatting and retrieval functions.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-frex.stores.sparql_queryable">
-<span id="frex-stores-sparql-queryable-module"></span><h2>frex.stores.sparql_queryable module<a class="headerlink" href="#module-frex.stores.sparql_queryable" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-frex.stores.sparql_queryable">
+<span id="frex-stores-sparql-queryable-module"></span><h2>frex.stores.sparql_queryable module<a class="headerlink" href="#module-frex.stores.sparql_queryable" title="Permalink to this headline"></a></h2>
 <dl class="py class">
-<dt id="frex.stores.sparql_queryable.SparqlQueryable">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">frex.stores.sparql_queryable.</span></code><code class="sig-name descname"><span class="pre">SparqlQueryable</span></code><a class="reference internal" href="_modules/frex/stores/sparql_queryable.html#SparqlQueryable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.sparql_queryable.SparqlQueryable" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.sparql_queryable.SparqlQueryable">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">frex.stores.sparql_queryable.</span></span><span class="sig-name descname"><span class="pre">SparqlQueryable</span></span><a class="reference internal" href="_modules/frex/stores/sparql_queryable.html#SparqlQueryable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.sparql_queryable.SparqlQueryable" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <p>SparqlQueryable is the base class for stores that can be queried in some way using SPARQL queries.</p>
 <dl class="py method">
-<dt id="frex.stores.sparql_queryable.SparqlQueryable.query">
-<em class="property"><span class="pre">abstract</span> </em><code class="sig-name descname"><span class="pre">query</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">rdflib.query.Result</span><a class="reference internal" href="_modules/frex/stores/sparql_queryable.html#SparqlQueryable.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.sparql_queryable.SparqlQueryable.query" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="frex.stores.sparql_queryable.SparqlQueryable.query">
+<em class="property"><span class="pre">abstract</span> </em><span class="sig-name descname"><span class="pre">query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparql</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">rdflib.query.Result</span></span></span><a class="reference internal" href="_modules/frex/stores/sparql_queryable.html#SparqlQueryable.query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#frex.stores.sparql_queryable.SparqlQueryable.query" title="Permalink to this definition"></a></dt>
 <dd><p>Query the sparql queryable and retrieve a result.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -334,58 +246,41 @@ by the system for the remaining data formatting and retrieval functions.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-frex.stores">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-frex.stores" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+<section id="module-frex.stores">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-frex.stores" title="Permalink to this headline"></a></h2>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="frex.services.exceptions.html" class="btn btn-neutral float-left" title="frex.services.exceptions package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="frex.utils.html" class="btn btn-neutral float-right" title="frex.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="frex.pipelines.html" class="btn btn-neutral float-left" title="frex.pipelines package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Sola Shirai.
-
-    </p>
+    <p>&#169; Copyright 2021, Sola Shirai.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
